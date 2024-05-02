@@ -1,0 +1,48 @@
+module.exports = {
+  root: true,
+  env: { browser: true, es2020: true },
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react-hooks/recommended',
+    'eslint-config-prettier',
+    'prettier',
+  ],
+  ignorePatterns: ['dist', 'build', '.eslintrc.cjs', 'vite.config.ts'],
+  parser: '@typescript-eslint/parser',
+  plugins: ['react-refresh', 'prettier'],
+  rules: {
+    'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+    'prettier/prettier': [
+      'warn',
+      {
+        arrowParens: 'always',
+        bracketSameLine: false,
+        bracketSpacing: true,
+        embeddedLanguageFormatting: 'auto',
+        htmlWhitespaceSensitivity: 'css',
+        insertPragma: false,
+        jsxSingleQuote: true,
+        printWidth: 100,
+        proseWrap: 'preserve',
+        quoteProps: 'as-needed',
+        requirePragma: false,
+        semi: true,
+        singleQuote: true,
+        tabWidth: 2,
+        trailingComma: 'es5',
+        useTabs: false,
+        endOfLine: 'auto',
+      },
+    ],
+    '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    '@typescript-eslint/consistent-type-imports': [
+      'warn',
+      {
+        prefer: 'type-imports',
+        fixStyle: 'separate-type-imports',
+      },
+    ],
+    '@typescript-eslint/no-explicit-any': ['warn'],
+  },
+};
