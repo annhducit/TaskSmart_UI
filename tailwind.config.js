@@ -99,10 +99,18 @@ export default {
           100: '#FEF3C7',
           50: '#FFFBEB',
         },
+        scene: {
+          'deep-purple': '#7f77f1',
+          'royal-blue': '#6985ff',
+          'blue': '#1090e0',
+          'light-teal': '#0f9d9f',
+          'green': '#3db88b',
+          'orange': '#e16b16',
+          'pink': '#ee5e99',
+          'purple': '#b660e0',
+        },
       },
-      fontFamily: {
-        lexend: ['Lexend', 'sans-serif'],
-      },
+      
       keyframes: {
         'animated-gradient': {
           '0%': { backgroundPosition: '0% 50%' },
@@ -110,6 +118,7 @@ export default {
           '100%': { backgroundPosition: '0% 50%' },
         },
       },
+      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
       backgroundSize: {
         '400%': '400%',
       },
