@@ -3,10 +3,10 @@
  * @author Duc Nguyen
  */
 
-import { QueryErrorResetBoundary } from "@tanstack/react-query"
-import dayjs from "dayjs";
-import { ErrorBoundary } from "react-error-boundary"
-import { BrowserRouter } from "react-router-dom"
+import { QueryErrorResetBoundary } from '@tanstack/react-query';
+import dayjs from 'dayjs';
+import { ErrorBoundary } from 'react-error-boundary';
+import { BrowserRouter } from 'react-router-dom';
 
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import duration from 'dayjs/plugin/duration';
@@ -17,12 +17,11 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import utc from 'dayjs/plugin/utc';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
 import arraySupport from 'dayjs/plugin/arraySupport';
-import AppRouter from "./modules";
-import { Suspense } from "react";
-import AppProvider from "./app-provider";
-import Loading from "./shared/components/loading";
-import FallbackErrorBoundary from "./shared/components/fallback/fallback-error-boundary";
-
+import AppRouter from './modules';
+import { Suspense } from 'react';
+import AppProvider from './app-provider';
+import Loading from './shared/components/loading';
+import FallbackErrorBoundary from './shared/components/fallback/fallback-error-boundary';
 
 dayjs.extend(customParseFormat);
 dayjs.extend(arraySupport);
@@ -38,7 +37,6 @@ function App() {
   return (
     <BrowserRouter>
       <QueryErrorResetBoundary>
-
         {({ reset }) => (
           <ErrorBoundary onReset={reset} FallbackComponent={FallbackErrorBoundary}>
             <AppProvider>
@@ -50,7 +48,7 @@ function App() {
         )}
       </QueryErrorResetBoundary>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;

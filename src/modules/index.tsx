@@ -7,38 +7,36 @@ import AuthenticateLayout from '@/modules/_layouts/AuthenticateLayout';
 import AuthNavigate from '@/shared/components/auth/auth-navigate';
 import Authenticated from '@/shared/components/auth/authenticated';
 import SignInNavigate from '@/shared/components/auth/signin-navigate';
-import NotFound from './not-found';
 
 const SignInFeature = lazy(() => import('@/modules/sign-in'));
 const SignUpFeature = lazy(() => import('@/modules/sign-up'));
 const LandingPage = lazy(() => import('@/modules/_landing/page/landing-page'));
+const NotFoundPage = lazy(() => import('@/modules/not-found'));
 
 const routers = createRouters([
   {
     path: '/',
-    element: <LandingLayout />,
+    element: <LandingLayout type='LANDING' />,
     children: [
       {
         index: true,
         element: <LandingPage />,
       },
-      {
-        path: '404',
-        element: <NotFound />,
-      },
-      {
-        path: '*',
-        element: (
-          <Authenticated fallback={<AuthNavigate />}>
-            {/* <UserInformation>
-                              <PrivateRouter />
-                          </UserInformation> */}
-            <div></div>
-          </Authenticated>
-        ),
-      },
+
+      // {
+      //   path: '*',
+      //   element: (
+      //     <Authenticated fallback={<AuthNavigate />}>
+      //       {/* <UserInformation>
+      //                         <PrivateRouter />
+      //                     </UserInformation> */}
+      //       <div></div>
+      //     </Authenticated>
+      //   ),
+      // },
     ],
   },
+  
   {
     path: '/auth',
     element: <AuthenticateLayout />,
@@ -58,6 +56,16 @@ const routers = createRouters([
             <SignInNavigate />
           </Authenticated>
         ),
+      },
+    ],
+  },
+  {
+    path: '/not-found',
+    element: <LandingLayout type='NORMAL' />,
+    children: [
+      {
+        index: true,
+        element: <NotFoundPage />,
       },
     ],
   },

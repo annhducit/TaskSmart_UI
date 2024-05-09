@@ -2,7 +2,7 @@ import { Navigate, type RouteObject } from 'react-router-dom';
 
 const notFoundRouter: RouteObject = {
   path: '*',
-  element: <Navigate to='/404' />,
+  element: <Navigate to='/not-found' />,
 };
 
 export function createRouters(router: RouteObject[]) {
