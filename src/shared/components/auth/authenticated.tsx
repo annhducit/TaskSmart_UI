@@ -10,7 +10,7 @@ const Authenticated: FC<Props> = (props) => {
   /**
    * useSelector((store) => store.auth.data.accessToken);
    */
-  const accessToken = ''
+  const accessToken = 'aa';
 
   if (!accessToken) {
     return fallback;

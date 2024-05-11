@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom';
+import Header from '../tsm/components/header';
 
 /**
  *
@@ -7,10 +8,11 @@ import { Outlet } from 'react-router-dom';
  */
 const DashboardLayout = () => {
   return (
-    <div>
-      <div> This is dashboard layout</div>
+    <>
+      <Header />
+
       <Outlet />
-    </div>
+    </>
   );
 };
 

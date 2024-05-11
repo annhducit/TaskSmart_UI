@@ -1,6 +1,8 @@
 import Logo from '@/shared/components/logo';
-import { Button, Typography } from 'antd';
+import { Button, Divider, Typography } from 'antd';
 import { Outlet } from 'react-router-dom';
+import Header from '../_landing/components/header';
+import Footer from '../_landing/components/footer';
 
 type LayoutType = 'LANDING' | 'NORMAL';
 const LandingLayout = ({ type }: { type: LayoutType }) => {
@@ -28,7 +30,10 @@ const LandingLayout = ({ type }: { type: LayoutType }) => {
       )}
       {type === 'LANDING' && (
         <div>
+          <Header />
           <Outlet />
+          <Divider className='my-1' />
+          <Footer />
         </div>
       )}
     </div>

@@ -4,14 +4,17 @@ import { lazy } from 'react';
 import { createRouters } from '@/shared/router/utils';
 import LandingLayout from '@/modules/_layouts/LandingLayout';
 import AuthenticateLayout from '@/modules/_layouts/AuthenticateLayout';
-import AuthNavigate from '@/shared/components/auth/auth-navigate';
 import Authenticated from '@/shared/components/auth/authenticated';
 import SignInNavigate from '@/shared/components/auth/signin-navigate';
+import AuthNavigate from '@/shared/components/auth/auth-navigate';
+import DashboardLayout from './_layouts/DashboardLayout';
 
 const SignInFeature = lazy(() => import('@/modules/sign-in'));
 const SignUpFeature = lazy(() => import('@/modules/sign-up'));
-const LandingPage = lazy(() => import('@/modules/_landing/page/landing-page'));
-const NotFoundPage = lazy(() => import('@/modules/not-found'));
+const LandingFeature = lazy(() => import('@/modules/_landing'));
+const NotFoundFeature = lazy(() => import('@/modules/not-found'));
+
+const PrivateRouter = lazy(() => import('@/modules/private'));
 
 const routers = createRouters([
   {
@@ -20,23 +23,27 @@ const routers = createRouters([
     children: [
       {
         index: true,
-        element: <LandingPage />,
+        element: <LandingFeature />,
       },
-
-      // {
-      //   path: '*',
-      //   element: (
-      //     <Authenticated fallback={<AuthNavigate />}>
-      //       {/* <UserInformation>
-      //                         <PrivateRouter />
-      //                     </UserInformation> */}
-      //       <div></div>
-      //     </Authenticated>
-      //   ),
-      // },
     ],
   },
-  
+  {
+    path: '',
+    element: <DashboardLayout />,
+    children: [
+      {
+        path: '*',
+        element: (
+          <Authenticated fallback={<AuthNavigate />}>
+            {/* <UserInformation> */}
+            <PrivateRouter />
+            {/* </UserInformation> */}
+          </Authenticated>
+        ),
+      },
+    ],
+  },
+
   {
     path: '/auth',
     element: <AuthenticateLayout />,
@@ -65,7 +72,7 @@ const routers = createRouters([
     children: [
       {
         index: true,
-        element: <NotFoundPage />,
+        element: <NotFoundFeature />,
       },
     ],
   },
