@@ -1,10 +1,11 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import Header from '../tsm/components/header';
 import SidebarComponent from '@/shared/components/sidebar';
 import { useState } from 'react';
 import { Button } from 'antd';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import SubHeader from '../tsm/components/sub-header';
+import useGetPath from '@/shared/hooks/use-get-path';
 
 /**
  *
@@ -12,9 +13,11 @@ import SubHeader from '../tsm/components/sub-header';
  * @author Duc Nguyen
  */
 const DashboardLayout = () => {
-  const location = useLocation();
-
   const [collapsed, setCollapsed] = useState(false);
+
+  const { path } = useGetPath();
+
+  const isProject = path.includes('project');
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -39,10 +42,13 @@ const DashboardLayout = () => {
           {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         </Button>
         <div className='flex-1'>
-          <p>
+          <div>
             <SubHeader />
-          </p>
-          <div className='px-6'>{location.pathname === '/tsm/project' && <Outlet />}</div>
+          </div>
+
+          <div className={`${!isProject ? 'p-4' : ''}`}>
+            <Outlet />
+          </div>
         </div>
       </div>
     </div>

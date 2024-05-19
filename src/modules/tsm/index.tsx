@@ -9,7 +9,8 @@ import { Navigate, useRoutes } from 'react-router-dom';
 
 const HomeFeature = lazy(() => import('./features/home'));
 const MailFeature = lazy(() => import('./features/mail'));
-const ProjectFeature = lazy(() => import('./features/project'));
+const WorkspaceDetailFeature = lazy(() => import('./features/workspace'));
+const WorkspaceFeature = lazy(() => import('./features/workspace/page'));
 
 const tsmRoutes = createRouters([
   {
@@ -25,8 +26,12 @@ const tsmRoutes = createRouters([
     element: <MailFeature />,
   },
   {
-    path: 'project/*',
-    element: <ProjectFeature />,
+    path: 'workspace/*',
+    element: <WorkspaceFeature />,
+  },
+  {
+    path: 'workspace/:workspaceId/*',
+    element: <WorkspaceDetailFeature />,
   },
   /**
    * Add more routes here

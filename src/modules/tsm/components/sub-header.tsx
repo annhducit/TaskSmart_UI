@@ -1,6 +1,7 @@
 import useGetPath from '@/shared/hooks/use-get-path';
 import { HomeOutlined } from '@ant-design/icons';
-import { Breadcrumb, Divider, Tabs, TabsProps, Typography } from 'antd';
+import { Breadcrumb, Divider } from 'antd';
+
 import { Link } from 'react-router-dom';
 
 /**
@@ -11,7 +12,7 @@ import { Link } from 'react-router-dom';
 
 type SubHeaderType = 'normal' | 'workspace' | 'project';
 const SubHeader = ({ type }: { type?: SubHeaderType }) => {
-  const { path, pageName } = useGetPath();
+  const { path } = useGetPath();
 
   return (
     <>
@@ -37,41 +38,8 @@ const SubHeader = ({ type }: { type?: SubHeaderType }) => {
         </div>
       </header>
       <Divider className='my-[1px]' />
-      <div className='relative'>
-        {pageName === 'project' && (
-          <div>
-            <HeaderProject />
-          </div>
-        )}
-        <Divider className='absolute bottom-3 my-1' />
-      </div>
     </>
   );
 };
 
 export default SubHeader;
-
-const HeaderProject = () => {
-  return (
-    <>
-      <header className='border-b-slate-500 bg-white px-4 pl-6'>
-        <div className='flex items-center justify-between'>
-          <div className='flex items-start gap-x-6'>
-            <Typography.Text className='mt-[10px] text-[16px] font-bold'>
-              Double D Thesis
-            </Typography.Text>
-            <Tabs defaultActiveKey='2' items={items} />
-          </div>
-          <div className='flex items-center'></div>
-        </div>
-      </header>
-    </>
-  );
-};
-
-const items: TabsProps['items'] = [
-  { key: '1', label: 'Project' },
-  { key: '2', label: 'Table' },
-  { key: '3', label: 'Calendar' },
-  { key: '4', label: 'Karban' },
-];

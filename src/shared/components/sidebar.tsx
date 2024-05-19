@@ -79,7 +79,7 @@ const Sidebar = ({
         console.log('Workspaces');
         break;
       case 'sub6':
-        console.log('Everything');
+        navigate('tsm/workspace', { replace: true });
         break;
       case 'sub7':
         console.log('Team Workspace');
@@ -100,7 +100,7 @@ const Sidebar = ({
         console.log('Create Workspace');
         break;
       case 'sub14':
-        navigate('tsm/project', { replace: true });
+        navigate('tsm/workspace/1/project/1', { replace: true });
         break;
       default:
         break;
