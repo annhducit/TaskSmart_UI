@@ -64,6 +64,9 @@ const Sidebar = ({
       case 'home':
         navigate('tsm/home', { replace: true });
         break;
+      case 'project':
+        navigate('tsm/workspace/1', { replace: true });
+        break;
       case 'mail':
         navigate('tsm/mail', { replace: true });
         break;
@@ -112,6 +115,11 @@ const Sidebar = ({
       key: 'home',
       label: 'Home',
       icon: <HomeOutlined />,
+    },
+    {
+      key: 'project',
+      label: 'Project',
+      icon: <FolderKanban className='h-4 w-4' />,
     },
     {
       key: 'mail',
@@ -201,7 +209,7 @@ const Sidebar = ({
   return (
     <aside
       style={{ width: isCollapse ? 80 : 256 }}
-      className='relative h-[calc(100vh-80px)] overflow-y-auto bg-[#f7f8f9] pt-2'
+      className='relative h-[calc(100vh-60px)] overflow-y-auto bg-[#f7f8f9] pt-2'
     >
       {/* Workspace item */}
       <Tooltip title='TaskSmart Workspace'>

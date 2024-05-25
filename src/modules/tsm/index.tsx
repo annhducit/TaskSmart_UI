@@ -10,7 +10,7 @@ import { Navigate, useRoutes } from 'react-router-dom';
 const HomeFeature = lazy(() => import('./features/home'));
 const MailFeature = lazy(() => import('./features/mail'));
 const WorkspaceDetailFeature = lazy(() => import('./features/workspace'));
-const WorkspaceFeature = lazy(() => import('./features/workspace/page'));
+const WorkspaceFeature = lazy(() => import('./features/workspace/page/workspace'));
 
 const tsmRoutes = createRouters([
   {

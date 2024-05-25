@@ -4,6 +4,7 @@ import { Tooltip as AntTooltip } from 'antd';
 export default function Tooltip(props: {
   title: React.ReactNode;
   children: React.ReactNode;
+  color?: string;
   placement?:
     | 'top'
     | 'left'
@@ -18,10 +19,10 @@ export default function Tooltip(props: {
     | 'rightTop'
     | 'rightBottom';
 }) {
-  const { title, children, placement = 'top' } = props;
+  const { title, children, placement = 'top', color = '#2db7f5' } = props;
 
   return (
-    <AntTooltip title={title} placement={placement} color='#2db7f5'>
+    <AntTooltip title={title} placement={placement} color={color}>
       {children}
     </AntTooltip>
   );

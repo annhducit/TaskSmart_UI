@@ -41,7 +41,7 @@ const DashboardLayout = () => {
         >
           {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         </Button>
-        <div className='flex-1'>
+        <div className='max-h-[92vh] flex-1 overflow-y-scroll'>
           <div>
             <SubHeader />
           </div>

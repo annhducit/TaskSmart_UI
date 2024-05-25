@@ -2,7 +2,7 @@ import { createRouters } from '@/shared/router/utils';
 import { Suspense, lazy } from 'react';
 import { useRoutes } from 'react-router-dom';
 import useSearchParam from '@/shared/hooks/use-search-param';
-import { SEARCH_PARAMS } from '@/shared/constant/search-param';
+import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
 import Loading from '@/shared/components/loading';
 import { Avatar, Button, Tabs, TabsProps } from 'antd';
 import Tooltip from '@/shared/components/tooltip';
@@ -31,6 +31,11 @@ const ProjectDetail = () => {
     defaultValue: 'project',
   });
 
+  const [, setDialog] = useSearchParam(SEARCH_PARAMS.DIALOG);
+
+  const showModal = () => {
+    setDialog(SEARCH_PARAMS_VALUE.PROJECT_DETAIL);
+  };
   const tabList = items?.map((item) => ({
     ...item,
     children: item.children ? (
@@ -40,7 +45,7 @@ const ProjectDetail = () => {
 
   return (
     <>
-      <header className='border-b-slate-500 bg-white pl-0 pl-6 pr-4'>
+      <header className='border-b-slate-500 bg-white pl-0 pr-2'>
         <div className='flex items-center justify-between'>
           <div className='flex items-start gap-x-2'>
             <Tabs

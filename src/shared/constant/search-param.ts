@@ -37,11 +37,14 @@ export enum SEARCH_PARAMS {
 export enum SEARCH_PARAMS_VALUE {
   SCHEDULE = 'schedule',
   REMINDER = 'reminder',
+  NOTEPAD = 'notepad',
 
   WEEKLY_WORK = 'weekly-work',
   USER_ROLE = 'user-role',
   USER = 'user',
   PROJECT = 'project',
+  WORKSPACE = 'workspace',
+  PROJECT_DETAIL = 'project-detail',
   APPROVE = 'approve',
   NEWS = 'news',
   DETAIL = 'detail',

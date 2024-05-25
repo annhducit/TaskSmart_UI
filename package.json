@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@blocknote/core": "^0.13.3",
+    "@blocknote/mantine": "^0.13.3",
+    "@blocknote/react": "^0.13.3",
     "@reduxjs/toolkit": "^2.2.3",
     "@tanstack/react-query": "^5.32.1",
     "@tanstack/react-query-devtools": "^5.32.1",
