@@ -23,8 +23,9 @@ import Dropdown from '@/shared/components/dropdown';
 import Tooltip from '@/shared/components/tooltip';
 import useSearchParam from '@/shared/hooks/use-search-param';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
-import Notepad from './notepad';
 import { useState } from 'react';
+import { Notepad } from '../features/notepad';
+import { ModalAddProject, ModalAddWorkspace } from '../features/workspace/page';
 
 const Header = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -62,6 +63,7 @@ const Header = () => {
             <Input.Search
               className='w-[300px] text-base font-semibold'
               placeholder='Enter keyword'
+              allowClear
             />
             <Button
               className='font-semibold'
@@ -173,6 +175,8 @@ const Header = () => {
           </div>
         </div>
       </header>
+      <ModalAddProject />
+      <ModalAddWorkspace />
     </>
   );
 };

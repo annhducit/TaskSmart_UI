@@ -138,7 +138,9 @@ html *::-webkit-scrollbar-track {
   border-radius: 0;
   background-color: rgba(0, 0, 0, 0);
 }
-
+/**
+  * Custom Popover Antd
+  */
 .custom-popover {
   padding: 0 !important;
   margin: 0 !important;
@@ -154,4 +156,31 @@ html *::-webkit-scrollbar-track {
 
 .custom-popover .ant-popover-arrow {
   display: none;
+}
+
+/**
+  * Custom TabUI Antd
+  */
+
+.custom-tabs .ant-tabs-tab {
+  @apply text-white;
+  @apply bg-transparent;
+  @apply text-sm;
+  @apply font-semibold;
+  @apply py-4;
+}
+
+.custom-tabs .ant-tabs-nav {
+  @apply bg-gray-800 bg-opacity-50 backdrop-blur-lg;
+  @apply backdrop-filter;
+  @apply shadow-lg;
+  @apply bg-[#0000003d];
+  @apply px-6;
+}
+.custom-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  /* @apply text-white; */
+}
+.custom-tabs .ant-tabs-tab-btn:focus,
+.custom-tabs .ant-tabs-tab-btn:hover {
+  @apply text-white;
 }

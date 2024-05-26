@@ -1,17 +1,17 @@
 import { useState } from 'react';
 
-export default function useCollapse<T>(defaultValue: T): [T, () => void] {
-  const [isVisible, setIsVisible] = useState<T>(defaultValue);
+export default function useCollapse<T>(defaultValue: T): [T, (value?: T) => void] {
+  const [value, setValue] = useState<T>(defaultValue);
 
-  const controlVisible = () => {
-    setIsVisible((prev) => {
+  const toggleValue = (newValue?: T) => {
+    setValue((prev) => {
       if (typeof prev === 'boolean') {
-        return !prev as T;
+        return (typeof newValue === 'boolean' ? newValue : !prev) as T;
       } else {
-        return prev;
+        return newValue !== undefined ? newValue : prev;
       }
     });
   };
 
-  return [isVisible, controlVisible];
+  return [value, toggleValue];
 }

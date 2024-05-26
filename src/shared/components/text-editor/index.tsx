@@ -11,6 +11,11 @@ import '@blocknote/mantine/style.css';
 
 import { useCreateBlockNote } from '@blocknote/react';
 
+/**
+ * @typedef {Object} CreateBlockNoteOption
+ * @property {BlockNoteEditorOptions<BlockSchema, InlineContentSchema, StyleSchema>} collaboration
+ * @author Duc Nguyen
+ */
 export type CreateBlockNoteOption = BlockNoteEditorOptions<
   BlockSchema,
   InlineContentSchema,

@@ -59,9 +59,10 @@ const routers = createRouters([
       {
         path: 'sign-in/*',
         element: (
-          <Authenticated fallback={<SignInFeature />}>
-            <SignInNavigate />
-          </Authenticated>
+          <SignInFeature />
+          // <Authenticated fallback={<SignInFeature />}>
+          //   <SignInNavigate />
+          // </Authenticated>
         ),
       },
     ],

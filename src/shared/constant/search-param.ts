@@ -32,6 +32,8 @@ export enum SEARCH_PARAMS {
   TAB = 'tab',
   ACTIVE_TAB = 'active-tab',
   TYPE = 'type',
+
+  STATE = 'state',
 }
 
 export enum SEARCH_PARAMS_VALUE {

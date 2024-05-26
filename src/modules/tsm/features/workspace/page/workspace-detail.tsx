@@ -285,7 +285,7 @@ const ModalCreateWorkspace = () => {
   );
 };
 
-const ModalAddProject = () => {
+export const ModalAddProject = () => {
   return (
     <Dialog.Param
       size='sm'
@@ -297,7 +297,7 @@ const ModalAddProject = () => {
   );
 };
 
-const ModalCreateProject = () => {
+export const ModalCreateProject = () => {
   const { onClose } = useDialogContext();
   return (
     <>
