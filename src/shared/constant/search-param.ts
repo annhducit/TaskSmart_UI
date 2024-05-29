@@ -8,6 +8,8 @@ export enum SEARCH_PARAMS {
   KEYWORD = 'keyword',
   DIALOG = 'dialog',
 
+  MODAL = 'modal',
+
   OVERVIEW = 'overview',
   PROJECT = 'project',
   TABLE = 'table',
@@ -41,6 +43,9 @@ export enum SEARCH_PARAMS_VALUE {
   REMINDER = 'reminder',
   NOTEPAD = 'notepad',
 
+  PROFILE = 'profile',
+  CARD = 'card',
+  LIST_CARD = 'list-card',
   WEEKLY_WORK = 'weekly-work',
   USER_ROLE = 'user-role',
   USER = 'user',

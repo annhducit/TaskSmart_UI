@@ -1,5 +1,13 @@
+import ListCardItem from './list-card-item';
+
 const Project = () => {
-  return <div className='flex items-center gap-y-4 px-6'> Project detail</div>;
+  return (
+    <div className='px-6'>
+      <div className='flex items-center gap-x-3'>
+        <ListCardItem />
+      </div>
+    </div>
+  );
 };
 
 export default Project;

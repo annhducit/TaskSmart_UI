@@ -1,28 +1,29 @@
 import React from 'react';
-import { Tooltip as AntTooltip } from 'antd';
+import { Tooltip as AntTooltip, TooltipProps } from 'antd';
 
-export default function Tooltip(props: {
-  title: React.ReactNode;
-  children: React.ReactNode;
-  color?: string;
-  placement?:
-    | 'top'
-    | 'left'
-    | 'right'
-    | 'bottom'
-    | 'topLeft'
-    | 'topRight'
-    | 'bottomLeft'
-    | 'bottomRight'
-    | 'leftTop'
-    | 'leftBottom'
-    | 'rightTop'
-    | 'rightBottom';
-}) {
-  const { title, children, placement = 'top', color = '#2db7f5' } = props;
+export default function Tooltip(
+  props: {
+    children: React.ReactNode;
+    color?: string;
+    placement?:
+      | 'top'
+      | 'left'
+      | 'right'
+      | 'bottom'
+      | 'topLeft'
+      | 'topRight'
+      | 'bottomLeft'
+      | 'bottomRight'
+      | 'leftTop'
+      | 'leftBottom'
+      | 'rightTop'
+      | 'rightBottom';
+  } & TooltipProps
+) {
+  const { children, placement = 'top', color = '#2db7f5' } = props;
 
   return (
-    <AntTooltip title={title} placement={placement} color={color}>
+    <AntTooltip placement={placement} color={color} {...props}>
       {children}
     </AntTooltip>
   );

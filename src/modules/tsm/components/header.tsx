@@ -1,6 +1,7 @@
 import Logo from '@/shared/components/logo';
 import { Button, Divider, Input, MenuProps, Popover, Typography } from 'antd';
 import {
+  Activity,
   AlarmClock,
   Bell,
   CirclePlus,
@@ -9,8 +10,10 @@ import {
   LogOut,
   MessageCircle,
   NotepadText,
+  Palette,
   Settings,
   Sparkle,
+  SquareArrowOutUpRightIcon,
   SwatchBook,
   User,
   Users,
@@ -23,21 +26,29 @@ import Dropdown from '@/shared/components/dropdown';
 import Tooltip from '@/shared/components/tooltip';
 import useSearchParam from '@/shared/hooks/use-search-param';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
-import { useState } from 'react';
 import { Notepad } from '../features/notepad';
 import { ModalAddProject, ModalAddWorkspace } from '../features/workspace/page';
+import ProfileFlyer from './profile-flyer';
+import useCollapse from '@/shared/hooks/use-collapse';
 
 const Header = () => {
-  const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useCollapse<boolean>(false);
+  const [openFlyer, setOpenFlyer] = useCollapse<boolean>(false);
 
   const [, setDialog] = useSearchParam(SEARCH_PARAMS.DIALOG);
 
   const handleOpenPopover = (newOpen: boolean) => {
     setOpen(newOpen);
   };
+
+  const handleOpenFlyer = () => {
+    setOpenFlyer(!openFlyer);
+  };
+  // 2e3754
+
   return (
     <>
-      <header className='bg-[#2e3754] px-6 py-2 shadow'>
+      <header className='relative bg-[#263e50] px-6 py-1 shadow'>
         <div className='flex items-center justify-between'>
           <div className='flex items-center gap-x-10'>
             <Logo type='SINGLE_LOGO' />
@@ -118,18 +129,46 @@ const Header = () => {
               </div>
             </Tooltip>
             <Popover
-              title='Profile information'
+              title='Account'
+              style={{ width: '400px' }}
               content={
                 <>
+                  <div className='flex items-center gap-x-3'>
+                    <div className='relative h-9 w-9 rounded-full'>
+                      <img src={user} alt='' className='h-full w-full rounded-full' />
+                      <span className='absolute bottom-1 right-0 rounded-full bg-[#1ad67b] p-1' />
+                    </div>
+                    <div className='flex flex-col opacity-75'>
+                      <Typography.Text className='font-semibold'>Nguyễn Trọng Đức</Typography.Text>
+                      <Typography.Text className='text-xs'> Online</Typography.Text>
+                    </div>
+                  </div>
+                  {/* <Divider className='my-1' /> */}
+                  <p className='mt-4'>Tasksmart</p>
                   <Divider className='my-1' />
 
                   <div className='flex flex-col gap-y-2'>
                     <Button
                       icon={<User className='h-4 w-4' />}
                       type='text'
+                      onClick={handleOpenFlyer}
                       className='flex w-full items-center text-left text-black'
                     >
                       Profile
+                    </Button>
+                    <Button
+                      icon={<Activity className='h-4 w-4' />}
+                      type='text'
+                      className='flex w-full items-center text-left text-black'
+                    >
+                      Activities
+                    </Button>
+                    <Button
+                      icon={<Palette className='h-4 w-4' />}
+                      type='text'
+                      className='flex w-full items-center text-left text-black'
+                    >
+                      Theme
                     </Button>
                     <Button
                       icon={<Settings className='h-4 w-4' />}
@@ -138,13 +177,6 @@ const Header = () => {
                     >
                       Setting
                     </Button>
-                    <Button
-                      icon={<LogOut className='h-4 w-4' />}
-                      type='text'
-                      className='flex w-full items-center text-left text-black'
-                    >
-                      Logout
-                    </Button>
                   </div>
                   <p className='mt-2'>Support</p>
                   <Divider className='my-1' />
@@ -152,9 +184,10 @@ const Header = () => {
                     <Button
                       icon={<HelpCircle className='h-4 w-4' />}
                       type='text'
-                      className='flex w-full items-center text-left text-black'
+                      className='relative flex w-full items-center text-left text-black'
                     >
                       Help
+                      <SquareArrowOutUpRightIcon className='absolute right-1 h-4 w-4' />
                     </Button>
                     <Button
                       icon={<MessageCircle className='h-4 w-4' />}
@@ -164,17 +197,37 @@ const Header = () => {
                       Feedback
                     </Button>
                   </div>
+                  <Divider className='my-1' />
+                  <Button
+                    icon={<LogOut className='h-4 w-4' />}
+                    type='text'
+                    className='flex w-full items-center text-left text-black'
+                  >
+                    Logout
+                  </Button>
                 </>
               }
               trigger='click'
             >
-              <div className='h-6 w-6 rounded-full'>
-                <img src={user} className='h-full w-full rounded-full' />
+              <div className='relative'>
+                <div className='h-6 w-6 rounded-full'>
+                  <img src={user} className='h-full w-full rounded-full' />
+                </div>
+                <span className='absolute right-0 top-0 rounded-full bg-[#3db88b] p-1' />
               </div>
             </Popover>
           </div>
         </div>
       </header>
+      <div
+        className={`z-[999999] transition-transform duration-300 ease-in-out ${
+          openFlyer ? 'translate-x-0' : 'translate-x-full'
+        }`}
+        style={{ transform: `translateX(${openFlyer ? '0' : '100%'})` }}
+      >
+        <ProfileFlyer isVisible={handleOpenFlyer} />
+      </div>
+
       <ModalAddProject />
       <ModalAddWorkspace />
     </>

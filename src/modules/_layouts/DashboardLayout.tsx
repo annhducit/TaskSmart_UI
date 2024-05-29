@@ -65,12 +65,12 @@ const DashboardLayout = () => {
         >
           {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         </Button>
-        <div className={`flex-1 ${!isProject ? 'max-h-[92vh] overflow-y-scroll' : ''} `}>
+        <div className={`flex-1`}>
           <div>
             <SubHeader />
           </div>
           {isProject && <ProjectContainer />}
-          <div className={`${!isProject ? 'p-4' : ''}`}>
+          <div className={`max-h-[92vh] overflow-y-scroll ${!isProject ? 'p-4' : ''}`}>
             <Outlet />
           </div>
         </div>
@@ -94,17 +94,18 @@ export const ProjectContainer = () => {
   const tabList = items?.map((item) => ({
     ...item,
     children: item.children ? (
-      <Suspense fallback={<Loading.Page size='1/2' />}>{item.children}</Suspense>
+      <Suspense fallback={<Loading.Page size='4/5' />}>{item.children}</Suspense>
     ) : undefined,
   }));
 
   return (
     <>
       <section
-        className='relative h-[calc(100vh-90px)] overflow-y-scroll border-b-slate-500'
+        className='relative h-screen w-full border-b-slate-500'
         style={{
-          backgroundImage: `url(https://images.unsplash.com/photo-1492892132812-a00a8b245c45?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)`,
+          backgroundImage: `url(https://images.unsplash.com/photo-1710011116416-265827e3da9c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)`,
           backgroundSize: 'cover',
+          backgroundPosition: 'right',
         }}
       >
         <div className='flex items-start gap-x-2'>
@@ -114,7 +115,7 @@ export const ProjectContainer = () => {
             tabBarStyle={{ background: 'transparent' }}
             onChange={setView}
             items={tabList}
-            className='custom-tabs mb-0 w-full pb-0 text-white '
+            className='custom-tabs mb-0 w-full pb-0 text-white'
             tabBarExtraContent={{
               left: <p className='m-0 mr-4 w-40 truncate text-[16px] font-bold'>Double D Thesis</p>,
             }}
