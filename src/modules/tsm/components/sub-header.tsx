@@ -1,6 +1,7 @@
 import useGetPath from '@/shared/hooks/use-get-path';
 import { HomeOutlined } from '@ant-design/icons';
-import { Breadcrumb, Divider } from 'antd';
+import { Breadcrumb, Button, Divider } from 'antd';
+import { UserPlus } from 'lucide-react';
 
 import { Link } from 'react-router-dom';
 
@@ -16,7 +17,7 @@ const SubHeader = ({ type }: { type?: SubHeaderType }) => {
 
   return (
     <>
-      <header className='border-b-slate-500 bg-white px-4 py-2 pl-6'>
+      <header className='flex items-center justify-between border-b-slate-500 bg-white px-4 py-[6px] pl-6'>
         <div className='flex items-center justify-between'>
           <Breadcrumb>
             <Breadcrumb.Item>
@@ -36,6 +37,9 @@ const SubHeader = ({ type }: { type?: SubHeaderType }) => {
             ))}
           </Breadcrumb>
         </div>
+        <Button type='primary' icon={<UserPlus size='14' />}>
+          Share
+        </Button>
       </header>
       <Divider className='my-[1px]' />
     </>

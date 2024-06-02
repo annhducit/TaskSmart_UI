@@ -16,7 +16,9 @@ import {
   FolderKanban,
   GanttChart,
   Kanban,
+  ListChecks,
   PanelsTopLeft,
+  Search,
   SquareKanban,
   User,
   UserPlus,
@@ -112,15 +114,23 @@ export const ProjectContainer = () => {
           <Tabs
             style={{ width: '100%' }}
             defaultActiveKey={viewParam}
+            tabBarGutter={12}
             tabBarStyle={{ background: 'transparent' }}
             onChange={setView}
             items={tabList}
             className='custom-tabs mb-0 w-full pb-0 text-white'
             tabBarExtraContent={{
-              left: <p className='m-0 mr-4 w-40 truncate text-[16px] font-bold'>Double D Thesis</p>,
+              left: <p className='m-0 w-40 truncate text-[18px] font-bold'>Double D Thesis</p>,
             }}
           />
+
           <div className='absolute right-5 top-[10px] flex items-center gap-x-4'>
+            <Button size='middle' type='default' icon={<Search className='mt-1' size='14' />}>
+              Search
+            </Button>
+            <Button size='middle' type='primary' icon={<ListChecks className='mt-1' size='14' />}>
+              Add task
+            </Button>
             <Avatar.Group maxCount={2} className='flex items-center'>
               <Tooltip title='Đức Duy' placement='top'>
                 <Avatar style={{ backgroundColor: '#f56a00' }} icon={<User size='12' />} />
@@ -135,9 +145,7 @@ export const ProjectContainer = () => {
                 <Avatar className='bg-red-500 text-white' icon={<User size='12' />} />
               </Tooltip>
             </Avatar.Group>
-            <Button type='primary' icon={<UserPlus size='14' />}>
-              Share
-            </Button>
+
             <div className='rounded px-1 transition-all hover:bg-primary-default hover:text-white'>
               <Ellipsis size='20' color='white' className='mt-1' />
             </div>
@@ -179,10 +187,10 @@ const items: TabsProps['items'] = [
     icon: <CalendarDays size='15' className='translate-x-[6px] translate-y-[2px]' />,
     children: <CalendarFeature />,
   },
-  {
-    key: 'kanban',
-    label: 'Karban',
-    icon: <Kanban size='15' className='translate-x-[6px] translate-y-[2px]' />,
-    children: <KarbanFeature />,
-  },
+  // {
+  //   key: 'kanban',
+  //   label: 'Karban',
+  //   icon: <Kanban size='15' className='translate-x-[6px] translate-y-[2px]' />,
+  //   children: <KarbanFeature />,
+  // },
 ];

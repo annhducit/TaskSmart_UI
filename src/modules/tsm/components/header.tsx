@@ -12,7 +12,7 @@ import {
   NotepadText,
   Palette,
   Settings,
-  Sparkle,
+  Sparkles,
   SquareArrowOutUpRightIcon,
   SwatchBook,
   User,
@@ -78,7 +78,7 @@ const Header = () => {
             />
             <Button
               className='font-semibold'
-              icon={<Sparkle className='h-4 w-4 translate-y-[3px] text-primary-default' />}
+              icon={<Sparkles className='h-4 w-4 translate-y-[3px] text-[#6985ff]' />}
             >
               Ask AI
             </Button>

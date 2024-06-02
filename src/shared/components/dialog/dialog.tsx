@@ -8,6 +8,7 @@ const dialogVars = cva(undefined, {
       xxs: '400px',
       xs: '500px',
       sm: '600px',
+      normal: '800px',
       md: '1000px',
       lg: '1400px',
     },

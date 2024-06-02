@@ -169,6 +169,12 @@ html *::-webkit-scrollbar-track {
   @apply font-semibold;
   @apply py-4;
 }
+/*  Custom css for modal antd */
+.custom-modal-content .ant-modal-content {
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 12px !important;
+}
 
 .custom-tabs .ant-tabs-nav {
   @apply bg-gray-800 bg-opacity-50 backdrop-blur-lg;
@@ -183,4 +189,15 @@ html *::-webkit-scrollbar-track {
 .custom-tabs .ant-tabs-tab-btn:focus,
 .custom-tabs .ant-tabs-tab-btn:hover {
   @apply text-white;
+}
+
+/* Custom select */
+
+.custom-select .ant-select-selector {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.custom-select .ant-select-arrow {
+  display: none;
 }

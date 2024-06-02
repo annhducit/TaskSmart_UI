@@ -3,7 +3,6 @@ import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-par
 import useSearchParams from '@/shared/hooks/use-search-params';
 import { Avatar, Button, Input, Popover, Typography } from 'antd';
 import { Ellipsis, Paperclip, Plus, Rss, Text, Trash2, User } from 'lucide-react';
-import ModifyCard from './modify-card';
 
 const ListCardItem = () => {
   return (
@@ -15,7 +14,6 @@ const ListCardItem = () => {
         <Popover
           placement='rightTop'
           trigger='click'
-          // openClassName='px-2'
           title={<div className='text-center font-semibold'>Operation</div>}
           content={
             <div className='flex flex-col gap-y-2'>
@@ -98,7 +96,7 @@ function CardItem() {
         <div
           className='h-[115px] w-full rounded-t-[6px]'
           style={{
-            backgroundColor: '#ee5e99',
+            backgroundColor: '#3db88b',
           }}
         ></div>
         <div className='flex items-center justify-between p-2'>
@@ -144,7 +142,6 @@ function CardItem() {
           </Avatar.Group>
         </div>
       </div>
-      <ModifyCard />
     </>
   );
 }

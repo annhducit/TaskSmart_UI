@@ -1,0 +1,13 @@
+export const DB_DATE_TIME_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss';
+export const DB_DATE_FORMAT = 'YYYY-MM-DD';
+export const TIME_DATE_FORMAT = 'HH:mm DD/MM/YYYY';
+export const SHORT_TIME_DATE_FORMAT = 'HH:mm DD/MM/YY';
+export const DATE_TIME_FORMAT = 'DD/MM/YYYY HH:mm';
+export const ll = 'll';
+export const DAY_FORMAT = 'dddd, DD/MM/YYYY';
+export const DATE_FORMAT = 'DD/MM/YYYY';
+export const DAY_MONTH_FORMAT = 'DD/MM';
+export const MONTH_YEAR_PARAM_FORMAT = 'MM/YYYY';
+export const HOUR_MINUTE_FORMAT = 'HH:mm';
+export const HOUR_MINUTE_SECOND_FORMAT = 'HH:mm:ss';
+export const WEEK_FORMAT = 'w';
