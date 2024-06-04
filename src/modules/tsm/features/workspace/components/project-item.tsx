@@ -2,23 +2,24 @@ import Tooltip from '@/shared/components/tooltip';
 import { Avatar, Typography } from 'antd';
 import { LockKeyhole } from 'lucide-react';
 
-import myBackgroundImage from '@/assets/images/17.png';
-
 const ProjectItem = () => {
   return (
     <div
       style={{
-        backgroundImage: `url(${myBackgroundImage})`,
+        backgroundImage: `url(https://images.unsplash.com/photo-1716251642302-72006415465b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
-      className='flex cursor-pointer flex-col gap-y-3 rounded border border-solid border-slate-200 p-4 transition-all hover:border-primary-default hover:text-primary-default'
+      className='relative flex cursor-pointer flex-col gap-y-3 rounded-lg border border-solid border-slate-200 p-4 transition-all hover:border-primary-default hover:text-primary-default'
     >
+      <div className='absolute inset-0 rounded-lg bg-black opacity-40' />
       <div className='flex items-center justify-between'>
-        <Typography.Text className='font-semibold'>Double 2D Thesis</Typography.Text>
-        <div className='flex items-center'>
-          <LockKeyhole className='mr-1 h-4 w-4' />
-          <Typography.Text>Private</Typography.Text>
+        <Typography.Text className='z-10 font-semibold text-white'>
+          Double 2D Thesis
+        </Typography.Text>
+        <div className='z-10 flex items-center'>
+          <LockKeyhole className='mr-1 h-4 w-4 text-white' />
+          <Typography.Text className='font-semibold text-white'>Private</Typography.Text>
         </div>
       </div>
       <div>
@@ -35,8 +36,8 @@ const ProjectItem = () => {
           </Tooltip>
         </Avatar.Group>
       </div>
-      <div>
-        <Typography.Text className='text-xs'>Created at: 20/5/2024</Typography.Text>
+      <div className='z-10'>
+        <Typography.Text className='text-xs text-white'>Created at: 20/5/2024</Typography.Text>
       </div>
     </div>
   );

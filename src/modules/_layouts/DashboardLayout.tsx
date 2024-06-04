@@ -2,11 +2,11 @@ import { Outlet } from 'react-router-dom';
 import Header from '../tsm/components/header';
 import SidebarComponent from '@/shared/components/sidebar';
 import { Suspense, lazy, useState } from 'react';
-import { Avatar, Button, Tabs } from 'antd';
+import { Avatar, Button, Popover, Tabs } from 'antd';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import SubHeader from '../tsm/components/sub-header';
 import useGetPath from '@/shared/hooks/use-get-path';
-import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
+import { SEARCH_PARAMS } from '@/shared/constant/search-param';
 import useSearchParam from '@/shared/hooks/use-search-param';
 import Loading from '@/shared/components/loading';
 import Tooltip from '@/shared/components/tooltip';
@@ -21,9 +21,10 @@ import {
   Search,
   SquareKanban,
   User,
-  UserPlus,
 } from 'lucide-react';
 import { TabsProps } from 'antd/lib';
+import Setting from '../tsm/features/workspace/components/project/modify-card/popover/setting';
+import useCollapse from '@/shared/hooks/use-collapse';
 
 const ProjectFeature = lazy(() => import('../tsm/features/workspace/components/project'));
 const TableFeature = lazy(() => import('../tsm/features/workspace/components//table'));
@@ -88,10 +89,10 @@ export const ProjectContainer = () => {
     defaultValue: 'overview',
   });
 
-  const [, setDialog] = useSearchParam(SEARCH_PARAMS.DIALOG);
+  const [visible, setVisible] = useCollapse<boolean>(false);
 
-  const showModal = () => {
-    setDialog(SEARCH_PARAMS_VALUE.PROJECT_DETAIL);
+  const handleOpenChange = (open: boolean) => {
+    setVisible(open);
   };
   const tabList = items?.map((item) => ({
     ...item,
@@ -103,22 +104,21 @@ export const ProjectContainer = () => {
   return (
     <>
       <section
-        className='relative h-screen w-full border-b-slate-500'
+        className='relative h-screen w-full bg-cover bg-center bg-no-repeat'
         style={{
-          backgroundImage: `url(https://images.unsplash.com/photo-1710011116416-265827e3da9c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'right',
+          backgroundPosition: 'center',
+          backgroundImage: `url(https://images.unsplash.com/photo-1715976788162-6421efc7ebc4?q=80&w=1854&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)`,
         }}
       >
+        <div className='absolute inset-0 bg-black bg-opacity-40' />
         <div className='flex items-start gap-x-2'>
           <Tabs
             style={{ width: '100%' }}
             defaultActiveKey={viewParam}
             tabBarGutter={12}
-            tabBarStyle={{ background: 'transparent' }}
             onChange={setView}
             items={tabList}
-            className='custom-tabs mb-0 w-full pb-0 text-white'
+            className='custom-tabs mb-0 w-full text-white'
             tabBarExtraContent={{
               left: <p className='m-0 w-40 truncate text-[18px] font-bold'>Double D Thesis</p>,
             }}
@@ -146,9 +146,16 @@ export const ProjectContainer = () => {
               </Tooltip>
             </Avatar.Group>
 
-            <div className='rounded px-1 transition-all hover:bg-primary-default hover:text-white'>
-              <Ellipsis size='20' color='white' className='mt-1' />
-            </div>
+            <Popover
+              trigger='click'
+              content={<Setting setVisible={setVisible} />}
+              open={visible}
+              onOpenChange={handleOpenChange}
+            >
+              <div className='cursor-pointer rounded px-1 transition-all hover:bg-primary-default hover:text-white'>
+                <Ellipsis size='20' color='white' className='mt-1' />
+              </div>
+            </Popover>
           </div>
         </div>
       </section>
@@ -187,10 +194,10 @@ const items: TabsProps['items'] = [
     icon: <CalendarDays size='15' className='translate-x-[6px] translate-y-[2px]' />,
     children: <CalendarFeature />,
   },
-  // {
-  //   key: 'kanban',
-  //   label: 'Karban',
-  //   icon: <Kanban size='15' className='translate-x-[6px] translate-y-[2px]' />,
-  //   children: <KarbanFeature />,
-  // },
+  {
+    key: 'kanban',
+    label: 'Karban',
+    icon: <Kanban size='15' className='translate-x-[6px] translate-y-[2px]' />,
+    children: <KarbanFeature />,
+  },
 ];

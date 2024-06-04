@@ -9,27 +9,32 @@ const ListCardItem = () => {
     <div className='flex h-[520px] w-[275px] flex-col gap-y-2 rounded-xl bg-white p-2 shadow-lg'>
       <div className='flex items-center justify-between'>
         <div>
-          <Input defaultValue='Backlog' className='border-none text-base font-semibold' />
+          <Input
+            allowClear
+            type='text'
+            defaultValue='Backlog'
+            className='cursor-pointer rounded-xl border-none text-base font-bold transition-all'
+          />
         </div>
         <Popover
           placement='rightTop'
           trigger='click'
-          title={<div className='text-center font-semibold'>Operation</div>}
+          title={<div className='text-center font-semibold'>Behavior</div>}
           content={
             <div className='flex flex-col gap-y-2'>
-              <Button type='dashed' className='text-left text-xs'>
+              <Button type='default' className='text-left text-xs'>
                 Add Card
               </Button>
-              <Button type='dashed' className='text-left text-xs '>
+              <Button type='default' className='text-left text-xs '>
                 Add List
               </Button>
-              <Button type='dashed' className='text-left text-xs '>
+              <Button type='default' className='text-left text-xs '>
                 Copy List
               </Button>
-              <Button type='dashed' className='text-left text-xs '>
+              <Button type='default' className='text-left text-xs '>
                 Move List
               </Button>
-              <Button type='dashed' className='text-left text-xs '>
+              <Button type='default' className='text-left text-xs '>
                 Archive List
               </Button>
             </div>
@@ -62,7 +67,7 @@ const ListCardItem = () => {
           <Button
             type='dashed'
             icon={<Plus className='h-4 w-4' />}
-            className='flex w-full items-center rounded-lg'
+            className='flex w-full items-center rounded-xl'
           >
             Add Card
           </Button>
@@ -91,14 +96,14 @@ function CardItem() {
             [SEARCH_PARAMS.ID]: '1',
           })
         }
-        className='flex cursor-pointer flex-col rounded-lg border border-solid border-slate-300 shadow-lg transition-all hover:border-[2px] hover:border-primary-default'
+        className='flex cursor-pointer flex-col rounded-xl border border-solid border-slate-300 shadow-lg transition-all hover:border-[2px] hover:border-primary-default'
       >
         <div
-          className='h-[115px] w-full rounded-t-[6px]'
+          className='h-[115px] w-full rounded-t-[10px]'
           style={{
-            backgroundColor: '#3db88b',
+            backgroundColor: '#ee5e99',
           }}
-        ></div>
+        />
         <div className='flex items-center justify-between p-2'>
           <div className='flex flex-col gap-y-1'>
             <div className='flex flex-col gap-y-1'>

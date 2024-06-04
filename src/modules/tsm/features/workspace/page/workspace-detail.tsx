@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import projectImg from '@/assets/images/karban.png';
-import { Button, Card, Divider, Form, Input, Mentions, Select, Typography } from 'antd';
+import { Button, Card, Divider, Form, Input, Mentions, Select, Tag, Typography } from 'antd';
 import { LockKeyhole, PlusCircle } from 'lucide-react';
 import Search from 'antd/es/input/Search';
 import ProjectItem from '../components/project-item';
@@ -36,10 +36,10 @@ const WorkspaceDetail = () => {
           <div className='flex flex-col'>
             <Typography.Title level={3}>TaskSmart Workspace</Typography.Title>
             <div className='flex items-center gap-x-4'>
-              <Typography.Text>Premium</Typography.Text>
+              <Tag color='gold'>Premium</Tag>
               <div className='flex items-center'>
-                <LockKeyhole className='mr-1 h-4 w-4' />
-                <Typography.Text>Private</Typography.Text>
+                <LockKeyhole color='red' className='mr-1 h-4 w-4' />
+                <Tag color='red'>Private</Tag>
               </div>
             </div>
           </div>

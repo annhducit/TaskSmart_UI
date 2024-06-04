@@ -6,6 +6,7 @@ import NoteList from './list-note';
 import { noteSample } from './data';
 import useCollapse from '@/shared/hooks/use-collapse';
 import NotepadEmpty from './note-empty';
+import { toast } from 'sonner';
 
 export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) => {
   const [note, setNote] = useState<string>('');
@@ -13,23 +14,26 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
   const [view, setView] = useCollapse<number>(0);
   const [search, setSearch] = useCollapse<boolean>(false);
 
+  const openToast = () => {
+    toast.success('Create note successfully!');
+  };
   return (
     <div className='z-[99999] mt-2 flex flex-col gap-y-6 rounded-[12px]'>
       {/* Header note */}
-      <div className='relative flex items-center justify-between rounded-tl-lg rounded-tr-lg bg-primary-default p-3'>
+      <div className='relative flex items-center justify-between rounded-tl-lg rounded-tr-lg bg-[#263e50] p-3'>
         <>
           {view === 0 && (
             <div className='flex items-center gap-x-2'>
               {!search ? (
                 <div
-                  className='rounded px-[6px] hover:bg-[#35a3e8]'
+                  className='rounded px-[6px] hover:bg-[#33607e]'
                   onClick={() => setSearch(true)}
                 >
                   <Search className='mt-1 h-5 w-5 text-white' />
                 </div>
               ) : (
                 <div
-                  className='rounded px-[6px] hover:bg-[#35a3e8]'
+                  className='rounded px-[6px] hover:bg-[#33607e]'
                   onClick={() => setSearch(false)}
                 >
                   <X className='mt-1 h-5 w-5 text-white' />
@@ -41,7 +45,7 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
           {!search && (
             <>
               {view === 1 && (
-                <div className='rounded px-[6px] hover:bg-[#35a3e8]' onClick={() => setView(0)}>
+                <div className='rounded px-[6px] hover:bg-[#33607e]' onClick={() => setView(0)}>
                   <ChevronLeft className='mt-1 h-5 w-5 text-white' />
                 </div>
               )}
@@ -66,7 +70,7 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
                         ],
                       }}
                     >
-                      <div className='flex items-center rounded px-[6px] py-1 transition-all hover:bg-[#35a3e8]'>
+                      <div className='flex items-center rounded px-[6px] py-1 transition-all hover:bg-[#33607e]'>
                         <Ellipsis className='h-5 w-5 text-white' />
                       </div>
                     </Dropdown>
@@ -97,14 +101,14 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
                         ],
                       }}
                     >
-                      <div className='flex items-center rounded px-[6px] py-1 transition-all hover:bg-[#35a3e8]'>
+                      <div className='flex items-center rounded px-[6px] py-1 transition-all hover:bg-[#33607e]'>
                         <Ellipsis className='h-5 w-5 text-white' />
                       </div>
                     </Dropdown>
                   )}
 
                   <div
-                    className='flex items-center rounded px-[6px] py-1 transition-all hover:bg-[#35a3e8]'
+                    className='flex items-center rounded px-[6px] py-1 transition-all hover:bg-[#33607e]'
                     onClick={() => visible(false)}
                   >
                     <X className='h-5 w-5 text-white' />
@@ -155,7 +159,11 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
         />
 
         {note.length > 0 && (
-          <Button type='primary' className='h-10 w-28 rounded-none rounded-br-[4px] border-none'>
+          <Button
+            type='primary'
+            onClick={openToast}
+            className='h-10 w-28 rounded-none rounded-br-[4px] border-none'
+          >
             Create
           </Button>
         )}
@@ -169,12 +177,12 @@ export default Notepad;
 
 const SearchNote = () => {
   return (
-    <div className='w-[290px] items-center gap-x-6'>
+    <div className='w-[290px] items-center gap-x-6 '>
       <Input
         size='middle'
         placeholder='Search note...'
         allowClear
-        className='border-none pl-6 text-[14px] font-semibold  outline-none focus-within:border-none focus:border-none focus:outline-none focus:ring-0'
+        className='rounded-lg border-none bg-[#33607e] pl-6 text-[14px] font-semibold  text-black outline-none focus-within:border-none focus:border-none focus:outline-none focus:ring-0'
       />
     </div>
   );

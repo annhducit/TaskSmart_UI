@@ -1,5 +1,5 @@
 import Logo from '@/shared/components/logo';
-import { Button, Divider, Input, MenuProps, Popover, Typography } from 'antd';
+import { Button, Divider, MenuProps, Popover, Typography } from 'antd';
 import {
   Activity,
   AlarmClock,
@@ -11,6 +11,7 @@ import {
   MessageCircle,
   NotepadText,
   Palette,
+  SearchIcon,
   Settings,
   Sparkles,
   SquareArrowOutUpRightIcon,
@@ -35,8 +36,6 @@ const Header = () => {
   const [open, setOpen] = useCollapse<boolean>(false);
   const [openFlyer, setOpenFlyer] = useCollapse<boolean>(false);
 
-  const [, setDialog] = useSearchParam(SEARCH_PARAMS.DIALOG);
-
   const handleOpenPopover = (newOpen: boolean) => {
     setOpen(newOpen);
   };
@@ -44,7 +43,6 @@ const Header = () => {
   const handleOpenFlyer = () => {
     setOpenFlyer(!openFlyer);
   };
-  // 2e3754
 
   return (
     <>
@@ -71,14 +69,15 @@ const Header = () => {
             </div>
           </div>
           <div className='flex items-center gap-x-4'>
-            <Input.Search
-              className='w-[300px] text-base font-semibold'
-              placeholder='Enter keyword'
-              allowClear
-            />
             <Button
-              className='font-semibold'
-              icon={<Sparkles className='h-4 w-4 translate-y-[3px] text-[#6985ff]' />}
+              icon={<SearchIcon className='h-4 w-4 ' />}
+              className='flex h-[28px] w-[390px]  items-center justify-center  border border-solid border-[#618096] bg-[#3c5262] text-sm font-normal text-white'
+            >
+              Search...
+            </Button>
+            <Button
+              className='flex h-[28px] items-center border border-solid border-[#33607e] bg-[#306a91] text-sm font-semibold text-white'
+              icon={<Sparkles className='h-4 w-4 text-[#3db88b]' />}
             >
               Ask AI
             </Button>
@@ -86,10 +85,8 @@ const Header = () => {
           <div className='flex items-center gap-x-4'>
             <Popover content={<Content />} trigger='click'>
               <Button
-                icon={
-                  <CirclePlus className='h-4 w-4 translate-y-[3px] font-bold text-primary-default' />
-                }
-                className='font-semibold'
+                icon={<CirclePlus className='h-4 w-4 font-bold text-primary-default' />}
+                className='flex h-[28px] items-center border border-solid border-[#33607e] bg-[#306a91] text-sm font-semibold text-white'
               >
                 Create new
               </Button>
@@ -288,11 +285,6 @@ const Content = () => {
     </div>
   );
 };
-
-// <div className='flex items-center gap-x-2'>
-//   <Typography.Text>Create workspace</div>
-// <div className='flex items-center gap-x-2'>
-//   <Typography.Text>Start with samples</div>
 
 const workspaces: MenuProps['items'] = [
   {

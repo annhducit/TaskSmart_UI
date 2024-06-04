@@ -43,6 +43,8 @@ export enum SEARCH_PARAMS_VALUE {
   REMINDER = 'reminder',
   NOTEPAD = 'notepad',
 
+  ADD_MEMBER = 'add-member',
+
   PROFILE = 'profile',
   CARD = 'card',
   LIST_CARD = 'list-card',

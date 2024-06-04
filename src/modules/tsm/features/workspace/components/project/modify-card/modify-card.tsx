@@ -58,10 +58,14 @@ const ModifyCardModal = () => {
 
   return (
     <>
-      <div className='relative h-[160px] rounded-t-xl bg-[#3db88b]'>
-        <Typography.Text className='absolute right-[45%] top-[40%] text-2xl font-semibold text-white'>
-          Backlog
-        </Typography.Text>
+      <div
+        className='relative h-[160px] rounded-t-xl bg-[#ee5e99]'
+        style={{
+          backgroundImage: 'url(https://source.unsplash.com/random/800x600)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
         <Button
           type='text'
           icon={<ImagePlus className='h-4 w-4' />}
