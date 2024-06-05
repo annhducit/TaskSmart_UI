@@ -54,11 +54,13 @@ const DashboardLayout = () => {
     <div className='flex h-screen flex-col overflow-hidden'>
       <Header />
       <div className='relative flex flex-1 flex-row'>
-        <SidebarComponent
-          typeSidebar='public'
-          isCollapse={collapsed}
-          toggleCollapsed={toggleCollapsed}
-        />
+        <div className='block'>
+          <SidebarComponent
+            typeSidebar='public'
+            isCollapse={collapsed}
+            toggleCollapsed={toggleCollapsed}
+          />
+        </div>
         {/* Button to collapse sidebar */}
         <Button
           type='text'
@@ -72,7 +74,7 @@ const DashboardLayout = () => {
           <div>
             <SubHeader />
           </div>
-          {isProject && <ProjectContainer />}
+          {isProject && <ProjectContainer layoutControl={collapsed} />}
           <div className={`max-h-[92vh] overflow-y-scroll ${!isProject ? 'p-4' : ''}`}>
             <Outlet />
           </div>
@@ -84,7 +86,7 @@ const DashboardLayout = () => {
 
 export default DashboardLayout;
 
-export const ProjectContainer = () => {
+export const ProjectContainer = (props: { layoutControl: boolean }) => {
   const [viewParam, setView] = useSearchParam(SEARCH_PARAMS.VIEW, {
     defaultValue: 'overview',
   });
@@ -113,12 +115,11 @@ export const ProjectContainer = () => {
         <div className='absolute inset-0 bg-black bg-opacity-40' />
         <div className='flex items-start gap-x-2'>
           <Tabs
-            style={{ width: '100%' }}
             defaultActiveKey={viewParam}
             tabBarGutter={12}
             onChange={setView}
             items={tabList}
-            className='custom-tabs mb-0 w-full text-white'
+            className={`custom-tabs mb-0 ${props.layoutControl ? 'w-[calc(100vw-80px)]' : 'w-[calc(100vw-256px)]'} text-white`}
             tabBarExtraContent={{
               left: <p className='m-0 w-40 truncate text-[18px] font-bold'>Double D Thesis</p>,
             }}

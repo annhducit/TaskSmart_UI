@@ -8,3 +8,17 @@ interface TSMNote {
   content: string;
   createdAt: string;
 }
+
+/**Type create drag and drop */
+type Id = string | number;
+
+type Column = {
+  id: Id;
+  title: string;
+};
+
+type Task = {
+  id: Id;
+  columnId: Id;
+  content: string;
+};

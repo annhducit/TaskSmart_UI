@@ -1,4 +1,4 @@
-import { Button, Divider, Tag, Typography } from 'antd';
+import { Button, Divider, Typography } from 'antd';
 import {
   ArchiveRestore,
   Copy,
