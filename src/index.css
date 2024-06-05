@@ -128,7 +128,7 @@ body {
 }
 html *::-webkit-scrollbar {
   border-radius: 0;
-  width: 8px;
+  width: 4px;
 }
 html *::-webkit-scrollbar-thumb {
   border-radius: 4px;
@@ -137,6 +137,9 @@ html *::-webkit-scrollbar-thumb {
 html *::-webkit-scrollbar-track {
   border-radius: 0;
   background-color: rgba(0, 0, 0, 0);
+}
+html *::-webkit-scrollbar:horizontal {
+  height: 8px;
 }
 /**
   * Custom Popover Antd

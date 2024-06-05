@@ -73,19 +73,19 @@ const Project = () => {
                     placeholder='Enter list title'
                     allowClear
                     size='large'
-                    className='rounded text-sm font-semibold '
+                    className='text-sm font-semibold rounded '
                   />
-                  <div className='ml-auto flex items-center gap-x-2'>
+                  <div className='flex items-center ml-auto gap-x-2'>
                     <Button
                       onClick={() => toast.success('Add list successfully!')}
                       type='primary'
-                      className='w-20 rounded text-xs font-semibold'
+                      className='w-20 text-xs font-semibold rounded'
                     >
                       Add list
                     </Button>
                     <Button
                       type='default'
-                      className='w-16 rounded text-xs font-semibold'
+                      className='w-16 text-xs font-semibold rounded'
                       onClick={() => handleOpenChange(false)}
                     >
                       Cancel
@@ -95,7 +95,7 @@ const Project = () => {
               }
             >
               <Button
-                icon={<Plus className='h-4 w-4 opacity-65' />}
+                icon={<Plus className='w-4 h-4 opacity-65' />}
                 size='large'
                 className='flex w-[275px] items-center rounded-xl border-none bg-[#ffffff3d] text-sm font-semibold text-white'
               >
@@ -221,10 +221,7 @@ const defaultCols: Column[] = [
     id: 'done',
     title: 'Done',
   },
-  {
-    id: 'done',
-    title: 'Skip',
-  },
+
 ];
 
 const defaultTasks: Task[] = [
