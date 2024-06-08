@@ -89,7 +89,7 @@ const Header = () => {
           <div className='flex items-center gap-x-4'>
             <Popover content={<Content />} trigger='click'>
               <Button
-                icon={<CirclePlus className='w-4 h-4 font-bold text-primary-default' />}
+                icon={<CirclePlus className='h-4 w-4 font-bold text-[#3db88b]' />}
                 className='flex h-[28px] items-center border border-solid border-[#33607e] bg-[#306a91] text-sm font-semibold text-white'
               >
                 Create new

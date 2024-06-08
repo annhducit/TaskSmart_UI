@@ -2,7 +2,7 @@ import Dialog from '@/shared/components/dialog';
 import { useDialogContext } from '@/shared/components/dialog/provider';
 import TextEditor from '@/shared/components/text-editor';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
-import { Button, Divider, Popover, Typography } from 'antd';
+import { Avatar, Button, Divider, Popover, Typography } from 'antd';
 import {
   Archive,
   Clock,
@@ -16,11 +16,13 @@ import {
   Move,
   Paperclip,
   Pencil,
+  Plus,
   Rss,
   Share,
   Tag,
   Text,
   Upload,
+  User,
   Users,
 } from 'lucide-react';
 import Activity from './activity';
@@ -30,6 +32,8 @@ import AddMemberToCard from './popover/add-member-to-card';
 import SetTimeToCard from './popover/set-time-to-card';
 import AddTodoToCard from './popover/add-todo-to-card';
 import AddLabelToCard from './popover/add-label-to-card';
+import MemberInfo from './popover/member-info';
+import Tooltip from '@/shared/components/tooltip';
 
 const ModifyCard = () => {
   return (
@@ -61,7 +65,7 @@ const ModifyCardModal = () => {
       <div
         className='relative h-[160px] rounded-t-xl bg-[#ee5e99]'
         style={{
-          backgroundImage: 'url(https://source.unsplash.com/random/800x600)',
+          backgroundImage: 'url(https://source.unsplash.com/1600x900/?nature,water)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
@@ -184,6 +188,37 @@ const ModifyCardModal = () => {
             </div>
           </div>
 
+          {/*  Members and label */}
+          <div className='flex items-center gap-x-6'>
+            <div className='mt-4 flex flex-col gap-y-1'>
+              <Typography.Text className='text-xs font-semibold'>Members</Typography.Text>
+              <Avatar.Group maxCount={2}>
+                <Tooltip title='Anh Duc'>
+                  <Popover
+                    trigger='click'
+                    placement='bottom'
+                    overlayClassName='custom-popover-member-info'
+                    content={<MemberInfo />}
+                  >
+                    <Avatar style={{ backgroundColor: '#f56a00' }} icon={<User size='12' />} />
+                  </Popover>
+                </Tooltip>
+              </Avatar.Group>
+            </div>
+            <div className='mt-4 flex flex-col gap-y-1'>
+              <Typography.Text className='text-xs font-semibold'>Label</Typography.Text>
+              <div className='flex items-center gap-x-1'>
+                <div className='flex h-8 w-16 items-center rounded-sm bg-[#FADDDC] p-1' />
+                <Popover trigger='click' placement='right' content={<AddLabelToCard />}>
+                  <Button
+                    icon={<Plus className='h-3 w-3 ' />}
+                    className='flex w-[90px] items-center'
+                    type='default'
+                  />
+                </Popover>
+              </div>
+            </div>
+          </div>
           {/* Description */}
 
           <div className='mt-6'>

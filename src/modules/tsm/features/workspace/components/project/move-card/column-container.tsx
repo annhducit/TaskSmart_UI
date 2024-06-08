@@ -45,7 +45,7 @@ const ColumnContainer = ({
       <div
         ref={setNodeRef}
         style={style}
-        className='flex h-[520px] w-[275px] flex-col rounded-md  border-none bg-[#ffffff3d]'
+        className='flex h-[520px] w-[275px] flex-col items-center rounded-xl border-none bg-[#ffffff3d]'
       />
     );
   }

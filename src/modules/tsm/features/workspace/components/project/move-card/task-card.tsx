@@ -33,7 +33,7 @@ function TaskCard({ task }: Props) {
       <div
         ref={setNodeRef}
         style={style}
-        className='relative flex h-[100px] min-h-[170px] cursor-grab items-center rounded-xl bg-black/50 p-2.5 text-left opacity-30 hover:ring-2 hover:ring-inset hover:ring-primary-default'
+        className='relative flex h-[100px] min-h-[170px] cursor-grab items-start rounded-xl bg-black/50 p-2.5 text-left opacity-30 hover:ring-2 hover:ring-inset hover:ring-primary-default'
       />
     );
   }
@@ -51,13 +51,18 @@ function TaskCard({ task }: Props) {
             [SEARCH_PARAMS.ID]: '1',
           })
         }
-        className='flex cursor-pointer flex-col rounded-xl border border-solid border-slate-300 shadow-lg transition-all hover:border-[2px] hover:border-primary-default'
+        className='flex cursor-pointer flex-col rounded-lg border border-solid border-slate-300 shadow-lg transition-all hover:border-[2px] hover:border-primary-default'
       >
         <div
-          className='h-[115px] w-full rounded-t-[10px]'
+          className='h-[115px] w-full rounded-t-[6px]'
           style={{
             backgroundColor: '#ee5e99',
           }}
+          // style={{
+          //   backgroundImage: 'url(https://source.unsplash.com/random/800x600)',
+          //   backgroundSize: 'cover',
+          //   backgroundPosition: 'center',
+          // }}
         />
         <div className='flex items-center justify-between rounded-b-xl bg-white p-2'>
           <div className='flex flex-col gap-y-1'>

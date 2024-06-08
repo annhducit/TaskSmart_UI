@@ -43,8 +43,10 @@ const DashboardLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   const { path } = useGetPath();
+  console.log(path);
 
   const isProject = path.includes('project');
+  const isWorkspace = path.includes('workspace') && path.length > 2;
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -56,7 +58,7 @@ const DashboardLayout = () => {
       <div className='relative flex flex-1 flex-row'>
         <div className='block'>
           <SidebarComponent
-            typeSidebar='public'
+            typeSidebar={isWorkspace ? 'workspace' : 'home'}
             isCollapse={collapsed}
             toggleCollapsed={toggleCollapsed}
           />
