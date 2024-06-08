@@ -144,9 +144,11 @@ html *::-webkit-scrollbar:horizontal {
 /**
   * Custom Popover Antd
   */
-.custom-popover {
+
+.custom-popover-member-info .ant-popover-inner {
   padding: 0 !important;
   margin: 0 !important;
+  border-radius: 8px !important;
 }
 
 .custom-popover .ant-popover-inner {

@@ -13,7 +13,7 @@ const Activity = () => {
 
 export default Activity;
 
-const ActivityItem = () => {
+export const ActivityItem = () => {
   return (
     <div className='p2 flex items-center gap-x-4 gap-y-1 rounded'>
       <div className='h-8 w-8 rounded-full'>
