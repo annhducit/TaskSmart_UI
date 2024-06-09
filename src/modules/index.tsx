@@ -28,7 +28,7 @@ const routers = createRouters([
     ],
   },
   {
-    path: '',
+    path: '/dashboard',
     element: <DashboardLayout />,
     children: [
       {

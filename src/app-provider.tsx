@@ -10,6 +10,8 @@ import { theme } from './configs/theme';
 import { queryClient } from './configs/query-client';
 import { PropsWithChildren } from 'react';
 import AxiosInterceptor from './shared/components/axios-interceptor';
+import { Provider } from 'react-redux';
+import { store } from '@/configs/store/store';
 
 const AppProvider = (props: PropsWithChildren) => {
   const { children } = props;
@@ -18,11 +20,12 @@ const AppProvider = (props: PropsWithChildren) => {
       <StyleProvider hashPriority='low'>
         <QueryClientProvider client={queryClient}>
           <ConfigProvider theme={theme} locale={locale}>
-            {/* <Provider store={store}> */}
+            <Provider store={store}>
             {/* <PersistGate loading={<Loading.Page />} persistor={persistor}> */}
-            <AxiosInterceptor>{children}</AxiosInterceptor>
+            {/* <AxiosInterceptor>{children}</AxiosInterceptor> */}
+            {children}
             {/* </PersistGate> */}
-            {/* </Provider> */}
+            </Provider>
             <Toaster
               position='bottom-right'
               toastOptions={{

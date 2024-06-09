@@ -1,3 +1,4 @@
+import { tsmAxios } from '@/configs/axios';
 import { Button, Form, FormProps, Input, Typography } from 'antd';
 import { Lock, Mail, Phone, User } from 'lucide-react';
 import { useState } from 'react';
@@ -8,21 +9,60 @@ import { Link } from 'react-router-dom';
  * @return Signup page
  */
 
+//sửa lại cái prefix của input
+//password == confirmPassword
+//time resend email 60s
+
+
 type AuthType = {
+  name: string;
   username: string;
   password: string;
+  confirmPassword: string;
   email: string;
-  phone: string;
+  timeZone: number;
+  verifyCode: string;
+};
+
+type EmailVerify = {
+  code: string;
 };
 
 type FormType = FormProps<AuthType>;
 const Signup = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasCodeSent, setHasCodeSent] = useState(false);
 
-  const [form] = Form.useForm<AuthType>();
+  const [formSignup] = Form.useForm<AuthType>();
+  const [formVerifyEmail] = Form.useForm<EmailVerify>();
 
   const onFinish: FormType['onFinish'] = async (value) => {
-    console.log(value);
+    const signup = await tsmAxios.post(`/users`,value)
+    console.log(signup)
+    //   if(res.status === 201){
+    //     //success
+    //     console.log(res.data)
+    //     setHasCodeSent(true);
+    //   }else{
+    //     //nof error
+    //   }
+    // }).catch(()=>{
+    //   //nof error 
+    // });
+
+  };
+
+  const sendVerifyEmailRequest = async () => {
+    await tsmAxios.post(`/verify?email=${formSignup.getFieldValue('email')}`).then((res) => {
+      if(res.status === 201){
+        //success
+        setHasCodeSent(true);
+      }
+      //nof error
+    }).catch(()=>{
+      //nof error
+    });
+    //set time to resend 60s
   };
   return (
     <div className='flex flex-col gap-y-10'>
@@ -42,19 +82,32 @@ const Signup = () => {
           </Link>
         </div>
       </div>
-      <Form layout='vertical' form={form} onFinish={onFinish}>
+      <Form layout='vertical' form={formSignup} onFinish={onFinish}>
         <Form.Item
-          name='email'
-          label='Enter your username or email address'
+          name='name'
+          label='Fullname'
           rules={[
             {
               required: true,
-              message: 'Please enter your email address or username',
+              message: 'Please enter your fullname',
+            },
+          ]}
+        >
+          <Input prefix={<Mail className='w-4 h-4 text-primary-default' />} size='large' />
+        </Form.Item>
+
+        <Form.Item
+          name='email'
+          label='Email'
+          rules={[
+            {
+              required: true,
+              message: 'Please enter your email address',
             },
           ]}
         >
           <Input
-            prefix={<Mail className='h-4 w-4 text-primary-default' />}
+            prefix={<Mail className='w-4 h-4 text-primary-default' />}
             size='large'
             placeholder='example@gmail.com'
           />
@@ -71,32 +124,33 @@ const Signup = () => {
             ]}
           >
             <Input
-              prefix={<User className='h-4 w-4 text-primary-default' />}
+              prefix={<User className='w-4 h-4 text-primary-default' />}
               size='large'
-              placeholder='annhducid@'
+              placeholder='annhducid'
             />
           </Form.Item>
           <Form.Item
-            name='phone'
-            label='Contact number'
+            name='timeZone'
+            label='Time Zone:'
             rules={[
               {
                 required: true,
-                message: 'Please enter your phone number',
+                message: 'Please enter timezone in your country',
               },
             ]}
           >
             <Input
               type='number'
-              prefix={<Phone className='h-4 w-4 text-primary-default' />}
-              size='large'
-              placeholder='0987452114'
+              //phone -> time zone
+              prefix='+'
+              min={0}
+              max={24}
             />
           </Form.Item>
         </div>
         <Form.Item
           name='password'
-          label='Enter your password'
+          label='Password'
           rules={[
             {
               required: true,
@@ -105,7 +159,24 @@ const Signup = () => {
           ]}
         >
           <Input
-            prefix={<Lock className='h-4 w-4 text-primary-default' />}
+            prefix={<Lock className='w-4 h-4 text-primary-default' />}
+            size='large'
+            placeholder='*******'
+          />
+        </Form.Item>
+
+        <Form.Item
+          name='confirmPassword'
+          label='Confirm password'
+          rules={[
+            {
+              required: true,
+              message: 'Please enter your password',
+            },
+          ]}
+        >
+          <Input
+            prefix={<Lock className='w-4 h-4 text-primary-default' />}
             size='large'
             placeholder='*******'
           />
@@ -114,11 +185,33 @@ const Signup = () => {
           loading={isSubmitting}
           type='primary'
           size='large'
-          htmlType='submit'
+          htmlType='button'
           className='w-full'
         >
-          Sign up
+          Next
         </Button>
+
+    
+        <Form.Item
+          name='verifyCode'
+          label='Enter your code:'
+          rules={[
+            {
+              required: true,
+              message: 'Enter your code to verify email',
+            },
+          ]}
+        >
+          <div className='flex'>
+            <Input disabled={!hasCodeSent} />
+            <Button htmlType='button' onClick={sendVerifyEmailRequest}>Send</Button>
+          </div>
+          
+        </Form.Item>
+          {/* click to verify */}
+          <Button type='primary' size='large' htmlType='submit' className='w-full'>
+            Submit
+          </Button>
       </Form>
     </div>
   );

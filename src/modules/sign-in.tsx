@@ -2,24 +2,45 @@ import { Button, Form, FormProps, Input, Typography } from 'antd';
 import { Lock, User } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { tsmAxios } from '@/configs/axios';
+import { useAppDispatch, useAppSelector } from '@/shared/hooks/use-redux';
+import { UserGeneralType, setAuthentication } from '@/configs/store/slices/userSlice';
+import { AuthType } from '@/configs/store/slices/userSlice';
 
 /**
  * @author Duc Nguyen
  * @return Signin page
  */
 
-type AuthType = {
-  userName: string;
+function determineInputType(input: string): 'username' | 'email' {
+  const emailRegex = /\S+@\S+\.\S+/;
+  return emailRegex.test(input) ? 'email' : 'username';
+}
+
+type LoginType = {
+  user: string;
+  username?: string,
+  email?: string,
   password: string;
 };
 
-type FormType = FormProps<AuthType>;
+type FormType = FormProps<LoginType>;
 const Signin = () => {
-  const [form] = Form.useForm<AuthType>();
+  const [form] = Form.useForm<LoginType>();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const dispatch = useAppDispatch();
 
   const onFinish: FormType['onFinish'] = async (value) => {
-    console.log(value);
+    const auth = {
+      [determineInputType(value.user)]: value.user,
+      ...value
+    };
+
+    //bundle to modal
+    await tsmAxios.post("/auth/login", auth).then((res) => {
+      const user: AuthType = res.data;
+      dispatch(setAuthentication(user));
+    })
   };
   return (
     <div className='flex flex-col gap-y-12'>
@@ -28,7 +49,7 @@ const Signin = () => {
           <Typography.Text className='text-2xl font-semibold'>
             Welcome to <span className='capitalize text-[#0089ED]'>TaskSmart</span>
           </Typography.Text>
-          <Typography.Text className='text-5xl font-semibold'>Sign up</Typography.Text>
+          <Typography.Text className='text-5xl font-semibold'>Sign in</Typography.Text>
         </div>
         <div className='flex flex-col'>
           <Typography.Text className='text-sm'>No Account ?</Typography.Text>
@@ -47,7 +68,7 @@ const Signin = () => {
 
       <Form layout='vertical' form={form} onFinish={onFinish}>
         <Form.Item
-          name='username'
+          name='user'
           label='Enter your username or email address'
           rules={[
             {
@@ -57,9 +78,8 @@ const Signin = () => {
           ]}
         >
           <Input
-            prefix={<User className='h-4 w-4 text-primary-default' />}
+            prefix={<User className='w-4 h-4 text-primary-default' />}
             size='large'
-            placeholder='example@gmail.com'
           />
         </Form.Item>
         <Form.Item
@@ -73,7 +93,7 @@ const Signin = () => {
           ]}
         >
           <Input
-            prefix={<Lock className='h-4 w-4 text-primary-default' />}
+            prefix={<Lock className='w-4 h-4 text-primary-default' />}
             size='large'
             placeholder='******'
           />
