@@ -8,6 +8,7 @@ import Authenticated from '@/shared/components/auth/authenticated';
 import SignInNavigate from '@/shared/components/auth/signin-navigate';
 import AuthNavigate from '@/shared/components/auth/auth-navigate';
 import DashboardLayout from './_layouts/DashboardLayout';
+import UserInformation from '@/shared/components/auth/user-information';
 
 const SignInFeature = lazy(() => import('@/modules/sign-in'));
 const SignUpFeature = lazy(() => import('@/modules/sign-up'));
@@ -28,16 +29,16 @@ const routers = createRouters([
     ],
   },
   {
-    path: '/dashboard',
+    path: '/',
     element: <DashboardLayout />,
     children: [
       {
         path: '*',
         element: (
           <Authenticated fallback={<AuthNavigate />}>
-            {/* <UserInformation> */}
-            <PrivateRouter />
-            {/* </UserInformation> */}
+            <UserInformation>
+              <PrivateRouter />
+            </UserInformation>
           </Authenticated>
         ),
       },

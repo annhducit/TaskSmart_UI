@@ -1,18 +1,14 @@
 import { tsmAxios } from '@/configs/axios';
-import { Button, Form, FormProps, Input, Typography } from 'antd';
-import { Lock, Mail, Phone, User } from 'lucide-react';
+import { Button, Form, FormProps, Input, Tag, Typography } from 'antd';
+import { ArrowLeft, ArrowRight, Lock, Mail, Phone, Plus, User } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import opt from '@/assets/images/otp.png';
 
 /**
  * @author Duc Nguyen
  * @return Signup page
  */
-
-//sửa lại cái prefix của input
-//password == confirmPassword
-//time resend email 60s
-
 
 type AuthType = {
   name: string;
@@ -24,195 +20,293 @@ type AuthType = {
   verifyCode: string;
 };
 
-type EmailVerify = {
-  code: string;
-};
-
 type FormType = FormProps<AuthType>;
 const Signup = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [hasCodeSent, setHasCodeSent] = useState(false);
+  const [step, setStep] = useState<number>(1);
+  const [hasCodeSent, setHasCodeSent] = useState<boolean>(false);
+  const [count, setCount] = useState(60);
+  const [isDisabled, setIsDisabled] = useState(false);
 
-  const [formSignup] = Form.useForm<AuthType>();
-  const [formVerifyEmail] = Form.useForm<EmailVerify>();
+  const [data, setData] = useState<AuthType>({} as AuthType);
 
-  const onFinish: FormType['onFinish'] = async (value) => {
-    const signup = await tsmAxios.post(`/users`,value)
-    console.log(signup)
-    //   if(res.status === 201){
-    //     //success
-    //     console.log(res.data)
-    //     setHasCodeSent(true);
-    //   }else{
-    //     //nof error
-    //   }
-    // }).catch(()=>{
-    //   //nof error 
-    // });
+  const [form] = Form.useForm<AuthType>();
 
+  const onFinish: FormType['onFinish'] = async (values) => {
+    const { verifyCode } = values;
+    const signup = await tsmAxios.post(`/users`, { ...data, verifyCode });
   };
 
   const sendVerifyEmailRequest = async () => {
-    await tsmAxios.post(`/verify?email=${formSignup.getFieldValue('email')}`).then((res) => {
-      if(res.status === 201){
-        //success
-        setHasCodeSent(true);
-      }
-      //nof error
-    }).catch(()=>{
-      //nof error
-    });
+    await tsmAxios
+      .post(`/verify?email=${form.getFieldValue('email')}`)
+      .then((res) => {
+        if (res.status === 201) {
+          //success
+          setHasCodeSent(true);
+        }
+        //nof error
+      })
+      .catch(() => {
+        //nof error
+      });
     //set time to resend 60s
   };
+
+  const handleCheckFormBeforeSend = () => {
+    form.validateFields().then((item) => {
+      setData(item as AuthType);
+      if (form.getFieldValue('password') !== form.getFieldValue('confirmPassword')) {
+        form.setFields([
+          {
+            name: 'confirmPassword',
+            errors: ['Password and confirm password must be the same'],
+          },
+        ]);
+        return;
+      }
+      sendVerifyEmailRequest();
+      setStep(2);
+      setIsDisabled(true);
+
+      const interval = setInterval(() => {
+        setCount((prevCount) => {
+          if (prevCount === 0) {
+            clearInterval(interval);
+            setIsDisabled(false);
+            return 60;
+          }
+          return prevCount - 1;
+        });
+      }, 1000);
+    });
+  };
   return (
-    <div className='flex flex-col gap-y-10'>
-      <div className='flex items-start justify-between'>
-        <div className='flex flex-col gap-y-2'>
-          <Typography.Text className='text-2xl font-semibold'>
-            Welcome to <span className='capitalize text-[#0089ED]'>TaskSmart</span>
-          </Typography.Text>
-          <Typography.Text className='text-5xl font-semibold '>Sign up</Typography.Text>
-        </div>
-        <div className='flex flex-col'>
-          <Typography.Text className='text-sm'>Have an Account ?</Typography.Text>
-          <Link to={'../sign-in'}>
-            <Typography.Text className='cursor-pointer font-semibold text-[#0089ED] transition-all hover:underline'>
-              Sign in
-            </Typography.Text>
-          </Link>
+    <div
+      className={`${step === 1 ? 'top-6 w-[600px]' : 'top-10 w-[450px]'} absolute right-24  rounded-lg bg-white shadow-lg`}
+    >
+      <div className='p-10'>
+        <div className='flex flex-col gap-y-10'>
+          {step === 1 && (
+            <div className='flex items-start justify-between'>
+              <div className='flex flex-col gap-y-2'>
+                <Typography.Text className='text-2xl font-semibold'>
+                  Welcome to <span className='capitalize text-[#0089ED]'>TaskSmart</span>
+                </Typography.Text>
+                <Typography.Text className='text-5xl font-semibold '>Sign up</Typography.Text>
+              </div>
+              <div className='flex flex-col'>
+                <Typography.Text className='text-sm'>Have an Account ?</Typography.Text>
+                <Link to={'../sign-in'}>
+                  <Typography.Text className='cursor-pointer font-semibold text-[#0089ED] transition-all hover:underline'>
+                    Sign in
+                  </Typography.Text>
+                </Link>
+              </div>
+            </div>
+          )}
+          {step === 2 && (
+            <div className='flex flex-col gap-y-2'>
+              <div className='mx-auto h-32 w-32'>
+                <img src={opt} alt='opt' className='h-full w-full' />
+              </div>
+              <Typography.Text className='text-center text-2xl font-semibold text-blue-600'>
+                Check your email
+              </Typography.Text>
+              <Typography.Text className='text-center text-sm text-gray-500'>
+                We have sent a code to
+                <p className='font-semibold'>{form.getFieldValue('email')}</p>
+              </Typography.Text>
+              <Typography.Text className='text-center text-sm text-gray-500'>
+                Please check your email and enter the code below
+              </Typography.Text>
+            </div>
+          )}
+          <Form layout='vertical' form={form} name='signin' onFinish={onFinish}>
+            {step === 1 && (
+              <>
+                <Form.Item
+                  name='name'
+                  label='Fullname'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter your fullname',
+                    },
+                  ]}
+                >
+                  <Input
+                    placeholder='John Doe'
+                    prefix={<User className='mr-2 h-4 w-4 text-primary-default' />}
+                    size='large'
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  name='email'
+                  label='Email'
+                  initialValue='@gmail.com'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter your email',
+                    },
+                    {
+                      type: 'email',
+                      message: 'Email is not valid',
+                    },
+                  ]}
+                >
+                  <Input
+                    prefix={<Mail className='mr-2 h-4 w-4 text-primary-default' />}
+                    size='large'
+                    placeholder='example@gmail.com'
+                  />
+                </Form.Item>
+                <div className='flex flex-1 items-center gap-x-4'>
+                  <Form.Item
+                    name='username'
+                    label='Username'
+                    className='flex-1'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please enter your username',
+                      },
+                    ]}
+                  >
+                    <Input
+                      prefix={<User className='w-full`mr-2 h-4 w-4 text-primary-default' />}
+                      size='large'
+                      placeholder='hducduy21'
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name='timeZone'
+                    label='Time Zone:'
+                    className='flex-1'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please enter timezone in your country',
+                      },
+                    ]}
+                  >
+                    <Input
+                      type='number'
+                      prefix={<Plus className='mr-2 h-3 w-3' />}
+                      min={0}
+                      max={24}
+                    />
+                  </Form.Item>
+                </div>
+                <div className='item-center flex gap-x-4'>
+                  <Form.Item
+                    name='password'
+                    label='Password'
+                    className='flex-1'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please enter your password',
+                      },
+                      {
+                        pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+                        message:
+                          'Password must contain at least 8 characters, including letters and numbers',
+                      },
+                    ]}
+                  >
+                    <Input
+                      prefix={<Lock className='mr-2 h-4 w-4 text-primary-default' />}
+                      size='large'
+                      placeholder='*******'
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    name='confirmPassword'
+                    label='Confirm password'
+                    className='flex-1'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please enter your password',
+                      },
+                    ]}
+                  >
+                    <Input
+                      prefix={<Lock className='mr-2 h-4 w-4 text-primary-default' />}
+                      size='large'
+                      placeholder='*******'
+                    />
+                  </Form.Item>
+                </div>
+                <Button
+                  onClick={handleCheckFormBeforeSend}
+                  icon={<ArrowRight className='absolute right-5 top-3 h-4 w-4' />}
+                  type='primary'
+                  size='large'
+                  htmlType='button'
+                  className='relative float-right mt-2 w-[30%]'
+                >
+                  Next
+                </Button>
+              </>
+            )}
+
+            {step === 2 && (
+              <>
+                <Form.Item
+                  name='verifyCode'
+                  label='Enter your code:'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Enter your code to verify email',
+                    },
+                  ]}
+                >
+                  <Input.OTP disabled={!hasCodeSent} length={6} inputMode='numeric' />
+                </Form.Item>
+
+                <div className='flex flex-col gap-y-4'>
+                  <Button type='primary' size='large' htmlType='submit' className='w-full'>
+                    Submit
+                  </Button>
+
+                  <div className='flex items-center justify-center'>
+                    <Typography.Text className='text-center text-sm text-gray-500'>
+                      Didn't receive the code?
+                    </Typography.Text>
+                    <Button
+                      type='text'
+                      className='text-sm font-semibold text-blue-600'
+                      onClick={() => {
+                        sendVerifyEmailRequest();
+                      }}
+                      disabled={isDisabled}
+                    >
+                      {isDisabled ? `${count}s` : 'Resend'}
+                    </Button>
+                  </div>
+                  <Button
+                    onClick={() => {
+                      setStep(1);
+                    }}
+                    type='text'
+                    icon={<ArrowLeft className='h-4 w-4' />}
+                    size='large'
+                    className='flex w-full items-center justify-center gap-x-2'
+                    htmlType='button'
+                  >
+                    Back to sign up
+                  </Button>
+                </div>
+              </>
+            )}
+          </Form>
         </div>
       </div>
-      <Form layout='vertical' form={formSignup} onFinish={onFinish}>
-        <Form.Item
-          name='name'
-          label='Fullname'
-          rules={[
-            {
-              required: true,
-              message: 'Please enter your fullname',
-            },
-          ]}
-        >
-          <Input prefix={<Mail className='w-4 h-4 text-primary-default' />} size='large' />
-        </Form.Item>
-
-        <Form.Item
-          name='email'
-          label='Email'
-          rules={[
-            {
-              required: true,
-              message: 'Please enter your email address',
-            },
-          ]}
-        >
-          <Input
-            prefix={<Mail className='w-4 h-4 text-primary-default' />}
-            size='large'
-            placeholder='example@gmail.com'
-          />
-        </Form.Item>
-        <div className='flex items-center gap-6'>
-          <Form.Item
-            name='username'
-            label='User name'
-            rules={[
-              {
-                required: true,
-                message: 'Please enter your username',
-              },
-            ]}
-          >
-            <Input
-              prefix={<User className='w-4 h-4 text-primary-default' />}
-              size='large'
-              placeholder='annhducid'
-            />
-          </Form.Item>
-          <Form.Item
-            name='timeZone'
-            label='Time Zone:'
-            rules={[
-              {
-                required: true,
-                message: 'Please enter timezone in your country',
-              },
-            ]}
-          >
-            <Input
-              type='number'
-              //phone -> time zone
-              prefix='+'
-              min={0}
-              max={24}
-            />
-          </Form.Item>
-        </div>
-        <Form.Item
-          name='password'
-          label='Password'
-          rules={[
-            {
-              required: true,
-              message: 'Please enter your password',
-            },
-          ]}
-        >
-          <Input
-            prefix={<Lock className='w-4 h-4 text-primary-default' />}
-            size='large'
-            placeholder='*******'
-          />
-        </Form.Item>
-
-        <Form.Item
-          name='confirmPassword'
-          label='Confirm password'
-          rules={[
-            {
-              required: true,
-              message: 'Please enter your password',
-            },
-          ]}
-        >
-          <Input
-            prefix={<Lock className='w-4 h-4 text-primary-default' />}
-            size='large'
-            placeholder='*******'
-          />
-        </Form.Item>
-        <Button
-          loading={isSubmitting}
-          type='primary'
-          size='large'
-          htmlType='button'
-          className='w-full'
-        >
-          Next
-        </Button>
-
-    
-        <Form.Item
-          name='verifyCode'
-          label='Enter your code:'
-          rules={[
-            {
-              required: true,
-              message: 'Enter your code to verify email',
-            },
-          ]}
-        >
-          <div className='flex'>
-            <Input disabled={!hasCodeSent} />
-            <Button htmlType='button' onClick={sendVerifyEmailRequest}>Send</Button>
-          </div>
-          
-        </Form.Item>
-          {/* click to verify */}
-          <Button type='primary' size='large' htmlType='submit' className='w-full'>
-            Submit
-          </Button>
-      </Form>
     </div>
   );
 };

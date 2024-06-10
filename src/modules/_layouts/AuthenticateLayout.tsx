@@ -2,6 +2,7 @@ import { Typography } from 'antd';
 import { Outlet } from 'react-router-dom';
 import banner from '@/assets/images/banner-sigin.png';
 import { CircleX } from 'lucide-react';
+import Logo from '@/shared/components/logo';
 /**
  *
  * @returns Authenticate layout component
@@ -11,15 +12,19 @@ const AuthenticateLayout = () => {
   return (
     <div className='relative flex h-screen flex-col'>
       <div className='h-1/2 bg-primary-default p-6'>
-        <Typography.Text className='text-xl font-semibold text-white'>TaskSmart</Typography.Text>
-        <div className='flex items-center gap-x-10'>
-          <div className='flex flex-col gap-2 px-4'>
-            <Typography.Text className='text-4xl font-semibold text-white'>
-              Sign in to
+        <div className='flex items-center gap-x-2'>
+          <div className='rounded bg-white p-2'>
+            {' '}
+            <Logo type='SINGLE_LOGO' />
+          </div>
+          <Typography.Text className='text-xl font-semibold text-white'>TaskSmart</Typography.Text>
+        </div>
+        <div className='flex items-start gap-x-10'>
+          <div className='mt-10 flex flex-col gap-2 px-4'>
+            <Typography.Text className='text-2xl font-semibold text-white'>
+              Welcome to
             </Typography.Text>
-            <Typography.Text className='text-2xl font-normal text-white'>
-              Lorem Ipsum is simply{' '}
-            </Typography.Text>
+            <Typography.Text className='text-4xl font-normal text-white'>TaskSmart</Typography.Text>
             <Typography.Text className='w-[300px] pt-6  font-normal text-white '>
               Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
               has been the industry's standard dummy text ever since the 1500s,
@@ -41,14 +46,11 @@ const AuthenticateLayout = () => {
         </div>
       </div>
       {/* Outlet */}
-      <div className='absolute right-20 top-16 h-[550px] w-[540px] rounded-lg bg-white shadow-lg'>
-        <div className='p-10'>
-          <Outlet />
-        </div>
-      </div>
+
+      <Outlet />
 
       {/* Reserved */}
-      <div className='absolute bottom-0 right-0 p-6'>
+      <div className='absolute -bottom-4 left-0 p-6'>
         <Typography.Text className='text-xs font-normal opacity-60'>
           © 2024 TaskSmart. All rights reserved by D2D.
         </Typography.Text>
@@ -56,10 +58,6 @@ const AuthenticateLayout = () => {
     </div>
   );
 };
-
-{
-  /* <Outlet /> */
-}
 
 export default AuthenticateLayout;
 

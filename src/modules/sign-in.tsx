@@ -3,8 +3,8 @@ import { Lock, User } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { tsmAxios } from '@/configs/axios';
-import { useAppDispatch, useAppSelector } from '@/shared/hooks/use-redux';
-import { UserGeneralType, setAuthentication } from '@/configs/store/slices/userSlice';
+import { useAppDispatch } from '@/shared/hooks/use-redux';
+import { setAuthentication } from '@/configs/store/slices/userSlice';
 import { AuthType } from '@/configs/store/slices/userSlice';
 
 /**
@@ -19,8 +19,8 @@ function determineInputType(input: string): 'username' | 'email' {
 
 type LoginType = {
   user: string;
-  username?: string,
-  email?: string,
+  username?: string;
+  email?: string;
   password: string;
 };
 
@@ -33,81 +33,82 @@ const Signin = () => {
   const onFinish: FormType['onFinish'] = async (value) => {
     const auth = {
       [determineInputType(value.user)]: value.user,
-      ...value
+      ...value,
     };
 
     //bundle to modal
-    await tsmAxios.post("/auth/login", auth).then((res) => {
+    await tsmAxios.post('/auth/login', auth).then((res) => {
       const user: AuthType = res.data;
       dispatch(setAuthentication(user));
-    })
+    });
   };
   return (
-    <div className='flex flex-col gap-y-12'>
-      <div className='flex items-start justify-between'>
-        <div className='flex flex-col gap-y-2'>
-          <Typography.Text className='text-2xl font-semibold'>
-            Welcome to <span className='capitalize text-[#0089ED]'>TaskSmart</span>
-          </Typography.Text>
-          <Typography.Text className='text-5xl font-semibold'>Sign in</Typography.Text>
-        </div>
-        <div className='flex flex-col'>
-          <Typography.Text className='text-sm'>No Account ?</Typography.Text>
-          <Link to={'../sign-up'}>
-            <Typography.Text className='cursor-pointer font-semibold text-[#0089ED] transition-all hover:underline'>
-              Sign up
-            </Typography.Text>
-          </Link>
+    <div className='absolute right-20 top-16 h-[550px] w-[540px] rounded-lg bg-white shadow-lg'>
+      <div className='p-10'>
+        <div className='flex flex-col gap-y-12'>
+          <div className='flex items-start justify-between'>
+            <div className='flex flex-col gap-y-2'>
+              <Typography.Text className='text-2xl font-semibold'>
+                Welcome to <span className='capitalize text-[#0089ED]'>TaskSmart</span>
+              </Typography.Text>
+              <Typography.Text className='text-5xl font-semibold'>Sign in</Typography.Text>
+            </div>
+            <div className='flex flex-col'>
+              <Typography.Text className='text-sm'>No Account ?</Typography.Text>
+              <Link to={'../sign-up'}>
+                <Typography.Text className='cursor-pointer font-semibold text-[#0089ED] transition-all hover:underline'>
+                  Sign up
+                </Typography.Text>
+              </Link>
+            </div>
+          </div>
+
+          <div className='flex items-center gap-x-4'>
+            <GoogleButton />
+            <GithubButton />
+          </div>
+
+          <Form layout='vertical' form={form} onFinish={onFinish}>
+            <Form.Item
+              name='user'
+              label='Enter your username or email address'
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter your email address or username',
+                },
+              ]}
+            >
+              <Input prefix={<User className='h-4 w-4 text-primary-default' />} size='large' />
+            </Form.Item>
+            <Form.Item
+              name='password'
+              label='Enter your Password'
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter your password',
+                },
+              ]}
+            >
+              <Input
+                prefix={<Lock className='h-4 w-4 text-primary-default' />}
+                size='large'
+                placeholder='******'
+              />
+            </Form.Item>
+            <Button
+              loading={isSubmitting}
+              type='primary'
+              size='large'
+              htmlType='submit'
+              className='w-full'
+            >
+              Sign in
+            </Button>
+          </Form>
         </div>
       </div>
-
-      <div className='flex items-center gap-x-4'>
-        <GoogleButton />
-        <GithubButton />
-      </div>
-
-      <Form layout='vertical' form={form} onFinish={onFinish}>
-        <Form.Item
-          name='user'
-          label='Enter your username or email address'
-          rules={[
-            {
-              required: true,
-              message: 'Please enter your email address or username',
-            },
-          ]}
-        >
-          <Input
-            prefix={<User className='w-4 h-4 text-primary-default' />}
-            size='large'
-          />
-        </Form.Item>
-        <Form.Item
-          name='password'
-          label='Enter your Password'
-          rules={[
-            {
-              required: true,
-              message: 'Please enter your password',
-            },
-          ]}
-        >
-          <Input
-            prefix={<Lock className='w-4 h-4 text-primary-default' />}
-            size='large'
-            placeholder='******'
-          />
-        </Form.Item>
-        <Button
-          loading={isSubmitting}
-          type='primary'
-          size='large'
-          htmlType='submit'
-          className='w-full'
-        >
-          Sign in
-        </Button>
-      </Form>
     </div>
   );
 };
