@@ -6,7 +6,7 @@ const tsmAuthAxios = axios.create({ baseURL: `${import.meta.env.VITE_TASKSMART_B
 tsmAuthAxios.interceptors.request.use(
   (config) => {
     config.headers['Content-Type'] = 'application/json'
-    config.headers['Authorization'] = `Bearer ${cookieUtils.getCookie('accesstoken')}`
+    config.headers['Authorization'] = `Bearer ${cookieUtils.getCookie('access_token')}`
     return config
   },
   (error) => {

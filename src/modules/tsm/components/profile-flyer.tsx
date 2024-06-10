@@ -3,6 +3,8 @@ import Dialog from '@/shared/components/dialog';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
 import { Button, Form, Input, Tabs, Typography, Upload } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { useAppSelector } from '@/shared/hooks/use-redux';
+import { UserType } from '@/configs/store/slices/userSlice';
 
 import { UploadProps } from 'antd/lib';
 import {
@@ -26,6 +28,8 @@ import { useDialogContext } from '@/shared/components/dialog/provider';
  */
 const ProfileFlyer = ({ isVisible }: { isVisible: () => void }) => {
   const [, setDialog] = useSearchParam(SEARCH_PARAMS.MODAL);
+
+  const userAuthenticated = useAppSelector((state) => state.user).data as UserType; 
 
   const items = [
     {
@@ -70,18 +74,18 @@ const ProfileFlyer = ({ isVisible }: { isVisible: () => void }) => {
       >
         <div className='relative'>
           <div className='h-[4px] w-full bg-primary-default' />
-          <div className='flex w-full items-center gap-x-6 px-8'>
-            <div className='relative h-16 w-16 rounded-full'>
-              <img src={user} alt='' className='h-full w-full rounded-full' />
+          <div className='flex items-center w-full px-8 gap-x-6'>
+            <div className='relative w-16 h-16 rounded-full'>
+              <img src={userAuthenticated?.profileImage || user} alt='' className='w-full h-full rounded-full' />
               <span className='absolute right-1 top-1 rounded-full bg-[#1ad67b] p-[6px]'></span>
             </div>
-            <div className='mt-6 flex flex-col gap-y-2'>
+            <div className='flex flex-col mt-6 gap-y-2'>
               <div className='flex items-center justify-between'>
-                <p className='text-lg font-semibold text-black'>Nguyễn Trọng Đức</p>
+                <p className='text-lg font-semibold text-black'>{userAuthenticated?.name || ""}</p>
                 <Button
                   type='primary'
                   className='rounded-full'
-                  icon={<UserCog className='h-3 w-3 ' />}
+                  icon={<UserCog className='w-3 h-3 ' />}
                   onClick={() => {
                     setDialog(SEARCH_PARAMS_VALUE.PROFILE);
                     isVisible();
@@ -90,19 +94,19 @@ const ProfileFlyer = ({ isVisible }: { isVisible: () => void }) => {
                   Edit profile
                 </Button>
               </div>
-              <p className='text-sm text-gray-400'>Frontend Developer</p>
+              <p className='text-sm text-gray-400'>{userAuthenticated?.username || ""}</p>
               <div className='flex items-center gap-10'>
                 <div className='flex flex-col gap-y-1'>
-                  <Typography.Text className='font-semibold'> Username </Typography.Text>
-                  <Typography.Text> annhducit </Typography.Text>
+                  <Typography.Text className='font-semibold'> Position </Typography.Text>
+                  <Typography.Text> {userAuthenticated?.position || ""} </Typography.Text>
                 </div>
                 <div className='flex flex-col gap-y-1'>
-                  <Typography.Text className='font-semibold'> Position </Typography.Text>
-                  <Typography.Text> Project Manager </Typography.Text>
+                  <Typography.Text className='font-semibold'> Organization </Typography.Text>
+                  <Typography.Text> {userAuthenticated?.organization || ""} </Typography.Text>
                 </div>
                 <div className='flex flex-col gap-y-1'>
                   <Typography.Text className='font-semibold'> Email </Typography.Text>
-                  <Typography.Text> trongduc05032002@gmail.com </Typography.Text>
+                  <Typography.Text> {userAuthenticated?.email || ""} </Typography.Text>
                 </div>
                 <div className='flex flex-col gap-y-1'>
                   <Typography.Text className='font-semibold'> Local time </Typography.Text>
@@ -111,7 +115,7 @@ const ProfileFlyer = ({ isVisible }: { isVisible: () => void }) => {
               </div>
             </div>
           </div>
-          <div className='mt-6 px-6'>
+          <div className='px-6 mt-6'>
             <Tabs items={items} />
           </div>
           <div
@@ -122,7 +126,7 @@ const ProfileFlyer = ({ isVisible }: { isVisible: () => void }) => {
           </div>
         </div>
       </div>
-      <ModifyProfile />
+      <ModifyProfile user={userAuthenticated} />
     </>
   );
 };

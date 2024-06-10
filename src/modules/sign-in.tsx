@@ -79,7 +79,7 @@ const Signin = () => {
                 },
               ]}
             >
-              <Input prefix={<User className='h-4 w-4 text-primary-default' />} size='large' />
+              <Input prefix={<User className='w-4 h-4 text-primary-default' />} size='large' />
             </Form.Item>
             <Form.Item
               name='password'
@@ -92,7 +92,7 @@ const Signin = () => {
               ]}
             >
               <Input
-                prefix={<Lock className='h-4 w-4 text-primary-default' />}
+                prefix={<Lock className='w-4 h-4 text-primary-default' />}
                 size='large'
                 placeholder='******'
               />

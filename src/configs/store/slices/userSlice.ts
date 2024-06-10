@@ -1,48 +1,81 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import cookieUtils from '../../../utils/cookieUtil'
 import type { PayloadAction, Slice } from '@reduxjs/toolkit'
+import { get } from 'lodash'
+import { tsmAuthAxios } from '@/configs/axios'
 
 export type AuthType = {
-  user: UserGeneralType
+  user: UserType
   accessToken: string
   refreshToken: string
 }
-
-export type UserGeneralType = {
-  id?: string
-  username?: string
-  name?: string
-  profileImageId?: string
+export type UserWrapperType = {
+  data?: UserType
+}
+export type UserType = {
+  id: string
+  name: string
+  username: string
+  email: string
+  gender: string
+  position: string
+  organization : string
+  timeZone: number
+  profileImage: string
+  personalWorkSpace: WorkSpaceType
+  workspaces: WorkSpaceType[]
+  projects: ProjectType[]
 }
 
-const userUndefined: UserGeneralType = {
-  id: undefined,
-  username: undefined,
-  name: undefined,
-  profileImageId: undefined
+
+export type WorkSpaceType = {
+  id: string
+  name: string
 }
 
-const initialUserState = () : UserGeneralType => {
-  if(cookieUtils.getCookie('user') && cookieUtils.getCookie('access_token')) {
-    const user: UserGeneralType = JSON.parse(cookieUtils.getCookie('user') || '')
-    return user ? user : userUndefined
-  }
-  return userUndefined;
+export type ProjectType = {
+  id: string
+  name: string
 }
 
-export const userSlice: Slice<UserGeneralType> = createSlice({
+const workspacesUndefined : WorkSpaceType = {
+  id: "",
+  name: ""
+}
+
+const userUndefined :  UserType = {
+  id: "",
+  name: "",
+  username: "",
+  email: "",
+  gender: "",
+  position: "",
+  organization : "",
+  timeZone: 0,
+  profileImage: "",
+  personalWorkSpace: workspacesUndefined,
+  workspaces: [],
+  projects: []
+}
+
+const userWrapperUndefined: UserWrapperType = {
+  data: userUndefined
+}
+
+export const getUserInformation = createAsyncThunk('user/fetchUser', async () => {
+  const user = await tsmAuthAxios.get('/users/profile')
+  return {...user.data, profileImage: 'http://localhost:8805/api/img/' + user.data.profileImageId}
+});
+
+export const userSlice: Slice<UserWrapperType> = createSlice({
   name: 'user',
-  initialState: initialUserState(),
+  initialState: userWrapperUndefined,
   reducers: {
     setAuthentication: (state, action: PayloadAction<AuthType>) => {
       cookieUtils.setCookie("access_token", action.payload.accessToken, 30)
       cookieUtils.setCookie("refresh_token", action.payload.refreshToken, 30)
-      cookieUtils.setCookie("user", JSON.stringify(action.payload.user), 30)
       
-      state.id = action.payload.user.id
-      state.username = action.payload.user.username
-      state.name = action.payload.user.name
-      state.profileImageId = action.payload.user.profileImageId
+      state.data = action.payload.user
     },
 
     clearAuthentication: (state) => {
@@ -50,11 +83,13 @@ export const userSlice: Slice<UserGeneralType> = createSlice({
       cookieUtils.deleteCookie('refresh_token')
       cookieUtils.deleteCookie('user')
 
-      state.id = undefined
-      state.username = undefined
-      state.name = undefined
-      state.profileImageId = undefined
+      state.data = undefined
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getUserInformation.fulfilled, (state, action) => {
+      state.data = action.payload
+    })
   }
 })
 

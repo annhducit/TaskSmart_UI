@@ -32,7 +32,7 @@ import { ModalAddProject, ModalAddWorkspace } from '../features/workspace/page';
 import ProfileFlyer from './profile-flyer';
 import useCollapse from '@/shared/hooks/use-collapse';
 import { useAppSelector } from '@/shared/hooks/use-redux';
-import { UserGeneralType } from '@/configs/store/slices/userSlice';
+import { UserType } from '@/configs/store/slices/userSlice';
 
 const Header = () => {
   const [open, setOpen] = useCollapse<boolean>(false);
@@ -46,7 +46,7 @@ const Header = () => {
     setOpenFlyer(!openFlyer);
   };
 
-  const userAuthenticated: UserGeneralType = useAppSelector((state) => state.user); 
+  const userAuthenticated = useAppSelector((state) => state.user).data as UserType; 
 
   return (
     <>
@@ -136,7 +136,7 @@ const Header = () => {
                 <>
                   <div className='flex items-center gap-x-3'>
                     <div className='relative rounded-full h-9 w-9'>
-                      <img src={user} alt='' className='w-full h-full rounded-full' />
+                      <img src={userAuthenticated?.profileImage || user} alt='' className='w-full h-full rounded-full' />
                       <span className='absolute bottom-1 right-0 rounded-full bg-[#1ad67b] p-1' />
                     </div>
                     <div className='flex flex-col opacity-75'>
@@ -212,7 +212,7 @@ const Header = () => {
             >
               <div className='relative'>
                 <div className='w-6 h-6 rounded-full'>
-                  <img src={user} className='w-full h-full rounded-full' />
+                  <img src={userAuthenticated?.profileImage || user} className='w-full h-full rounded-full' />
                 </div>
                 <span className='absolute right-0 top-0 rounded-full bg-[#3db88b] p-1' />
               </div>

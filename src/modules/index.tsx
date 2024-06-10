@@ -29,16 +29,16 @@ const routers = createRouters([
     ],
   },
   {
-    path: '/',
+    path: '/home',
     element: <DashboardLayout />,
     children: [
       {
         path: '*',
         element: (
           <Authenticated fallback={<AuthNavigate />}>
-            <UserInformation>
+            {/* <UserInformation> */}
               <PrivateRouter />
-            </UserInformation>
+            {/* </UserInformation> */}
           </Authenticated>
         ),
       },

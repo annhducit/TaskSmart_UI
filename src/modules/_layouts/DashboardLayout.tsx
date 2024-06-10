@@ -25,6 +25,8 @@ import {
 import { TabsProps } from 'antd/lib';
 import Setting from '../tsm/features/workspace/components/project/modify-card/popover/setting';
 import useCollapse from '@/shared/hooks/use-collapse';
+import { useAppDispatch } from '@/shared/hooks/use-redux';
+import { getUserInformation } from '@/configs/store/slices/userSlice';
 
 const ProjectFeature = lazy(() => import('../tsm/features/workspace/components/project'));
 const TableFeature = lazy(() => import('../tsm/features/workspace/components//table'));
@@ -41,6 +43,8 @@ const OverviewFeature = lazy(() => import('../tsm/features/workspace/components/
  */
 const DashboardLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const dispatch = useAppDispatch();
+  dispatch(getUserInformation())
 
   const { path } = useGetPath();
   console.log(path);
@@ -53,9 +57,9 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div className='flex h-screen flex-col overflow-hidden'>
+    <div className='flex flex-col h-screen overflow-hidden'>
       <Header />
-      <div className='relative flex flex-1 flex-row'>
+      <div className='relative flex flex-row flex-1'>
         <div className='block'>
           <SidebarComponent
             typeSidebar={isWorkspace ? 'workspace' : 'home'}
@@ -108,7 +112,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
   return (
     <>
       <section
-        className='relative h-screen w-full bg-cover bg-center bg-no-repeat'
+        className='relative w-full h-screen bg-center bg-no-repeat bg-cover'
         style={{
           backgroundPosition: 'center',
           backgroundImage: `url(https://images.unsplash.com/photo-1715976788162-6421efc7ebc4?q=80&w=1854&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)`,
@@ -142,10 +146,10 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
                 <Avatar style={{ backgroundColor: '#87d068' }} icon={<User size='12' />} />
               </Tooltip>
               <Tooltip title='Đức Duy' placement='top'>
-                <Avatar className='bg-cyan-500 text-white' icon={<User size='12' />} />
+                <Avatar className='text-white bg-cyan-500' icon={<User size='12' />} />
               </Tooltip>
               <Tooltip title='Trọng Đức' placement='top'>
-                <Avatar className='bg-red-500 text-white' icon={<User size='12' />} />
+                <Avatar className='text-white bg-red-500' icon={<User size='12' />} />
               </Tooltip>
             </Avatar.Group>
 
@@ -155,7 +159,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
               open={visible}
               onOpenChange={handleOpenChange}
             >
-              <div className='cursor-pointer rounded px-1 transition-all hover:bg-primary-default hover:text-white'>
+              <div className='px-1 transition-all rounded cursor-pointer hover:bg-primary-default hover:text-white'>
                 <Ellipsis size='20' color='white' className='mt-1' />
               </div>
             </Popover>
