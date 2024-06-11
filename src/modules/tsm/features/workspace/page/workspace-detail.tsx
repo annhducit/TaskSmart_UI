@@ -9,9 +9,12 @@ import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-par
 import Dialog from '@/shared/components/dialog';
 import { useDialogContext } from '@/shared/components/dialog/provider';
 import ProjectBackground from '../components/background-container/background';
+import { useState, useEffect } from 'react';
+
 
 import createWps from '@/assets/gifs/create-workspace.gif';
 import CopyUrlButton from '@/shared/components/dialog/copy-button';
+import { tsmAuthAxios, tsmAxios } from '@/configs/axios';
 const WorkspaceDetail = () => {
   const { workspaceId } = useParams();
 
@@ -30,15 +33,15 @@ const WorkspaceDetail = () => {
     <>
       <div className='flex flex-col'>
         <div className='flex items-center gap-x-5'>
-          <div className='h-20 w-20 rounded'>
-            <img src={projectImg} alt='' className='h-full w-full rounded-lg' />
+          <div className='w-20 h-20 rounded'>
+            <img src={projectImg} alt='' className='w-full h-full rounded-lg' />
           </div>
           <div className='flex flex-col'>
             <Typography.Title level={3}>TaskSmart Workspace</Typography.Title>
             <div className='flex items-center gap-x-4'>
               <Tag color='gold'>Premium</Tag>
               <div className='flex items-center'>
-                <LockKeyhole color='red' className='mr-1 h-4 w-4' />
+                <LockKeyhole color='red' className='w-4 h-4 mr-1' />
                 <Tag color='red'>Private</Tag>
               </div>
             </div>
@@ -138,10 +141,10 @@ const WorkspaceDetail = () => {
               />
             </div>
           </div>
-          <div className='my-6 grid grid-cols-4 gap-4'>
+          <div className='grid grid-cols-4 gap-4 my-6'>
             <Button
-              className='mx-auto flex h-32 w-full items-center justify-center'
-              icon={<PlusCircle className='h-4 w-4' />}
+              className='flex items-center justify-center w-full h-32 mx-auto'
+              icon={<PlusCircle className='w-4 h-4' />}
               type='dashed'
               onClick={showModal}
             >
@@ -173,12 +176,40 @@ export const ModalAddWorkspace = () => {
   );
 };
 
+type WorkspaceRequest = {
+  name: string;
+  categoryId: string;
+  description: string;
+};
+
 const ModalCreateWorkspace = () => {
   const { onClose } = useDialogContext();
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<WorkspaceRequest>();
 
-  const handleSubmit = () => {
-    return;
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const res = await tsmAxios.get('/categories');
+        setCategories(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchCategory();
+  }, []);
+
+  const handleSubmit = (value: WorkspaceRequest) => {
+    const createWorkSpace = async () => {
+      try {
+        const res = await tsmAuthAxios.post('/workspaces', value);
+        console.log(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    createWorkSpace();
   };
   return (
     <>
@@ -195,7 +226,7 @@ const ModalCreateWorkspace = () => {
               layout='vertical'
               onFinish={handleSubmit}
               name='create-workspace'
-              className='flex w-full flex-col'
+              className='flex flex-col w-full'
             >
               <Form.Item>
                 <Form.Item
@@ -206,37 +237,38 @@ const ModalCreateWorkspace = () => {
                   <Input allowClear placeholder='My workspace' />
                 </Form.Item>
                 <Form.Item
-                  name='type'
-                  label='Type of workspace'
+                  name='categoryId'
+                  label='Category of workspace'
                   rules={[{ required: true, message: 'Please enter description of workspace!' }]}
                 >
                   <Select
                     placeholder='Select type of workspace'
                     allowClear
-                    options={[
-                      {
-                        value: 'it',
-                        label: 'Information Technology',
-                      },
-                      {
-                        value: 'finance',
-                        label: 'Finance',
-                      },
-                      {
-                        value: 'marketing',
-                        label: 'Marketing',
-                      },
-                      {
-                        value: 'hr',
-                        label: 'Human Resource',
-                      },
-                    ]}
+                    options={categories.map((item) => {return {value: item.id, label: item.name}})}
+                    // {[
+                    //   {
+                    //     value: 'it',
+                    //     label: 'Information Technology',
+                    //   },
+                    //   {
+                    //     value: 'finance',
+                    //     label: 'Finance',
+                    //   },
+                    //   {
+                    //     value: 'marketing',
+                    //     label: 'Marketing',
+                    //   },
+                    //   {
+                    //     value: 'hr',
+                    //     label: 'Human Resource',
+                    //   },
+                    // ]}
                   />
                 </Form.Item>
                 <Form.Item name='description' label='Description of workspace'>
                   <Input.TextArea allowClear rows={4} placeholder='Description' />
                 </Form.Item>
-                <Form.Item
+                {/* <Form.Item
                   name='share'
                   label={
                     <Typography.Text className='text-base font-semibold'>
@@ -264,7 +296,7 @@ const ModalCreateWorkspace = () => {
                     ]}
                     allowClear
                   />
-                </Form.Item>
+                </Form.Item> */}
               </Form.Item>
               <Button
                 htmlType='submit'
@@ -276,7 +308,7 @@ const ModalCreateWorkspace = () => {
               </Button>
             </Form>
           </div>
-          <div className='col-span-1 flex flex-col'>
+          <div className='flex flex-col col-span-1'>
             <img loading='lazy' src={createWps} className='h-[360px] w-[350px]' />
           </div>
         </div>

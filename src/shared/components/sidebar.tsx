@@ -12,10 +12,13 @@ import wspImg from '@/assets/images/karban.png';
 import Tooltip from './tooltip';
 import { useNavigate } from 'react-router-dom';
 import useSearchParam from '../hooks/use-search-param';
+import { useState, useEffect } from 'react';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '../constant/search-param';
 
 import { useAppSelector } from '../hooks/use-redux';
 import { UserType, UserWrapperType } from '@/configs/store/slices/userSlice';
+import { tsmAxios } from '@/configs/axios';
+
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -69,6 +72,21 @@ const Sidebar = ({
   const handleOpenModal = () => {
     setDialog(SEARCH_PARAMS_VALUE.WORKSPACE);
   };
+
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const res = await tsmAxios.get('/categories');
+        setCategories([{id: "all", name: "All"},...res.data]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchCategory();
+  }, []);
+  
   const onClick: MenuProps['onClick'] = (e) => {
     switch (e.key) {
       case 'home':
@@ -153,18 +171,19 @@ const Sidebar = ({
       key: 'template',
       label: 'Templates',
       icon: <LayoutTemplate className='w-4 h-4' />,
-      children: [
-        {
-          key: 'business',
-          label: 'Business Template',
-          icon: <LayoutTemplate className='w-4 h-4' />,
-        },
-        {
-          key: 'Design',
-          label: 'Design Template',
-          icon: <LayoutTemplate className='w-4 h-4' />,
-        },
-      ],
+      children: categories.map(item =>{ return {key: item.id, label: item.name, icon: <LayoutTemplate className='w-4 h-4' />}})
+      // [
+      //   {
+      //     key: 'business',
+      //     label: 'Business Template',
+      //     icon: <LayoutTemplate className='w-4 h-4' />,
+      //   },
+      //   {
+      //     key: 'Design',
+      //     label: 'Design Template',
+      //     icon: <LayoutTemplate className='w-4 h-4' />,
+      //   },
+      // ],
     },
 
     {

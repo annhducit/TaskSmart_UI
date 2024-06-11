@@ -1,8 +1,11 @@
 import { Button, Divider, Form, Input, Popover, Select, Typography } from 'antd';
 import { Check, Ellipsis } from 'lucide-react';
 import { useState } from 'react';
+import { useAppSelector } from '@/shared/hooks/use-redux';
+import { UserType } from '@/configs/store/slices/userSlice';
 
 import dashboard from '@/assets/svgs/dashboard.svg';
+import { tsmAuthAxios } from '@/configs/axios';
 
 /**
  * @description Project background component
@@ -19,18 +22,37 @@ const ProjectBackground = () => {
 
 export default ProjectBackground;
 
+type ProjectRequest = {
+  name: string;
+  description: string;
+  workspaceId: string; 
+  background: string; //get background selected
+}
+
 const BackgroundReview = () => {
   const { TextArea } = Input;
   const [background, setBackground] = useState<string>('#00aecc');
 
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<ProjectRequest>();
+  
+  const userAuthenticated = useAppSelector((state) => state.user).data as UserType; 
+  const userWorkspaces = [userAuthenticated.personalWorkSpace, ...userAuthenticated.workspaces];
+  console.log(userWorkspaces)
 
   const handleChangeBackground = (value: string) => {
     setBackground(value);
   };
 
-  const handleSubmitForm = () => {
-    return;
+  const handleSubmitForm = (value: ProjectRequest) => {
+    const createProject = async () => {
+      try {
+        const res = await tsmAuthAxios.post('/projects', value);
+        console.log(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    createProject();
   };
 
   return (
@@ -46,7 +68,7 @@ const BackgroundReview = () => {
           className='h-[120px] w-[246px] rounded'
         >
           <div className='mx-auto mt-2 h-[103px] w-[186px] rounded'>
-            <img src={dashboard} alt='dashboard' className='h-full w-full rounded' />
+            <img src={dashboard} alt='dashboard' className='w-full h-full rounded' />
           </div>
         </div>
         <div className='flex flex-col gap-y-1'>
@@ -60,7 +82,7 @@ const BackgroundReview = () => {
                 <img
                   src={item.url}
                   alt={item.name}
-                  className='h-full w-full rounded object-cover'
+                  className='object-cover w-full h-full rounded'
                 />
               </div>
             ))}
@@ -76,7 +98,7 @@ const BackgroundReview = () => {
                 className={`relative h-[32px] w-[40px] cursor-pointer rounded transition-all hover:brightness-125`}
               >
                 {item.color === background && (
-                  <Check className='absolute right-3 top-2 h-4 w-4 text-white' />
+                  <Check className='absolute w-4 h-4 text-white right-3 top-2' />
                 )}
               </div>
             ))}
@@ -91,13 +113,13 @@ const BackgroundReview = () => {
               }
             >
               <Button className='flex items-center'>
-                <Ellipsis className='h-4 w-4' />
+                <Ellipsis className='w-4 h-4' />
               </Button>
             </Popover>
           </div>
         </div>
       </div>
-      <div className='mt-4 flex items-center'>
+      <div className='flex items-center mt-4'>
         <Form.Item
           name='name'
           className='w-full'
@@ -113,7 +135,7 @@ const BackgroundReview = () => {
         </Form.Item>
         <Form.Item
           name='workspace'
-          className='mr-1 w-full'
+          className='w-full mr-1'
           label='Workspace'
           rules={[
             {
@@ -124,22 +146,12 @@ const BackgroundReview = () => {
         >
           <Select
             className='w-full'
-            placeholder='My Workspace'
             allowClear
-            options={[
-              {
-                value: 'my workspace',
-                label: 'My Workspace',
-              },
-              {
-                value: 'tasksmart workspace',
-                label: 'Tasksmart Workspace',
-              },
-            ]}
+            options={userWorkspaces.map((item) => ({value: item.id, label: item.name}))}
           />
         </Form.Item>
       </div>
-      <Form.Item
+      {/* <Form.Item
         name='privacy'
         className='w-full'
         label='Privacy'
@@ -165,7 +177,7 @@ const BackgroundReview = () => {
             },
           ]}
         />
-      </Form.Item>
+      </Form.Item> */}
       <Form.Item name='description' className='w-full' label='Description'>
         <TextArea
           className='w-full'
@@ -206,7 +218,7 @@ const SubBackgroundModal = ({
               className='h-[40px] w-[64px] cursor-pointer rounded transition-all hover:brightness-125'
               onClick={() => handleChangeBackground(item.url)}
             >
-              <img src={item.url} alt={item.name} className='h-full w-full rounded object-cover' />
+              <img src={item.url} alt={item.name} className='object-cover w-full h-full rounded' />
             </div>
           ))}
         </div>
@@ -222,7 +234,7 @@ const SubBackgroundModal = ({
               className={`relative h-[32px] w-[40px] cursor-pointer rounded transition-all hover:brightness-125`}
             >
               {item.color === color && (
-                <Check className='absolute right-3 top-2 h-4 w-4 text-white' />
+                <Check className='absolute w-4 h-4 text-white right-3 top-2' />
               )}
             </div>
           ))}

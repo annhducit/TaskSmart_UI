@@ -64,7 +64,7 @@ const userWrapperUndefined: UserWrapperType = {
 
 export const getUserInformation = createAsyncThunk('user/fetchUser', async () => {
   const user = await tsmAuthAxios.get('/users/profile')
-  return {...user.data, profileImage: 'http://localhost:8805/api/img/' + user.data.profileImageId}
+  return {...user.data, profileImage: 'http://localhost:8888/api/img/' + user.data.profileImageId}
 });
 
 export const userSlice: Slice<UserWrapperType> = createSlice({
@@ -81,8 +81,6 @@ export const userSlice: Slice<UserWrapperType> = createSlice({
     clearAuthentication: (state) => {
       cookieUtils.deleteCookie('access_token')
       cookieUtils.deleteCookie('refresh_token')
-      cookieUtils.deleteCookie('user')
-
       state.data = undefined
     },
   },
