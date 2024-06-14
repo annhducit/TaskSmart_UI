@@ -7,19 +7,19 @@ import { Paperclip, Rss, Text, User } from 'lucide-react';
 import { CSS } from '@dnd-kit/utilities';
 
 interface Props {
-  task: Task;
+  card: Card;
   deleteTask?: (id: Id) => void;
   updateTask?: (id: Id, content: string) => void;
 }
 
-function TaskCard({ task }: Props) {
+function TaskCard({ card }: Props) {
   const searhParams = useSearchParams();
 
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
-    id: task.id,
+    id: card.id,
     data: {
       type: 'Task',
-      task,
+      card,
     },
   });
 
@@ -48,7 +48,7 @@ function TaskCard({ task }: Props) {
         onClick={() =>
           searhParams.set({
             [SEARCH_PARAMS.DIALOG]: SEARCH_PARAMS_VALUE.CARD,
-            [SEARCH_PARAMS.ID]: '1',
+            [SEARCH_PARAMS.ID]: card.id,
           })
         }
         className='flex cursor-pointer flex-col rounded-lg border border-solid border-slate-300 shadow-lg transition-all hover:border-[2px] hover:border-primary-default'
@@ -64,11 +64,11 @@ function TaskCard({ task }: Props) {
           //   backgroundPosition: 'center',
           // }}
         />
-        <div className='flex items-center justify-between rounded-b-xl bg-white p-2'>
+        <div className='flex items-center justify-between p-2 bg-white rounded-b-xl'>
           <div className='flex flex-col gap-y-1'>
             <div className='flex flex-col gap-y-1'>
               <Typography.Text className='w-[140px] truncate text-xs font-semibold'>
-                {task.content}
+                {card.name}
               </Typography.Text>
               <div className='flex items-center gap-x-1'>
                 <Tooltip
@@ -77,12 +77,12 @@ function TaskCard({ task }: Props) {
                   placement='bottom'
                 >
                   <div className='flex items-center rounded-sm  p-1 transition-all hover:bg-[#091E4224]'>
-                    <Text className='h-3 w-3 text-slate-500' />
+                    <Text className='w-3 h-3 text-slate-500' />
                   </div>
                 </Tooltip>
                 <Tooltip color='black' title='Followed' placement='bottom'>
                   <div className='flex items-center rounded-sm p-1 transition-all hover:bg-[#091E4224]'>
-                    <Rss className='h-3 w-3 text-slate-500' />
+                    <Rss className='w-3 h-3 text-slate-500' />
                   </div>
                 </Tooltip>
                 <Tooltip
@@ -92,7 +92,7 @@ function TaskCard({ task }: Props) {
                   placement='bottom'
                 >
                   <div className='flex items-center rounded-sm p-[2px] transition-all hover:bg-[#091E4224]'>
-                    <Paperclip className='h-3 w-3 text-slate-500' />
+                    <Paperclip className='w-3 h-3 text-slate-500' />
                     <Typography.Text className='ml-[1px] text-xs'>3</Typography.Text>
                   </div>
                 </Tooltip>

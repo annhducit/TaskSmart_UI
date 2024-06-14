@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import Header from '../tsm/components/header';
 import SidebarComponent from '@/shared/components/sidebar';
-import { Suspense, lazy, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { Avatar, Button, Popover, Tabs } from 'antd';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import SubHeader from '../tsm/components/sub-header';
@@ -27,6 +27,7 @@ import Setting from '../tsm/features/workspace/components/project/modify-card/po
 import useCollapse from '@/shared/hooks/use-collapse';
 import { useAppDispatch } from '@/shared/hooks/use-redux';
 import { getUserInformation } from '@/configs/store/slices/userSlice';
+import { tsmAuthAxios } from '@/configs/axios';
 
 const ProjectFeature = lazy(() => import('../tsm/features/workspace/components/project'));
 const TableFeature = lazy(() => import('../tsm/features/workspace/components//table'));
@@ -47,7 +48,6 @@ const DashboardLayout = () => {
   dispatch(getUserInformation())
 
   const { path } = useGetPath();
-  console.log(path);
 
   const isProject = path.includes('project');
   const isWorkspace = path.includes('workspace') && path.length > 2;
@@ -93,6 +93,28 @@ const DashboardLayout = () => {
 export default DashboardLayout;
 
 export const ProjectContainer = (props: { layoutControl: boolean }) => {
+  const projectId = '666811ebf61a2e3287ee5a45'
+  const [project, setProject] = useState<Project>({
+    id: "",
+    name: "",
+    description: "",
+    background: "",
+    inviteCode: "",
+    listCards: [],
+    users: []
+  } as Project);
+
+  useEffect(() => {
+    const fetchProject = async () => {
+      try {
+        const res = await tsmAuthAxios.get(`/projects/${projectId}`);
+        setProject(res.data)
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchProject();
+  },[])
   const [viewParam, setView] = useSearchParam(SEARCH_PARAMS.VIEW, {
     defaultValue: 'overview',
   });
@@ -127,7 +149,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
             items={tabList}
             className={`custom-tabs mb-0 ${props.layoutControl ? 'w-[calc(100vw-80px)]' : 'w-[calc(100vw-256px)]'} text-white`}
             tabBarExtraContent={{
-              left: <p className='m-0 w-40 truncate text-[18px] font-bold'>Double D Thesis</p>,
+              left: <p className='m-0 w-40 truncate text-[18px] font-bold'>{project.name || ""}</p>,
             }}
           />
 

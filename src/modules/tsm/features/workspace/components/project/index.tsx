@@ -15,25 +15,39 @@ import {
 } from '@dnd-kit/core';
 
 import ColumnContainer from './move-card/column-container';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 import { createPortal } from 'react-dom';
 import { TaskCard } from './move-card';
+import { tsmAuthAxios } from '@/configs/axios';
+import { set } from 'lodash';
 
 const Project = () => {
+  const projectId = '666811ebf61a2e3287ee5a45';
+  const [project, setProject] = useState<Project>({
+    id: "",
+    name: "",
+    description: "",
+    background: "",
+    inviteCode: "",
+    listCards: [],
+    users: []
+  } as Project);
+  
   const [visible, setVisible] = useCollapse<boolean>(false);
   const handleOpenChange = (open: boolean) => {
     setVisible(open);
   };
 
-  const [columns, setColumns] = useState<Column[]>(defaultCols);
+  const [columns, setColumns] = useState<ListCard[]>([]);
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
+  const [listCardCreationName, setListCardCreationName] = useState('');
 
-  const [tasks, setTasks] = useState<Task[]>(defaultTasks);
+  const [tasks, setTasks] = useState<Card[]>([]);
 
-  const [activeColumn, setActiveColumn] = useState<Column | null>(null);
+  const [activeColumn, setActiveColumn] = useState<ListCard | null>(null);
 
-  const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [activeTask, setActiveTask] = useState<Card | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -42,6 +56,128 @@ const Project = () => {
       },
     })
   );
+
+  const createListCard = async () => {
+    const fetchProject = async () => {
+      try {
+        const res = await tsmAuthAxios.post(`/projects/${projectId}`, {name: listCardCreationName});
+        setProject((prev) => {return {...prev, listCards: [...prev.listCards, res.data]}})
+        setListCardCreationName('')
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchProject();
+  }
+
+  useEffect(() => {
+    const fetchProject = async () => {
+      try {
+        const res = await tsmAuthAxios.get(`/projects/${projectId}`);
+        setProject(res.data)
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchProject();
+  },[])
+
+  useEffect(() => {
+    const listCardIterator : Card[] = []
+    project.listCards.forEach((listCard) => {
+      listCard.cards.forEach((card) => {
+        listCardIterator.push({...card, listCardId: listCard.id})
+      })
+    })
+    setColumns(project.listCards)
+    setTasks(listCardIterator)
+  }, [project])
+
+  const updateListCard = async (listCard: ListCard) => {
+    const updateListCard = async () => {
+      try {
+        const res = await tsmAuthAxios.put(`/projects/${projectId}/${listCard.id}`, listCard);
+        const columnUpdated: ListCard = res.data;
+        setColumns((prev) => {
+          return prev.map((col) => {
+            if (col.id === columnUpdated.id) {
+              return columnUpdated;
+            }
+            return col;
+          })
+        })
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    updateListCard();
+  }
+
+  const deleteListCard = async (listCardId: String) => {
+    const deleteListCardAsync = async () => {
+      try {
+        await tsmAuthAxios.delete(`/projects/${projectId}/${listCardId}`);
+        setColumns((prev) => {
+          return prev.filter((col) => col.id !== listCardId)
+        })
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    deleteListCardAsync();
+  }
+
+  const createCard = async (columnId: String, card: Card) => {
+    const createCardAsync = async () => {
+      try {
+        const res = await tsmAuthAxios.post(`/projects/${projectId}/${columnId}`, card);
+        const cardCreated: Card = res.data;
+        setColumns((prev) => {
+          return prev.map((col) => {
+            if (col.id === columnId) {
+              return {...col, cards: [...col.cards, cardCreated]}
+            }
+            return col;
+          })
+        })
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    createCardAsync();
+  }
+
+  const setColumnsMoved = (columns: ListCard[]) => {
+    const moveColumnsAsync = async () => {
+      try {
+        await tsmAuthAxios.post(`/projects/${projectId}/move/listcard`, {ids: columns.map((col) => col.id)});
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    moveColumnsAsync();
+    setColumns(columns);
+  }
+
+  const setCardsMoved = (cards: Card[]) => {
+    const ids = columns.map((col) => ({
+      listCardId: col.id, 
+      cardIds: cards.filter((card) => card.listCardId === col.id).map((card) => card.id)
+    }));
+    console.log(ids);
+    const moveCardsAsync = async () => {
+      try {
+        await tsmAuthAxios.post(`/projects/${projectId}/move/card`, {ids}).then((res) => {
+          console.log(res);
+        })
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    moveCardsAsync();
+    setTasks(cards);
+  }
+  
   return (
     <>
       <DndContext
@@ -57,7 +193,10 @@ const Project = () => {
                 <ColumnContainer
                   key={col.id}
                   column={col}
-                  tasks={tasks.filter((task) => task.columnId === col.id)}
+                  cards={tasks.filter((task) => task.listCardId === col.id)}
+                  updateColumn={updateListCard}
+                  deleteColumn={deleteListCard}
+                  createCard={createCard}
                 />
               ))}
             </SortableContext>
@@ -74,10 +213,12 @@ const Project = () => {
                     allowClear
                     size='large'
                     className='text-sm font-semibold rounded '
+                    value={listCardCreationName}
+                    onChange={e => setListCardCreationName(e.target.value)}
                   />
                   <div className='flex items-center ml-auto gap-x-2'>
                     <Button
-                      onClick={() => toast.success('Add list successfully!')}
+                      onClick={createListCard}
                       type='primary'
                       className='w-20 text-xs font-semibold rounded'
                     >
@@ -109,10 +250,10 @@ const Project = () => {
             {activeColumn && (
               <ColumnContainer
                 column={activeColumn}
-                tasks={tasks.filter((task) => task.columnId === activeColumn.id)}
+                cards={tasks.filter((task) => task.listCardId === activeColumn.id)}
               />
             )}
-            {activeTask && <TaskCard task={activeTask} />}
+            {activeTask && <TaskCard card={activeTask} />}
           </DragOverlay>,
           document.body
         )}
@@ -148,15 +289,11 @@ const Project = () => {
     const isActiveAColumn = active.data.current?.type === 'Column';
     if (!isActiveAColumn) return;
 
-    console.log('DRAG END');
+    const activeColumnIndex = columns.findIndex((col) => col.id === activeId);
+    const overColumnIndex = columns.findIndex((col) => col.id === overId);
+    const movedColumns = arrayMove(columns, activeColumnIndex, overColumnIndex);
 
-    setColumns((columns) => {
-      const activeColumnIndex = columns.findIndex((col) => col.id === activeId);
-
-      const overColumnIndex = columns.findIndex((col) => col.id === overId);
-
-      return arrayMove(columns, activeColumnIndex, overColumnIndex);
-    });
+    setColumnsMoved(movedColumns);
   }
 
   function onDragOver(event: DragOverEvent) {
@@ -165,7 +302,7 @@ const Project = () => {
 
     const activeId = active.id;
     const overId = over.id;
-
+    
     if (activeId === overId) return;
 
     const isActiveATask = active.data.current?.type === 'Task';
@@ -174,121 +311,111 @@ const Project = () => {
     if (!isActiveATask) return;
 
     if (isActiveATask && isOverATask) {
-      setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((t) => t.id === activeId);
-        const overIndex = tasks.findIndex((t) => t.id === overId);
+      const activeIndex = tasks.findIndex((t) => t.id === activeId);
+      const overIndex = tasks.findIndex((t) => t.id === overId);
 
-        if (tasks[activeIndex].columnId != tasks[overIndex].columnId) {
-          tasks[activeIndex].columnId = tasks[overIndex].columnId;
-          return arrayMove(tasks, activeIndex, overIndex - 1);
-        }
+      if (tasks[activeIndex].listCardId != tasks[overIndex].listCardId) {
+        tasks[activeIndex].listCardId = tasks[overIndex].listCardId;
+        setCardsMoved(arrayMove(tasks, activeIndex, overIndex - 1));
+      }
 
-        return arrayMove(tasks, activeIndex, overIndex);
-      });
+      setCardsMoved(arrayMove(tasks, activeIndex, overIndex));
     }
 
     const isOverAColumn = over.data.current?.type === 'Column';
 
     if (isActiveATask && isOverAColumn) {
-      setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((t) => t.id === activeId);
+      const activeIndex = tasks.findIndex((t) => t.id === activeId);
 
-        tasks[activeIndex].columnId = overId;
-        console.log('DROPPING TASK OVER COLUMN', { activeIndex });
-        return arrayMove(tasks, activeIndex, activeIndex);
-      });
+      tasks[activeIndex].listCardId = overId.toString();
+      setCardsMoved(arrayMove(tasks, activeIndex, activeIndex));
     }
   }
 };
 
 export default Project;
 
-function generateId() {
-  /* Generate a random number between 0 and 10000 */
-  return Math.floor(Math.random() * 10001);
-}
+// const defaultCols: Column[] = [
+//   {
+//     id: 'todo',
+//     title: 'Todo',
+//   },
+//   {
+//     id: 'doing',
+//     title: 'Work in progress',
+//   },
+//   {
+//     id: 'done',
+//     title: 'Done',
+//   },
 
-const defaultCols: Column[] = [
-  {
-    id: 'todo',
-    title: 'Todo',
-  },
-  {
-    id: 'doing',
-    title: 'Work in progress',
-  },
-  {
-    id: 'done',
-    title: 'Done',
-  },
+// ];
 
-];
-
-const defaultTasks: Task[] = [
-  {
-    id: '1',
-    columnId: 'todo',
-    content: 'List admin APIs for dashboard',
-  },
-  {
-    id: '2',
-    columnId: 'todo',
-    content:
-      'Develop user registration functionality with OTP delivered on SMS after email confirmation and phone number confirmation',
-  },
-  {
-    id: '3',
-    columnId: 'doing',
-    content: 'Conduct security testing',
-  },
-  {
-    id: '4',
-    columnId: 'doing',
-    content: 'Analyze competitors',
-  },
-  {
-    id: '5',
-    columnId: 'done',
-    content: 'Create UI kit documentation',
-  },
-  {
-    id: '6',
-    columnId: 'done',
-    content: 'Dev meeting',
-  },
-  {
-    id: '7',
-    columnId: 'done',
-    content: 'Deliver dashboard prototype',
-  },
-  {
-    id: '8',
-    columnId: 'todo',
-    content: 'Optimize application performance',
-  },
-  {
-    id: '9',
-    columnId: 'todo',
-    content: 'Implement data validation',
-  },
-  {
-    id: '10',
-    columnId: 'todo',
-    content: 'Design database schema',
-  },
-  {
-    id: '11',
-    columnId: 'todo',
-    content: 'Integrate SSL web certificates into workflow',
-  },
-  {
-    id: '12',
-    columnId: 'doing',
-    content: 'Implement error logging and monitoring',
-  },
-  {
-    id: '13',
-    columnId: 'doing',
-    content: 'Design and implement responsive UI',
-  },
-];
+// const defaultTasks: Task[] = [
+//   {
+//     id: '1',
+//     columnId: 'todo',
+//     content: 'List admin APIs for dashboard',
+//   },
+//   {
+//     id: '2',
+//     columnId: 'todo',
+//     content:
+//       'Develop user registration functionality with OTP delivered on SMS after email confirmation and phone number confirmation',
+//   },
+//   {
+//     id: '3',
+//     columnId: 'doing',
+//     content: 'Conduct security testing',
+//   },
+//   {
+//     id: '4',
+//     columnId: 'doing',
+//     content: 'Analyze competitors',
+//   },
+//   {
+//     id: '5',
+//     columnId: 'done',
+//     content: 'Create UI kit documentation',
+//   },
+//   {
+//     id: '6',
+//     columnId: 'done',
+//     content: 'Dev meeting',
+//   },
+//   {
+//     id: '7',
+//     columnId: 'done',
+//     content: 'Deliver dashboard prototype',
+//   },
+//   {
+//     id: '8',
+//     columnId: 'todo',
+//     content: 'Optimize application performance',
+//   },
+//   {
+//     id: '9',
+//     columnId: 'todo',
+//     content: 'Implement data validation',
+//   },
+//   {
+//     id: '10',
+//     columnId: 'todo',
+//     content: 'Design database schema',
+//   },
+//   {
+//     id: '11',
+//     columnId: 'todo',
+//     content: 'Integrate SSL web certificates into workflow',
+//   },
+//   {
+//     id: '12',
+//     columnId: 'doing',
+//     content: 'Implement error logging and monitoring',
+//   },
+//   {
+//     id: '13',
+//     columnId: 'doing',
+//     content: 'Design and implement responsive UI',
+//   },
+// ];
