@@ -15,10 +15,8 @@ import useSearchParam from '../hooks/use-search-param';
 import { useState, useEffect } from 'react';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '../constant/search-param';
 
-import { useAppSelector } from '../hooks/use-redux';
-import { UserType, UserWrapperType } from '@/configs/store/slices/userSlice';
 import { tsmAxios } from '@/configs/axios';
-
+import { useSelector } from '@/store';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -58,14 +56,14 @@ const Sidebar = ({
   isCollapse?: boolean;
   toggleCollapsed?: () => void;
 }) => {
-
-  const userAuthenticated = useAppSelector((state) => state.user).data as UserType; 
   const navigate = useNavigate();
   /**
    *
    * @param e
    * @returns page based on the key
    */
+
+  const data = useSelector((store) => store.user.data);
 
   const [, setDialog] = useSearchParam(SEARCH_PARAMS.DIALOG);
 
@@ -79,14 +77,14 @@ const Sidebar = ({
     const fetchCategory = async () => {
       try {
         const res = await tsmAxios.get('/categories');
-        setCategories([{id: "all", name: "All"},...res.data]);
+        setCategories([{ id: 'all', name: 'All' }, ...res.data]);
       } catch (error) {
         console.log(error);
       }
     };
     fetchCategory();
   }, []);
-  
+
   const onClick: MenuProps['onClick'] = (e) => {
     switch (e.key) {
       case 'home':
@@ -97,14 +95,6 @@ const Sidebar = ({
         break;
       case 'mail':
         navigate('tsm/mail', { replace: true });
-        break;
-        // case 'members':
-        //   navigate('../../tsm/members', { replace: true });
-
-        //   break;
-        // case 'workspaces-settings':
-        //   navigate('tsm/workspaces-settings', { replace: true });
-
         break;
       case 'sub5':
         console.log('Workspaces');
@@ -147,43 +137,23 @@ const Sidebar = ({
     {
       key: 'workspace',
       label: 'Workspace',
-      icon: <FolderKanban className='w-4 h-4' />,
+      icon: <FolderKanban className='h-4 w-4' />,
     },
     {
       key: 'mail',
       label: 'Mail',
       icon: <MailOutlined />,
     },
-    // {
-    //   key: 'members',
-    //   label: 'Members',
-    //   icon: <UserOutlined />,
-    // },
-    // {
-    //   key: 'workspaces-settings',
-    //   label: 'Workspaces settings',
-    //   icon: <AppstoreOutlined />,
-    // },
     {
       type: 'divider',
     },
     {
       key: 'template',
       label: 'Templates',
-      icon: <LayoutTemplate className='w-4 h-4' />,
-      children: categories.map(item =>{ return {key: item.id, label: item.name, icon: <LayoutTemplate className='w-4 h-4' />}})
-      // [
-      //   {
-      //     key: 'business',
-      //     label: 'Business Template',
-      //     icon: <LayoutTemplate className='w-4 h-4' />,
-      //   },
-      //   {
-      //     key: 'Design',
-      //     label: 'Design Template',
-      //     icon: <LayoutTemplate className='w-4 h-4' />,
-      //   },
-      // ],
+      icon: <LayoutTemplate className='h-4 w-4' />,
+      children: categories.map((item) => {
+        return { key: item.id, label: item.name, icon: <LayoutTemplate className='h-4 w-4' /> };
+      }),
     },
 
     {
@@ -194,25 +164,21 @@ const Sidebar = ({
       label: 'All Workspaces',
       type: 'group',
     },
-    // {
-    //   key: 'sub6',
-    //   label: 'Everything',
-    //   icon: <SlackOutlined />,
-    // },
+
     {
       key: 'sub10',
       style: { display: type === 'private' ? 'none' : '' },
-      label: userAuthenticated?.personalWorkSpace?.name || 'Personal Workspace',
-      icon: <Rocket className='w-4 h-4' />,
+      label: data?.personalWorkSpace?.name || 'Personal Workspace',
+      icon: <Rocket className='h-4 w-4' />,
     },
     {
       key: 'sub7',
       label: 'Team Workspace',
-      icon: <Rocket className='w-4 h-4' />,
-      children: userAuthenticated.workspaces?.map((workspace) => ({
+      icon: <Rocket className='h-4 w-4' />,
+      children: data?.workspaces?.map((workspace) => ({
         key: workspace.id,
         label: workspace.name,
-        icon: <FolderKanban className='w-4 h-4' />,
+        icon: <FolderKanban className='h-4 w-4' />,
       })),
     },
     {
@@ -221,7 +187,7 @@ const Sidebar = ({
     {
       key: 'sub12',
       label: 'Create Workspace',
-      icon: <SquarePlus className='w-4 h-4' />,
+      icon: <SquarePlus className='h-4 w-4' />,
       onClick: handleOpenModal,
     },
     {
@@ -236,7 +202,7 @@ const Sidebar = ({
         {
           key: 'sub14',
           label: 'Double D Thesis',
-          icon: <FolderKanban className='w-4 h-4' />,
+          icon: <FolderKanban className='h-4 w-4' />,
         },
       ],
     },
@@ -250,9 +216,9 @@ const Sidebar = ({
       {/* Workspace item */}
       {type === 'workspace' && (
         <Tooltip title='TaskSmart Workspace'>
-          <div className='flex items-center p-2 pt-3 gap-x-2'>
+          <div className='flex items-center gap-x-2 p-2 pt-3'>
             <div className={`${isCollapse ? 'ml-4 h-8 w-8' : 'h-10 w-10'} rounded-lg`}>
-              <img src={wspImg} alt='' className='object-contain w-full rounded-lg' />
+              <img src={wspImg} alt='' className='w-full rounded-lg object-contain' />
             </div>
             <div
               className='flex flex-col gap-y-1'

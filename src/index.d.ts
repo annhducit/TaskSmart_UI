@@ -2,6 +2,13 @@
  * @description Import here so that it can be used in other files without having to import it again
  * @author Duc Nguyen
  */
+
+type BaseResponseType<T> = {
+  statusCode: number;
+  message: string;
+  data: T;
+};
+
 interface TSMNote {
   id: number;
   title: string;
@@ -33,7 +40,7 @@ type Project = {
   name: string;
   description: string;
   background: string;
-  inviteCode : string;
+  inviteCode: string;
   listCards: ListCard[];
   users: User[];
 };
@@ -44,15 +51,16 @@ type ListCard = {
   listNumber?: number;
   isCollapse: boolean;
   cards: Card[];
-}
+};
 
 type CheckList = {
   name: string;
   checked: boolean;
-}
+};
 
-type EStatus = "ToDo" | "InProgress" | "Done" | "InReview" | "Approved" | "NotSure" | "none"; 
-type ELevel = "Highest" | "High" | "Medium" | "Low" | "Lowest" | "NotSure" | "none"; 
+type EStatus = 'ToDo' | 'InProgress' | 'Done' | 'InReview' | 'Approved' | 'NotSure' | 'none';
+type ELevel = 'Highest' | 'High' | 'Medium' | 'Low' | 'Lowest' | 'NotSure' | 'none';
+type LoadingState = 'idle' | 'loading' | 'succeeded' | 'failed';
 
 type Card = {
   id: string;
@@ -66,4 +74,4 @@ type Card = {
   estimate: Date;
   checkLists: CheckList[];
   listCardId?: string;
-}
+};

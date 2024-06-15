@@ -9,9 +9,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { theme } from './configs/theme';
 import { queryClient } from './configs/query-client';
 import { PropsWithChildren } from 'react';
-import AxiosInterceptor from './shared/components/axios-interceptor';
 import { Provider } from 'react-redux';
-import { store } from '@/configs/store/store';
+import { store } from './store';
 
 const AppProvider = (props: PropsWithChildren) => {
   const { children } = props;
@@ -21,10 +20,10 @@ const AppProvider = (props: PropsWithChildren) => {
         <QueryClientProvider client={queryClient}>
           <ConfigProvider theme={theme} locale={locale}>
             <Provider store={store}>
-            {/* <PersistGate loading={<Loading.Page />} persistor={persistor}> */}
-            {/* <AxiosInterceptor>{children}</AxiosInterceptor> */}
-            {children}
-            {/* </PersistGate> */}
+              {/* <PersistGate loading={<Loading.Page />} persistor={persistor}> */}
+              {/* <AxiosInterceptor>{children}</AxiosInterceptor> */}
+              {children}
+              {/* </PersistGate> */}
             </Provider>
             <Toaster
               position='bottom-right'

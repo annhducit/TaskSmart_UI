@@ -6,7 +6,6 @@ import TaskCard from './task-card';
 import { Button, Input, Popover, Typography } from 'antd';
 import { Ellipsis, Plus, Trash2 } from 'lucide-react';
 import Tooltip from '@/shared/components/tooltip';
-import { tsmAuthAxios } from '@/configs/axios';
 
 interface Props {
   column: ListCard;
@@ -18,13 +17,7 @@ interface Props {
   deleteCard?: (id: Id) => void;
 }
 
-const ColumnContainer = ({
-  column,
-  cards,
-  updateColumn,
-  deleteColumn,
-  createCard,
-}: Props) => {
+const ColumnContainer = ({ column, cards, updateColumn, deleteColumn, createCard }: Props) => {
   const tasksIds = useMemo(() => {
     return cards.map((card) => card.id);
   }, [cards]);
@@ -38,16 +31,15 @@ const ColumnContainer = ({
     priority: 'none',
     risk: 'none',
     effort: 'none',
-    estimate:  new Date(),
-    checkLists: []
+    estimate: new Date(),
+    checkLists: [],
   };
 
-  
   const [cardCreation, setCardCreation] = useState<Card>(cardUndefine);
 
   const setCardCreationName = (name: string) => {
-    setCardCreation({...cardCreation, name});
-  }
+    setCardCreation({ ...cardCreation, name });
+  };
 
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
     id: column.id,
@@ -84,36 +76,36 @@ const ColumnContainer = ({
             allowClear
             type='text'
             defaultValue={column.name}
-            className='text-base font-bold transition-all border-none cursor-pointer rounded-xl'
-            onBlur={(e) => updateColumn({...column, name: e.target.value})}
+            className='cursor-pointer rounded-xl border-none text-base font-bold transition-all'
+            onBlur={(e) => updateColumn({ ...column, name: e.target.value })}
           />
         </div>
         <Popover
           placement='rightTop'
           trigger='click'
-          title={<div className='font-semibold text-center'>Behavior</div>}
+          title={<div className='text-center font-semibold'>Behavior</div>}
           content={
             <div className='flex flex-col gap-y-2'>
-              <Button type='default' className='text-xs text-left'>
+              <Button type='default' className='text-left text-xs'>
                 Add Card
               </Button>
-              <Button type='default' className='text-xs text-left '>
+              <Button type='default' className='text-left text-xs '>
                 Add List
               </Button>
-              <Button type='default' className='text-xs text-left '>
+              <Button type='default' className='text-left text-xs '>
                 Copy List
               </Button>
-              <Button type='default' className='text-xs text-left '>
+              <Button type='default' className='text-left text-xs '>
                 Move List
               </Button>
-              <Button type='default' className='text-xs text-left '>
+              <Button type='default' className='text-left text-xs '>
                 Archive List
               </Button>
             </div>
           }
         >
           <div className='rounded px-1 transition-all hover:bg-[#091E4224]'>
-            <Ellipsis className='w-5 h-5 mt-1 text-slate-500' />
+            <Ellipsis className='mt-1 h-5 w-5 text-slate-500' />
           </div>
         </Popover>
       </div>
@@ -122,7 +114,9 @@ const ColumnContainer = ({
 
       <div className='flex max-h-[420px] flex-col gap-y-2 overflow-y-scroll'>
         <SortableContext items={tasksIds}>
-          {cards.map((card) => <TaskCard key={card.id} card={card} />)}
+          {cards.map((card) => (
+            <TaskCard key={card.id} card={card} />
+          ))}
         </SortableContext>
       </div>
       <div className='flex items-center gap-x-2'>
@@ -131,8 +125,19 @@ const ColumnContainer = ({
           content={
             <div className='flex flex-col gap-y-2'>
               <Typography.Text className='text-xs'>Create new card</Typography.Text>
-              <Input onChange={e => setCardCreationName(e.target.value)} value={cardCreation.name} placeholder='Enter card title' />
-              <Button type='primary' size='small' className='w-full' onClick={()=>{createCard(column.id, cardCreation)}}>
+              <Input
+                onChange={(e) => setCardCreationName(e.target.value)}
+                value={cardCreation.name}
+                placeholder='Enter card title'
+              />
+              <Button
+                type='primary'
+                size='small'
+                className='w-full'
+                onClick={() => {
+                  createCard(column.id, cardCreation);
+                }}
+              >
                 Add Card
               </Button>
             </div>
@@ -140,8 +145,8 @@ const ColumnContainer = ({
         >
           <Button
             type='dashed'
-            icon={<Plus className='w-4 h-4' />}
-            className='flex items-center w-full rounded-xl'
+            icon={<Plus className='h-4 w-4' />}
+            className='flex w-full items-center rounded-xl'
           >
             Add Card
           </Button>
@@ -149,7 +154,10 @@ const ColumnContainer = ({
         <Tooltip title='Remove card'>
           <div className='cursor-pointer rounded px-1 transition-all hover:bg-[#091E4224]'>
             {/* hiện modal xác nhận xóa */}
-            <Trash2 onClick={() => deleteColumn(column.id)} className='w-4 h-4 mt-1 text-slate-500' />
+            <Trash2
+              onClick={() => deleteColumn(column.id)}
+              className='mt-1 h-4 w-4 text-slate-500'
+            />
           </div>
         </Tooltip>
       </div>

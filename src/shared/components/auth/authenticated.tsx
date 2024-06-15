@@ -1,3 +1,4 @@
+import cookieUtil from '@/utils/cookieUtil';
 import { type FC, type ReactNode } from 'react';
 
 type Props = {
@@ -7,10 +8,8 @@ type Props = {
 
 const Authenticated: FC<Props> = (props) => {
   const { children, fallback } = props;
-  /**
-   * useSelector((store) => store.auth.data.accessToken);
-   */
-  const accessToken = 'aa';
+  const accessToken = cookieUtil.getCookie('access_token');
+  console.log(accessToken);
 
   if (!accessToken) {
     return fallback;

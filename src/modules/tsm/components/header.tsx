@@ -31,13 +31,20 @@ import { Notepad } from '../features/notepad';
 import { ModalAddProject, ModalAddWorkspace } from '../features/workspace/page';
 import ProfileFlyer from './profile-flyer';
 import useCollapse from '@/shared/hooks/use-collapse';
-import { useAppSelector } from '@/shared/hooks/use-redux';
-import { UserType } from '@/configs/store/slices/userSlice';
+import { useDispatch, useSelector } from '@/store';
+import { toast } from 'sonner';
+import { clearAuthentication } from '@/store/auth';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const [open, setOpen] = useCollapse<boolean>(false);
   const [openFlyer, setOpenFlyer] = useCollapse<boolean>(false);
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const isSignedIn = useSelector((state) => state.auth.isSignedIn);
+  const isLoaded = useSelector((state) => state.auth.isLoaded);
   const handleOpenPopover = (newOpen: boolean) => {
     setOpen(newOpen);
   };
@@ -46,7 +53,16 @@ const Header = () => {
     setOpenFlyer(!openFlyer);
   };
 
-  const userAuthenticated = useAppSelector((state) => state.user).data as UserType; 
+  const handleSignout = () => {
+    dispatch(clearAuthentication());
+    toast.success('You have been signed out successfully');
+    navigate('/auth/sign-in');
+    if (!isSignedIn || !isLoaded) {
+      return null;
+    }
+  };
+
+  const userAuthenticated = useSelector((state) => state.user.data);
 
   return (
     <>
@@ -136,11 +152,17 @@ const Header = () => {
                 <>
                   <div className='flex items-center gap-x-3'>
                     <div className='relative rounded-full h-9 w-9'>
-                      <img src={userAuthenticated?.profileImage || user} alt='' className='w-full h-full rounded-full' />
+                      <img
+                        src={userAuthenticated?.profileImage || user}
+                        alt=''
+                        className='w-full h-full rounded-full'
+                      />
                       <span className='absolute bottom-1 right-0 rounded-full bg-[#1ad67b] p-1' />
                     </div>
                     <div className='flex flex-col opacity-75'>
-                      <Typography.Text className='font-semibold'>{userAuthenticated?.name || ""}</Typography.Text>
+                      <Typography.Text className='font-semibold'>
+                        {userAuthenticated?.name || ''}
+                      </Typography.Text>
                       <Typography.Text className='text-xs'> Online</Typography.Text>
                     </div>
                   </div>
@@ -202,6 +224,7 @@ const Header = () => {
                   <Button
                     icon={<LogOut className='w-4 h-4' />}
                     type='text'
+                    onClick={handleSignout}
                     className='flex items-center w-full text-left text-black'
                   >
                     Logout
@@ -212,7 +235,10 @@ const Header = () => {
             >
               <div className='relative'>
                 <div className='w-6 h-6 rounded-full'>
-                  <img src={userAuthenticated?.profileImage || user} className='w-full h-full rounded-full' />
+                  <img
+                    src={userAuthenticated?.profileImage || user}
+                    className='w-full h-full rounded-full'
+                  />
                 </div>
                 <span className='absolute right-0 top-0 rounded-full bg-[#3db88b] p-1' />
               </div>

@@ -1,16 +1,18 @@
-import { tsmAxios } from '@/configs/axios';
-import { Button, Form, FormProps, Input, Tag, Typography } from 'antd';
-import { ArrowLeft, ArrowRight, Lock, Mail, Phone, Plus, User } from 'lucide-react';
+import { Button, Form, FormProps, Input, Typography } from 'antd';
+import { ArrowLeft, ArrowRight, Lock, Mail, Plus, User } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import opt from '@/assets/images/otp.png';
+import { useRegister } from './tsm/components/hooks/use-register';
+import { tsmAxios } from '@/configs/axios';
+import { toast } from 'sonner';
 
 /**
  * @author Duc Nguyen
  * @return Signup page
  */
 
-type AuthType = {
+export type AuthType = {
   name: string;
   username: string;
   password: string;
@@ -23,33 +25,35 @@ type AuthType = {
 type FormType = FormProps<AuthType>;
 const Signup = () => {
   const [step, setStep] = useState<number>(1);
-  const [hasCodeSent, setHasCodeSent] = useState<boolean>(false);
+
   const [count, setCount] = useState(60);
   const [isDisabled, setIsDisabled] = useState(false);
 
+  const { mutate: register } = useRegister();
+
   const [data, setData] = useState<AuthType>({} as AuthType);
+  const [hasCodeSent, setHasCodeSent] = useState<boolean>(false);
 
   const [form] = Form.useForm<AuthType>();
 
   const onFinish: FormType['onFinish'] = async (values) => {
     const { verifyCode } = values;
-    const signup = await tsmAxios.post(`/users`, { ...data, verifyCode });
+    register({ ...data, verifyCode });
   };
 
   const sendVerifyEmailRequest = async () => {
+    const email = form.getFieldValue('email');
     await tsmAxios
-      .post(`/verify?email=${form.getFieldValue('email')}`)
+      .post(`/verify?email=${email}`)
       .then((res) => {
         if (res.status === 201) {
-          //success
           setHasCodeSent(true);
+          toast.success('Email sent successfully');
         }
-        //nof error
       })
       .catch(() => {
-        //nof error
+        toast.error('Email sent failed');
       });
-    //set time to resend 60s
   };
 
   const handleCheckFormBeforeSend = () => {

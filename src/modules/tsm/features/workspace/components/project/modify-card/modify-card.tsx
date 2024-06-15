@@ -36,7 +36,7 @@ import MemberInfo from './popover/member-info';
 import Tooltip from '@/shared/components/tooltip';
 import useSearchParams from '@/shared/hooks/use-search-params';
 import { useEffect, useState } from 'react';
-import { tsmAuthAxios } from '@/configs/axios';
+import { tsmAxios } from '@/configs/axios';
 
 const ModifyCard = () => {
   return (
@@ -51,7 +51,6 @@ const ModifyCard = () => {
   );
 };
 
-
 export default ModifyCard;
 
 const cardUndefine: Card = {
@@ -63,23 +62,22 @@ const cardUndefine: Card = {
   priority: 'none',
   risk: 'none',
   effort: 'none',
-  estimate:  new Date(),
-  checkLists: []
+  estimate: new Date(),
+  checkLists: [],
 };
-
 
 const ModifyCardModal = () => {
   const { onClose } = useDialogContext();
-  
+
   const searhParams = useSearchParams();
 
   const [card, setCard] = useState<Card>(cardUndefine);
 
   useEffect(() => {
-    const cardId = searhParams.get(SEARCH_PARAMS.ID)
+    const cardId = searhParams.get(SEARCH_PARAMS.ID);
     const createCardAsync = async () => {
       try {
-        const res = await tsmAuthAxios.get(`/cards/${cardId}`);
+        const res = await tsmAxios.get(`/cards/${cardId}`);
         setCard(res.data);
       } catch (error) {
         console.log(error);
@@ -88,7 +86,7 @@ const ModifyCardModal = () => {
     if (cardId) {
       createCardAsync();
     }
-  },[])
+  }, []);
 
   const handleClose = () => {
     onClose((searchParam) => {
@@ -110,89 +108,89 @@ const ModifyCardModal = () => {
       >
         <Button
           type='text'
-          icon={<ImagePlus className='w-4 h-4' />}
-          className='absolute bottom-0 right-0 flex items-center text-white rounded-none'
+          icon={<ImagePlus className='h-4 w-4' />}
+          className='absolute bottom-0 right-0 flex items-center rounded-none text-white'
         >
           Cover Image
         </Button>
       </div>
       <Dialog.CloseButton onClose={handleClose} />
-      <div className='grid grid-cols-8 p-6 gap-x-6'>
+      <div className='grid grid-cols-8 gap-x-6 p-6'>
         {/* Left content */}
         <div className='col-span-2'>
           <div className='flex flex-col gap-y-2'>
             <Typography.Text className='text-xs'>Add to card</Typography.Text>
             <Popover trigger='click' placement='left' content={<AddMemberToCard />}>
               <Button
-                icon={<Users className='w-3 h-3' />}
+                icon={<Users className='h-3 w-3' />}
                 type='default'
-                className='flex items-center text-left bg-slate-100 text-slate-500'
+                className='flex items-center bg-slate-100 text-left text-slate-500'
               >
                 Member
               </Button>
             </Popover>
             <Popover trigger='click' placement='left' content={<AddLabelToCard />}>
               <Button
-                icon={<Tag className='w-3 h-3' />}
+                icon={<Tag className='h-3 w-3' />}
                 type='default'
-                className='flex items-center text-left bg-slate-100 text-slate-500'
+                className='flex items-center bg-slate-100 text-left text-slate-500'
               >
                 Label
               </Button>
             </Popover>
             <Popover trigger='click' placement='left' content={<SetTimeToCard />}>
               <Button
-                icon={<Clock className='w-3 h-3' />}
+                icon={<Clock className='h-3 w-3' />}
                 type='default'
-                className='flex items-center text-left bg-slate-100 text-slate-500'
+                className='flex items-center bg-slate-100 text-left text-slate-500'
               >
                 Set time
               </Button>
             </Popover>
             <Popover trigger='click' placement='left' content={<AddTodoToCard />}>
               <Button
-                icon={<ListTodo className='w-3 h-3' />}
+                icon={<ListTodo className='h-3 w-3' />}
                 type='default'
-                className='flex items-center text-left bg-slate-100 text-slate-500'
+                className='flex items-center bg-slate-100 text-left text-slate-500'
               >
                 Todo
               </Button>
             </Popover>
             <Button
-              icon={<Paperclip className='w-3 h-3' />}
+              icon={<Paperclip className='h-3 w-3' />}
               type='default'
-              className='flex items-center text-left bg-slate-100 text-slate-500'
+              className='flex items-center bg-slate-100 text-left text-slate-500'
             >
               Attactments
             </Button>
 
             <Typography.Text className='text-xs'>Action</Typography.Text>
             <Button
-              icon={<Move className='w-3 h-3' />}
+              icon={<Move className='h-3 w-3' />}
               type='default'
-              className='flex items-center text-left bg-slate-100 text-slate-500'
+              className='flex items-center bg-slate-100 text-left text-slate-500'
             >
               Move
             </Button>
             <Button
-              icon={<Copy className='w-3 h-3' />}
+              icon={<Copy className='h-3 w-3' />}
               type='default'
-              className='flex items-center text-left bg-slate-100 text-slate-500'
+              className='flex items-center bg-slate-100 text-left text-slate-500'
             >
               Copy
             </Button>
             <Divider className='my-[1px]' />
             <Button
-              icon={<Archive className='w-3 h-3' />}
+              icon={<Archive className='h-3 w-3' />}
               type='default'
-              className='flex items-center text-left bg-slate-100 text-slate-500'
+              className='flex items-center bg-slate-100 text-left text-slate-500'
             >
               Archive
             </Button>
             <Button
-              icon={<Share className='w-3 h-3' />}
+              icon={<Share className='h-3 w-3' />}
               type='default'
-              className='flex items-center text-left bg-slate-100 text-slate-500'
+              className='flex items-center bg-slate-100 text-left text-slate-500'
             >
               Share
             </Button>
@@ -205,10 +203,8 @@ const ModifyCardModal = () => {
             <div className='flex items-start gap-x-2'>
               <LayoutList className='mt-[2px] h-5 w-5 opacity-40' />
               <div className='flex flex-col'>
-                <Typography.Text className='text-base font-semibold'>
-                  {card.name}
-                </Typography.Text>
-                <Typography.Text className='text-xs underline text-slate-500'>
+                <Typography.Text className='text-base font-semibold'>{card.name}</Typography.Text>
+                <Typography.Text className='text-xs text-slate-500 underline'>
                   in <b>Backlog</b> list
                 </Typography.Text>
               </div>
@@ -217,7 +213,7 @@ const ModifyCardModal = () => {
             <div className='flex flex-col gap-y-2'>
               <Typography.Text className='text-xs font-semibold'>Notifications</Typography.Text>
               <Button
-                icon={<Rss className='w-3 h-3 mt-1 text-primary-default' />}
+                icon={<Rss className='mt-1 h-3 w-3 text-primary-default' />}
                 className='w-[90px]'
                 type='default'
               >
@@ -228,7 +224,7 @@ const ModifyCardModal = () => {
 
           {/*  Members and label */}
           <div className='flex items-center gap-x-6'>
-            <div className='flex flex-col mt-4 gap-y-1'>
+            <div className='mt-4 flex flex-col gap-y-1'>
               <Typography.Text className='text-xs font-semibold'>Members</Typography.Text>
               <Avatar.Group maxCount={2}>
                 <Tooltip title='Anh Duc'>
@@ -243,13 +239,13 @@ const ModifyCardModal = () => {
                 </Tooltip>
               </Avatar.Group>
             </div>
-            <div className='flex flex-col mt-4 gap-y-1'>
+            <div className='mt-4 flex flex-col gap-y-1'>
               <Typography.Text className='text-xs font-semibold'>Label</Typography.Text>
               <div className='flex items-center gap-x-1'>
                 <div className='flex h-8 w-16 items-center rounded-sm bg-[#FADDDC] p-1' />
                 <Popover trigger='click' placement='right' content={<AddLabelToCard />}>
                   <Button
-                    icon={<Plus className='w-3 h-3 ' />}
+                    icon={<Plus className='h-3 w-3 ' />}
                     className='flex w-[90px] items-center'
                     type='default'
                   />
@@ -266,7 +262,7 @@ const ModifyCardModal = () => {
                 <Typography.Text className='text-base font-semibold'>Description</Typography.Text>
               </div>
               <Button
-                icon={<Pencil className='w-3 h-3 mt-1 text-primary-default' />}
+                icon={<Pencil className='mt-1 h-3 w-3 text-primary-default' />}
                 className='w-[90px]'
                 type='default'
               >
@@ -283,34 +279,34 @@ const ModifyCardModal = () => {
           <div className='mt-6'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-x-2'>
-                <File className='w-5 h-5 opacity-40' />
+                <File className='h-5 w-5 opacity-40' />
                 <Typography.Text className='text-base font-semibold'>Attachments</Typography.Text>
               </div>
               <Button
-                icon={<Upload className='w-3 h-3 mt-1' />}
+                icon={<Upload className='mt-1 h-3 w-3' />}
                 className='w-[90px]'
                 type='default'
               >
                 Upload
               </Button>
             </div>
-            <div className='flex flex-col mt-2 ml-6 gap-y-1'>
+            <div className='ml-6 mt-2 flex flex-col gap-y-1'>
               <AttachmentItem />
               <AttachmentItem />
             </div>
           </div>
           {/* Recent activities */}
 
-          <div className='flex flex-col mt-6 gap-y-4'>
+          <div className='mt-6 flex flex-col gap-y-4'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-x-4'>
-                <List className='w-5 h-5 mt-1 opacity-40' />
+                <List className='mt-1 h-5 w-5 opacity-40' />
                 <Typography.Text className='text-base font-semibold'>
                   Recent activities
                 </Typography.Text>
               </div>
               <Button
-                icon={<EyeOff className='w-3 h-3 mt-1' />}
+                icon={<EyeOff className='mt-1 h-3 w-3' />}
                 className='w-[90px]'
                 type='default'
               >
@@ -336,7 +332,7 @@ const ModifyCardModal = () => {
 const AttachmentItem = () => {
   return (
     <div className='flex items-center gap-x-2'>
-      <ImagePlus className='w-5 h-5' />
+      <ImagePlus className='h-5 w-5' />
       <Typography.Text className='text-xs'>image.png</Typography.Text>
     </div>
   );

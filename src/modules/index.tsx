@@ -5,7 +5,6 @@ import { createRouters } from '@/shared/router/utils';
 import LandingLayout from '@/modules/_layouts/LandingLayout';
 import AuthenticateLayout from '@/modules/_layouts/AuthenticateLayout';
 import Authenticated from '@/shared/components/auth/authenticated';
-import SignInNavigate from '@/shared/components/auth/signin-navigate';
 import AuthNavigate from '@/shared/components/auth/auth-navigate';
 import DashboardLayout from './_layouts/DashboardLayout';
 import UserInformation from '@/shared/components/auth/user-information';
@@ -29,16 +28,16 @@ const routers = createRouters([
     ],
   },
   {
-    path: '/home',
+    path: '/',
     element: <DashboardLayout />,
     children: [
       {
         path: '*',
         element: (
           <Authenticated fallback={<AuthNavigate />}>
-            {/* <UserInformation> */}
+            <UserInformation>
               <PrivateRouter />
-            {/* </UserInformation> */}
+            </UserInformation>
           </Authenticated>
         ),
       },

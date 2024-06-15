@@ -2,7 +2,6 @@ import { Button, Input, Popover } from 'antd';
 import ModifyCard from './modify-card/modify-card';
 import { Plus } from 'lucide-react';
 import useCollapse from '@/shared/hooks/use-collapse';
-import { toast } from 'sonner';
 import {
   DndContext,
   DragEndEvent,
@@ -19,21 +18,20 @@ import { useMemo, useState, useEffect } from 'react';
 import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 import { createPortal } from 'react-dom';
 import { TaskCard } from './move-card';
-import { tsmAuthAxios } from '@/configs/axios';
-import { set } from 'lodash';
+import { tsmAxios } from '@/configs/axios';
 
 const Project = () => {
   const projectId = '666811ebf61a2e3287ee5a45';
   const [project, setProject] = useState<Project>({
-    id: "",
-    name: "",
-    description: "",
-    background: "",
-    inviteCode: "",
+    id: '',
+    name: '',
+    description: '',
+    background: '',
+    inviteCode: '',
     listCards: [],
-    users: []
+    users: [],
   } as Project);
-  
+
   const [visible, setVisible] = useCollapse<boolean>(false);
   const handleOpenChange = (open: boolean) => {
     setVisible(open);
@@ -60,43 +58,45 @@ const Project = () => {
   const createListCard = async () => {
     const fetchProject = async () => {
       try {
-        const res = await tsmAuthAxios.post(`/projects/${projectId}`, {name: listCardCreationName});
-        setProject((prev) => {return {...prev, listCards: [...prev.listCards, res.data]}})
-        setListCardCreationName('')
+        const res = await tsmAxios.post(`/projects/${projectId}`, { name: listCardCreationName });
+        setProject((prev) => {
+          return { ...prev, listCards: [...prev.listCards, res.data] };
+        });
+        setListCardCreationName('');
       } catch (error) {
         console.log(error);
       }
     };
     fetchProject();
-  }
+  };
 
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const res = await tsmAuthAxios.get(`/projects/${projectId}`);
-        setProject(res.data)
+        const res = await tsmAxios.get(`/projects/${projectId}`);
+        setProject(res.data);
       } catch (error) {
         console.log(error);
       }
     };
     fetchProject();
-  },[])
+  }, []);
 
   useEffect(() => {
-    const listCardIterator : Card[] = []
+    const listCardIterator: Card[] = [];
     project.listCards.forEach((listCard) => {
       listCard.cards.forEach((card) => {
-        listCardIterator.push({...card, listCardId: listCard.id})
-      })
-    })
-    setColumns(project.listCards)
-    setTasks(listCardIterator)
-  }, [project])
+        listCardIterator.push({ ...card, listCardId: listCard.id });
+      });
+    });
+    setColumns(project.listCards);
+    setTasks(listCardIterator);
+  }, [project]);
 
   const updateListCard = async (listCard: ListCard) => {
     const updateListCard = async () => {
       try {
-        const res = await tsmAuthAxios.put(`/projects/${projectId}/${listCard.id}`, listCard);
+        const res = await tsmAxios.put(`/projects/${projectId}/${listCard.id}`, listCard);
         const columnUpdated: ListCard = res.data;
         setColumns((prev) => {
           return prev.map((col) => {
@@ -104,80 +104,82 @@ const Project = () => {
               return columnUpdated;
             }
             return col;
-          })
-        })
+          });
+        });
       } catch (error) {
         console.log(error);
       }
     };
     updateListCard();
-  }
+  };
 
   const deleteListCard = async (listCardId: String) => {
     const deleteListCardAsync = async () => {
       try {
-        await tsmAuthAxios.delete(`/projects/${projectId}/${listCardId}`);
+        await tsmAxios.delete(`/projects/${projectId}/${listCardId}`);
         setColumns((prev) => {
-          return prev.filter((col) => col.id !== listCardId)
-        })
+          return prev.filter((col) => col.id !== listCardId);
+        });
       } catch (error) {
         console.log(error);
       }
     };
     deleteListCardAsync();
-  }
+  };
 
   const createCard = async (columnId: String, card: Card) => {
     const createCardAsync = async () => {
       try {
-        const res = await tsmAuthAxios.post(`/projects/${projectId}/${columnId}`, card);
+        const res = await tsmAxios.post(`/projects/${projectId}/${columnId}`, card);
         const cardCreated: Card = res.data;
         setColumns((prev) => {
           return prev.map((col) => {
             if (col.id === columnId) {
-              return {...col, cards: [...col.cards, cardCreated]}
+              return { ...col, cards: [...col.cards, cardCreated] };
             }
             return col;
-          })
-        })
+          });
+        });
       } catch (error) {
         console.log(error);
       }
     };
     createCardAsync();
-  }
+  };
 
   const setColumnsMoved = (columns: ListCard[]) => {
     const moveColumnsAsync = async () => {
       try {
-        await tsmAuthAxios.post(`/projects/${projectId}/move/listcard`, {ids: columns.map((col) => col.id)});
+        await tsmAxios.post(`/projects/${projectId}/move/listcard`, {
+          ids: columns.map((col) => col.id),
+        });
       } catch (error) {
         console.log(error);
       }
-    }
+    };
     moveColumnsAsync();
     setColumns(columns);
-  }
+  };
 
   const setCardsMoved = (cards: Card[]) => {
     const ids = columns.map((col) => ({
-      listCardId: col.id, 
-      cardIds: cards.filter((card) => card.listCardId === col.id).map((card) => card.id)
+      listCardId: col.id,
+      cardIds: cards.filter((card) => card.listCardId === col.id).map((card) => card.id),
     }));
     console.log(ids);
     const moveCardsAsync = async () => {
       try {
-        await tsmAuthAxios.post(`/projects/${projectId}/move/card`, {ids}).then((res) => {
+        await tsmAxios.post(`/projects/${projectId}/move/card`, { ids }).then((res) => {
           console.log(res);
-        })
+        });
       } catch (error) {
         console.log(error);
       }
-    }
+    };
     moveCardsAsync();
     setTasks(cards);
-  }
-  
+  };
+
   return (
     <>
       <DndContext
@@ -212,21 +214,21 @@ const Project = () => {
                     placeholder='Enter list title'
                     allowClear
                     size='large'
-                    className='text-sm font-semibold rounded '
+                    className='rounded text-sm font-semibold '
                     value={listCardCreationName}
-                    onChange={e => setListCardCreationName(e.target.value)}
+                    onChange={(e) => setListCardCreationName(e.target.value)}
                   />
-                  <div className='flex items-center ml-auto gap-x-2'>
+                  <div className='ml-auto flex items-center gap-x-2'>
                     <Button
                       onClick={createListCard}
                       type='primary'
-                      className='w-20 text-xs font-semibold rounded'
+                      className='w-20 rounded text-xs font-semibold'
                     >
                       Add list
                     </Button>
                     <Button
                       type='default'
-                      className='w-16 text-xs font-semibold rounded'
+                      className='w-16 rounded text-xs font-semibold'
                       onClick={() => handleOpenChange(false)}
                     >
                       Cancel
@@ -236,7 +238,7 @@ const Project = () => {
               }
             >
               <Button
-                icon={<Plus className='w-4 h-4 opacity-65' />}
+                icon={<Plus className='h-4 w-4 opacity-65' />}
                 size='large'
                 className='flex w-[275px] items-center rounded-xl border-none bg-[#ffffff3d] text-sm font-semibold text-white'
               >
@@ -302,7 +304,7 @@ const Project = () => {
 
     const activeId = active.id;
     const overId = over.id;
-    
+
     if (activeId === overId) return;
 
     const isActiveATask = active.data.current?.type === 'Task';

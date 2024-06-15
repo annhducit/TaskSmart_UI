@@ -1,4 +1,3 @@
-import { tsmAxios } from '@/configs/axios';
 import { JSON_TYPE, JSON_UTF8_TYPE } from '@/shared/constant';
 import type { AxiosResponse } from 'axios';
 import { get } from 'lodash';
@@ -17,8 +16,4 @@ export const axiosSuccessResponse = (response: AxiosResponse) => {
     default:
       return response;
   }
-};
-
-export const setNPPAxiosToken = (accessToken?: string) => {
-  tsmAxios.defaults.headers.common['Authorization'] = !accessToken ? null : `Bearer ${accessToken}`;
 };

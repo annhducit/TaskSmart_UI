@@ -1,7 +1,7 @@
 import { Typography } from 'antd';
 import { LockKeyhole } from 'lucide-react';
 
-const ProjectItem = (prop?: { id?: string }) => {
+const ProjectItem = (_prop?: { id?: string }) => {
   return (
     <div
       style={{

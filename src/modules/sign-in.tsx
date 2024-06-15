@@ -1,11 +1,10 @@
 import { Button, Form, FormProps, Input, Typography } from 'antd';
 import { Lock, User } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { tsmAxios } from '@/configs/axios';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '@/shared/hooks/use-redux';
-import { setAuthentication } from '@/configs/store/slices/userSlice';
-import { AuthType } from '@/configs/store/slices/userSlice';
+import { signInAction } from '@/store/auth/action';
+import { toast } from 'sonner';
 
 /**
  * @author Duc Nguyen
@@ -30,17 +29,26 @@ const Signin = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const dispatch = useAppDispatch();
 
+  const navigate = useNavigate();
+
   const onFinish: FormType['onFinish'] = async (value) => {
     const auth = {
       [determineInputType(value.user)]: value.user,
       ...value,
     };
+    try {
+      setIsSubmitting(true);
 
-    //bundle to modal
-    await tsmAxios.post('/auth/login', auth).then((res) => {
-      const user: AuthType = res.data;
-      dispatch(setAuthentication(user));
-    });
+      const res = await dispatch(signInAction(auth));
+      if (res.meta.requestStatus === 'rejected') {
+        toast.error('My toast on a page load');
+      } else {
+        toast.success('Sign in successfully');
+        navigate('/tsm/home');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   return (
     <div className='absolute right-20 top-16 h-[550px] w-[540px] rounded-lg bg-white shadow-lg'>
@@ -79,7 +87,7 @@ const Signin = () => {
                 },
               ]}
             >
-              <Input prefix={<User className='w-4 h-4 text-primary-default' />} size='large' />
+              <Input prefix={<User className='mr-2 h-4 w-4 text-primary-default' />} size='large' />
             </Form.Item>
             <Form.Item
               name='password'
@@ -92,9 +100,9 @@ const Signin = () => {
               ]}
             >
               <Input
-                prefix={<Lock className='w-4 h-4 text-primary-default' />}
+                prefix={<Lock className='mr-2 h-4 w-4 text-primary-default' />}
                 size='large'
-                placeholder='******'
+                type='password'
               />
             </Form.Item>
             <Button
@@ -113,28 +121,10 @@ const Signin = () => {
   );
 };
 
-const GoogleButton = (props: {
+const GoogleButton = (_props: {
   isSubmitting?: boolean;
   setIsSubmitting?: Dispatch<SetStateAction<boolean>>;
 }) => {
-  // const { isSubmitting, setIsSubmitting } = props;
-
-  // const dispatch = useDispatch();
-
-  // const login = useGoogleLogin({
-  //   flow: 'implicit',
-  //   async onSuccess(res) {
-  //     try {
-  //       setIsSubmitting(true);
-  //       await dispatch(signInGoogleAction(res));
-  //     } catch (error) {
-  //       console.log('🚀 ~ file: sign-in.tsx:112 ~ onSuccess ~ error:', error);
-  //     } finally {
-  //       setIsSubmitting(false);
-  //     }
-  //   },
-  // });
-
   return (
     <Button
       size='large'
@@ -142,35 +132,15 @@ const GoogleButton = (props: {
       block
       icon={<GoogleIcon />}
       htmlType='button'
-      // onClick={() => login()}
-      // loading={isSubmitting}
     >
       Google
     </Button>
   );
 };
-const GithubButton = (props: {
+const GithubButton = (_props: {
   isSubmitting?: boolean;
   setIsSubmitting?: Dispatch<SetStateAction<boolean>>;
 }) => {
-  // const { isSubmitting, setIsSubmitting } = props;
-
-  // const dispatch = useDispatch();
-
-  // const login = useGoogleLogin({
-  //   flow: 'implicit',
-  //   async onSuccess(res) {
-  //     try {
-  //       setIsSubmitting(true);
-  //       await dispatch(signInGithubAction(res));
-  //     } catch (error) {
-  //       console.log('🚀 ~ file: sign-in.tsx:112 ~ onSuccess ~ error:', error);
-  //     } finally {
-  //       setIsSubmitting(false);
-  //     }
-  //   },
-  // });
-
   return (
     <Button
       size='large'
@@ -178,8 +148,6 @@ const GithubButton = (props: {
       block
       icon={<GithubIcon />}
       htmlType='button'
-      // onClick={() => login()}
-      // loading={isSubmitting}
     >
       Github
     </Button>

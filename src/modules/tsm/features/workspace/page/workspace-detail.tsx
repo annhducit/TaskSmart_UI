@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import projectImg from '@/assets/images/karban.png';
-import { Button, Card, Divider, Form, Input, Mentions, Select, Tag, Typography } from 'antd';
+import { Button, Card, Divider, Form, Input, Select, Tag, Typography } from 'antd';
 import { LockKeyhole, PlusCircle } from 'lucide-react';
 import Search from 'antd/es/input/Search';
 import ProjectItem from '../components/project-item';
@@ -11,10 +11,8 @@ import { useDialogContext } from '@/shared/components/dialog/provider';
 import ProjectBackground from '../components/background-container/background';
 import { useState, useEffect } from 'react';
 
-
 import createWps from '@/assets/gifs/create-workspace.gif';
-import CopyUrlButton from '@/shared/components/dialog/copy-button';
-import { tsmAuthAxios, tsmAxios } from '@/configs/axios';
+import { tsmAxios } from '@/configs/axios';
 const WorkspaceDetail = () => {
   const { workspaceId } = useParams();
 
@@ -33,15 +31,15 @@ const WorkspaceDetail = () => {
     <>
       <div className='flex flex-col'>
         <div className='flex items-center gap-x-5'>
-          <div className='w-20 h-20 rounded'>
-            <img src={projectImg} alt='' className='w-full h-full rounded-lg' />
+          <div className='h-20 w-20 rounded'>
+            <img src={projectImg} alt='' className='h-full w-full rounded-lg' />
           </div>
           <div className='flex flex-col'>
             <Typography.Title level={3}>TaskSmart Workspace</Typography.Title>
             <div className='flex items-center gap-x-4'>
               <Tag color='gold'>Premium</Tag>
               <div className='flex items-center'>
-                <LockKeyhole color='red' className='w-4 h-4 mr-1' />
+                <LockKeyhole color='red' className='mr-1 h-4 w-4' />
                 <Tag color='red'>Private</Tag>
               </div>
             </div>
@@ -141,10 +139,10 @@ const WorkspaceDetail = () => {
               />
             </div>
           </div>
-          <div className='grid grid-cols-4 gap-4 my-6'>
+          <div className='my-6 grid grid-cols-4 gap-4'>
             <Button
-              className='flex items-center justify-center w-full h-32 mx-auto'
-              icon={<PlusCircle className='w-4 h-4' />}
+              className='mx-auto flex h-32 w-full items-center justify-center'
+              icon={<PlusCircle className='h-4 w-4' />}
               type='dashed'
               onClick={showModal}
             >
@@ -203,7 +201,7 @@ const ModalCreateWorkspace = () => {
   const handleSubmit = (value: WorkspaceRequest) => {
     const createWorkSpace = async () => {
       try {
-        const res = await tsmAuthAxios.post('/workspaces', value);
+        const res = await tsmAxios.post('/workspaces', value);
         console.log(res.data);
       } catch (error) {
         console.log(error);
@@ -226,7 +224,7 @@ const ModalCreateWorkspace = () => {
               layout='vertical'
               onFinish={handleSubmit}
               name='create-workspace'
-              className='flex flex-col w-full'
+              className='flex w-full flex-col'
             >
               <Form.Item>
                 <Form.Item
@@ -244,59 +242,14 @@ const ModalCreateWorkspace = () => {
                   <Select
                     placeholder='Select type of workspace'
                     allowClear
-                    options={categories.map((item) => {return {value: item.id, label: item.name}})}
-                    // {[
-                    //   {
-                    //     value: 'it',
-                    //     label: 'Information Technology',
-                    //   },
-                    //   {
-                    //     value: 'finance',
-                    //     label: 'Finance',
-                    //   },
-                    //   {
-                    //     value: 'marketing',
-                    //     label: 'Marketing',
-                    //   },
-                    //   {
-                    //     value: 'hr',
-                    //     label: 'Human Resource',
-                    //   },
-                    // ]}
+                    options={categories.map((item) => {
+                      return { value: item.id, label: item.name };
+                    })}
                   />
                 </Form.Item>
                 <Form.Item name='description' label='Description of workspace'>
                   <Input.TextArea allowClear rows={4} placeholder='Description' />
                 </Form.Item>
-                {/* <Form.Item
-                  name='share'
-                  label={
-                    <Typography.Text className='text-base font-semibold'>
-                      Invite your team
-                    </Typography.Text>
-                  }
-                >
-                  <div className='flex items-center justify-between'>
-                    <Typography.Text>Members in the workspace</Typography.Text>
-                    <CopyUrlButton />
-                  </div>
-                  <Mentions
-                    style={{ width: '100%' }}
-                    className='mt-1'
-                    defaultValue='@annhducit'
-                    options={[
-                      {
-                        value: 'annhducit',
-                        label: 'Nguyễn Trọng Đức',
-                      },
-                      {
-                        value: 'hducduy21',
-                        label: 'Hoàng Đức Duy',
-                      },
-                    ]}
-                    allowClear
-                  />
-                </Form.Item> */}
               </Form.Item>
               <Button
                 htmlType='submit'
@@ -308,7 +261,7 @@ const ModalCreateWorkspace = () => {
               </Button>
             </Form>
           </div>
-          <div className='flex flex-col col-span-1'>
+          <div className='col-span-1 flex flex-col'>
             <img loading='lazy' src={createWps} className='h-[360px] w-[350px]' />
           </div>
         </div>

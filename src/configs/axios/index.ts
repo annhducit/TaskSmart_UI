@@ -1,4 +1,3 @@
-import tsmAxios from "./tsm";
-import tsmAuthAxios from "./tmsAuthAxios";
+import tsmAxios from './tsm';
 
-export { tsmAxios, tsmAuthAxios };
+export { tsmAxios };
