@@ -1,12 +1,14 @@
 import { tsmAxios } from '@/configs/axios';
 import { AuthType } from '@/modules/sign-up';
+import { isStatusCodeValid } from '@/shared/components/status';
 import { useMutation } from '@tanstack/react-query';
 import { App } from 'antd';
+import { AxiosResponse } from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 async function createAccount(data: AuthType) {
-  const res = await tsmAxios.post<BaseResponseType<AuthType>>('/users', data);
-  return res.data;
+  const res = await tsmAxios.post<AxiosResponse<AuthType>>('/users', data);
+  return res;
 }
 export function useRegister() {
   const { notification } = App.useApp();
@@ -17,7 +19,7 @@ export function useRegister() {
       return res;
     },
     onSuccess(res) {
-      if (res.statusCode === 201) {
+      if (isStatusCodeValid(res.status)) {
         notification.success({
           message: 'Account created successfully',
         });
@@ -25,7 +27,7 @@ export function useRegister() {
       } else {
         notification.error({
           message: 'Cannot create account',
-          description: res.statusCode,
+          description: res.status,
         });
       }
     },

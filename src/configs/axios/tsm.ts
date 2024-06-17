@@ -4,7 +4,6 @@ const tsmAxios = axios.create({ baseURL: `${import.meta.env.VITE_TASKSMART_BACKE
 
 tsmAxios.interceptors.request.use(
   (config) => {
-    config.headers['Content-Type'] = 'application/json';
     return config;
   },
   (error) => {

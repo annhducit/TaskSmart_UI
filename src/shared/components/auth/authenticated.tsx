@@ -9,7 +9,6 @@ type Props = {
 const Authenticated: FC<Props> = (props) => {
   const { children, fallback } = props;
   const accessToken = cookieUtil.getCookie('access_token');
-  console.log(accessToken);
 
   if (!accessToken) {
     return fallback;

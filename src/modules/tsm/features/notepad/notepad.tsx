@@ -1,22 +1,37 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Dropdown, Input, Typography } from 'antd';
 import { Archive, ChevronLeft, Ellipsis, Pen, Search, Trash, X } from 'lucide-react';
 import NoteDetails from './note-detail';
 import NoteList from './list-note';
-import { noteSample } from './data';
-import useCollapse from '@/shared/hooks/use-collapse';
 import NotepadEmpty from './note-empty';
-import { toast } from 'sonner';
+import useCollapse from '@/shared/hooks/use-collapse';
+import Loading from '@/shared/components/loading';
+import useGetNotes from './hooks/query/use-get-notes';
+import useCreateNote from './hooks/mutation/use-create-note';
+import useSearchNote from './hooks/query/use-search-note';
 
 export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) => {
   const [note, setNote] = useState<string>('');
+  const [isArchived, setIsArchived] = useState<boolean>(false);
+  const [searchNote, setSearchNote] = useState<string>('');
+  const [noteTitle, setNoteTitle] = useState<string>('');
 
   const [view, setView] = useCollapse<number>(0);
   const [search, setSearch] = useCollapse<boolean>(false);
 
-  const openToast = () => {
-    toast.success('Create note successfully!');
+  const { mutate: createNote } = useCreateNote();
+  const { data: result, refetch: refetchSearch } = useSearchNote(searchNote);
+  const { data: notes, refetch, isPending: isLoading } = useGetNotes(isArchived);
+
+  const handleCreateNote = () => {
+    createNote({ title: note });
+    setNote('');
   };
+
+  useEffect(() => {
+    refetch();
+  }, [isArchived, refetch]);
+
   return (
     <div className='z-[99999] mt-2 flex flex-col gap-y-6 rounded-[12px]'>
       {/* Header note */}
@@ -34,24 +49,43 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
               ) : (
                 <div
                   className='rounded px-[6px] hover:bg-[#33607e]'
-                  onClick={() => setSearch(false)}
+                  onClick={() => {
+                    setSearch(false);
+                    setSearchNote('');
+                    refetch();
+                  }}
                 >
                   <X className='mt-1 h-5 w-5 text-white' />
                 </div>
               )}
-              <> {search && <SearchNote />}</>
+              <>
+                {search && (
+                  <SearchNote
+                    onChange={(value) => {
+                      setSearchNote(value);
+                      refetchSearch();
+                    }}
+                  />
+                )}
+              </>
             </div>
           )}
           {!search && (
             <>
               {view === 1 && (
-                <div className='rounded px-[6px] hover:bg-[#33607e]' onClick={() => setView(0)}>
+                <div
+                  className='rounded px-[6px] hover:bg-[#33607e]'
+                  onClick={() => {
+                    setView(0);
+                    setNoteTitle('Notepad');
+                  }}
+                >
                   <ChevronLeft className='mt-1 h-5 w-5 text-white' />
                 </div>
               )}
               <div>
                 <Typography.Text className='text-md font-semibold text-white'>
-                  Notepad
+                  {view === 0 ? 'Notepad' : noteTitle}
                 </Typography.Text>
               </div>
               <div>
@@ -63,8 +97,8 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
                         items: [
                           {
                             key: '1',
-                            label: 'Show archived',
-                            onClick: () => console.log('Delete'),
+                            label: `${isArchived ? 'Hide archived' : 'Show archived'}`,
+                            onClick: () => setIsArchived((prev) => !prev),
                             icon: <Archive className='h-3 w-3 text-blue-500' />,
                           },
                         ],
@@ -83,19 +117,16 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
                           {
                             key: '1',
                             label: 'Rename',
-                            onClick: () => console.log('Edit'),
                             icon: <Pen className='h-3 w-3 text-blue-500' />,
                           },
                           {
                             key: '2',
-                            label: 'Archive',
-                            onClick: () => console.log('Delete'),
+                            label: ` ${isArchived ? 'Unarchive' : 'Archive'}`,
                             icon: <Archive className='h-3 w-3 text-blue-500' />,
                           },
                           {
                             key: '3',
                             label: 'Delete',
-                            onClick: () => console.log('Delete'),
                             icon: <Trash className='h-3 w-3 text-red-500' />,
                           },
                         ],
@@ -122,20 +153,22 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
       {/* Header note */}
 
       {/* Body note */}
-      {noteSample.length > 0 ? (
+      {notes && notes?.length > 0 ? (
         <>
           {view === 0 && (
             <div className='h-[310px] overflow-y-scroll'>
-              {noteSample.map((note) => (
+              {isLoading ? (
+                <div className='flex h-full items-center justify-center'>
+                  <Loading.Spinner />
+                </div>
+              ) : (
                 <NoteList
-                  props={{
-                    data: note,
-                    view: view,
-                    setView: setView,
-                  }}
-                  key={note.id}
+                  data={searchNote.length > 0 ? result ?? [] : notes ?? []}
+                  setView={setView}
+                  setNoteTitle={setNoteTitle}
+                  view={view}
                 />
-              ))}
+              )}
             </div>
           )}
           {view === 1 && (
@@ -154,14 +187,16 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
         <Input
           size='middle'
           placeholder='Create new note...'
+          value={note}
           onChange={(e) => setNote(e.target.value)}
+          onPressEnter={handleCreateNote}
           className='border-none py-2 pl-6 outline-none focus-within:border-none focus:border-none focus:outline-none focus:ring-0'
         />
 
         {note.length > 0 && (
           <Button
             type='primary'
-            onClick={openToast}
+            onClick={handleCreateNote}
             className='h-10 w-28 rounded-none rounded-br-[4px] border-none'
           >
             Create
@@ -175,12 +210,13 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
 
 export default Notepad;
 
-const SearchNote = () => {
+const SearchNote = ({ onChange }: { onChange: (value: string) => void }) => {
   return (
     <div className='w-[290px] items-center gap-x-6 '>
       <Input
         size='middle'
         placeholder='Search note...'
+        onChange={(e) => onChange(e.target.value)}
         allowClear
         className='rounded-lg border-none bg-[#33607e] pl-6 text-[14px] font-semibold  text-black outline-none focus-within:border-none focus:border-none focus:outline-none focus:ring-0'
       />

@@ -41,7 +41,9 @@ const Signin = () => {
 
       const res = await dispatch(signInAction(auth));
       if (res.meta.requestStatus === 'rejected') {
-        toast.error('My toast on a page load');
+        toast.error('Sign in failed', {
+          description: 'Please check your username or password again',
+        });
       } else {
         toast.success('Sign in successfully');
         navigate('/tsm/home');
@@ -99,7 +101,7 @@ const Signin = () => {
                 },
               ]}
             >
-              <Input
+              <Input.Password
                 prefix={<Lock className='mr-2 h-4 w-4 text-primary-default' />}
                 size='large'
                 type='password'

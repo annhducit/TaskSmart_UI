@@ -1,6 +1,7 @@
-import { QueryClient, keepPreviousData } from '@tanstack/react-query'
+import type { QueryClientConfig } from '@tanstack/react-query';
+import { keepPreviousData, QueryClient } from '@tanstack/react-query';
 
-export const queryClient = new QueryClient({
+const queryClientConfigs: QueryClientConfig = {
   defaultOptions: {
     queries: {
       gcTime: 60000,
@@ -9,4 +10,6 @@ export const queryClient = new QueryClient({
       placeholderData: keepPreviousData,
     },
   },
-})
+};
+
+export const queryClient = new QueryClient(queryClientConfigs);

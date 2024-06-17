@@ -3,32 +3,19 @@
  * @author Duc Nguyen
  */
 
+type EStatus = 'ToDo' | 'InProgress' | 'Done' | 'InReview' | 'Approved' | 'NotSure' | 'none';
+type ELevel = 'Highest' | 'High' | 'Medium' | 'Low' | 'Lowest' | 'NotSure' | 'none';
+type LoadingState = 'idle' | 'loading' | 'succeeded' | 'failed';
+
 type BaseResponseType<T> = {
-  statusCode: number;
   message: string;
+  status: number;
+  totalRecords: number;
   data: T;
 };
 
-interface TSMNote {
-  id: number;
-  title: string;
-  content: string;
-  createdAt: string;
-}
-
 /**Type create drag and drop */
 type Id = string | number;
-
-// type Column = {
-//   id: Id;
-//   title: string;
-// };
-
-// type Task = {
-//   id: Id;
-//   columnId: Id;
-//   content: string;
-// };
 
 type Category = {
   id: string;
@@ -58,10 +45,6 @@ type CheckList = {
   checked: boolean;
 };
 
-type EStatus = 'ToDo' | 'InProgress' | 'Done' | 'InReview' | 'Approved' | 'NotSure' | 'none';
-type ELevel = 'Highest' | 'High' | 'Medium' | 'Low' | 'Lowest' | 'NotSure' | 'none';
-type LoadingState = 'idle' | 'loading' | 'succeeded' | 'failed';
-
 type Card = {
   id: string;
   name: string;
@@ -74,4 +57,15 @@ type Card = {
   estimate: Date;
   checkLists: CheckList[];
   listCardId?: string;
+};
+
+type TSMNote = {
+  id: string;
+  title: string;
+  userId: string;
+  archived: boolean;
+  pinned: boolean;
+  deleted: boolean;
+  content: null | string;
+  createdAt: string;
 };

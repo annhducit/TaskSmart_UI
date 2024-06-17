@@ -29,7 +29,7 @@ const Signup = () => {
   const [count, setCount] = useState(60);
   const [isDisabled, setIsDisabled] = useState(false);
 
-  const { mutate: register } = useRegister();
+  const { mutate: register, isPending: isLoading } = useRegister();
 
   const [data, setData] = useState<AuthType>({} as AuthType);
   const [hasCodeSent, setHasCodeSent] = useState<boolean>(false);
@@ -46,9 +46,10 @@ const Signup = () => {
     await tsmAxios
       .post(`/verify?email=${email}`)
       .then((res) => {
-        if (res.status === 201) {
+        // console.log(res);
+        if (res.status === 200 || res.status === 201) {
           setHasCodeSent(true);
-          toast.success('Email sent successfully');
+          toast.success('Email was send successfully');
         }
       })
       .catch(() => {
@@ -220,7 +221,7 @@ const Signup = () => {
                       },
                     ]}
                   >
-                    <Input
+                    <Input.Password
                       prefix={<Lock className='mr-2 h-4 w-4 text-primary-default' />}
                       size='large'
                       placeholder='*******'
@@ -238,7 +239,7 @@ const Signup = () => {
                       },
                     ]}
                   >
-                    <Input
+                    <Input.Password
                       prefix={<Lock className='mr-2 h-4 w-4 text-primary-default' />}
                       size='large'
                       placeholder='*******'
@@ -274,7 +275,13 @@ const Signup = () => {
                 </Form.Item>
 
                 <div className='flex flex-col gap-y-4'>
-                  <Button type='primary' size='large' htmlType='submit' className='w-full'>
+                  <Button
+                    type='primary'
+                    size='large'
+                    loading={isLoading}
+                    htmlType='submit'
+                    className='w-full'
+                  >
                     Submit
                   </Button>
 

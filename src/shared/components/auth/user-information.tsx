@@ -10,8 +10,8 @@ import { useSelector } from '@/store';
 import { getUserInformationAction } from '@/store/user/action';
 import { clearInformation } from '@/store/user';
 import { tsmAxios } from '@/configs/axios';
+import { UNAUTHORIZED_CODE } from '@/shared/constant/response-code';
 
-const UNAUTHORIZED_CODE = 401;
 const UserInformation = (props: PropsWithChildren) => {
   const { children } = props;
   const dispatch = useAppDispatch();
