@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 
 const getNotes = async (archived: boolean) => {
   const query = archived === true ? `?archived=${true}` : ``;
-  const { data } = await tsmAxios.get<BaseResponseType<TSMNote[]>>(`/note/all${query}`);
+  const { data } = await tsmAxios.get<BaseResponseType<TSMNote[]>>(`/note${query}`);
   return data.data;
 };
 
