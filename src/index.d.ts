@@ -29,7 +29,30 @@ type Project = {
   background: string;
   inviteCode: string;
   listCards: ListCard[];
-  users: User[];
+  users: UserGeneral[];
+};
+
+type UserGeneral = {
+  id: string;
+  name: string;
+  username: string;
+  email: string;
+  profileImageId: string;
+};
+
+type UserData = {
+  id: string;
+  name: string;
+  username: string;
+  email: string;
+  gender: string;
+  position: string;
+  organization: string;
+  timeZone: number;
+  profileImage: string;
+  personalWorkSpace: WorkSpaceType;
+  workspaces: WorkSpaceType[];
+  projects: ProjectType[];
 };
 
 type ListCard = {
@@ -45,6 +68,11 @@ type CheckList = {
   checked: boolean;
 };
 
+type CheckListGroup = {
+  name: string;
+  checklist: CheckList[];
+};
+
 type Card = {
   id: string;
   name: string;
@@ -55,8 +83,16 @@ type Card = {
   risk: ELevel;
   effort: ELevel;
   estimate: Date;
-  checkLists: CheckList[];
+  checkLists: CheckListGroup[];
   listCardId?: string;
+  attachments: Attachment[];
+};
+
+type Attachment = {
+  resourceId: string;
+  title: string;
+  type: 'image' | 'file';
+  description?: string;
 };
 
 type TSMNote = {

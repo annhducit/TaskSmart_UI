@@ -38,6 +38,8 @@ function TaskCard({ card }: Props) {
     );
   }
 
+  const defaultCardColor = "1677ff";
+
   return (
     <>
       <div
@@ -56,7 +58,7 @@ function TaskCard({ card }: Props) {
         <div
           className='h-[115px] w-full rounded-t-[6px]'
           style={{
-            backgroundColor: '#ee5e99',
+            backgroundColor: `#${card.color || defaultCardColor}`,
           }}
           // style={{
           //   backgroundImage: 'url(https://source.unsplash.com/random/800x600)',

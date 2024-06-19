@@ -11,21 +11,6 @@ export type ProjectType = {
   name: string;
 };
 
-export type UserData = {
-  id: string;
-  name: string;
-  username: string;
-  email: string;
-  gender: string;
-  position: string;
-  organization: string;
-  timeZone: number;
-  profileImage: string;
-  personalWorkSpace: WorkSpaceType;
-  workspaces: WorkSpaceType[];
-  projects: ProjectType[];
-};
-
 export interface AuthState {
   loadingState: LoadingState;
   data: UserData;
@@ -60,6 +45,10 @@ export const user = createSlice({
       state.data = {} as UserData;
       state.isLoaded = false;
     },
+
+    createWorkSpace: (state, action) => {
+      state.data.workspaces.push(action.payload);
+    }
   },
   extraReducers: (builder) => {
     /**
@@ -84,9 +73,10 @@ export const user = createSlice({
       state.data = {} as UserData;
       state.isLoaded = true;
     });
+    
   },
 });
 
-export const { clearInformation } = user.actions;
+export const { clearInformation, createWorkSpace } = user.actions;
 
 export default user.reducer;

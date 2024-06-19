@@ -76,36 +76,36 @@ const ColumnContainer = ({ column, cards, updateColumn, deleteColumn, createCard
             allowClear
             type='text'
             defaultValue={column.name}
-            className='cursor-pointer rounded-xl border-none text-base font-bold transition-all'
+            className='text-base font-bold transition-all border-none cursor-pointer rounded-xl'
             onBlur={(e) => updateColumn({ ...column, name: e.target.value })}
           />
         </div>
         <Popover
           placement='rightTop'
           trigger='click'
-          title={<div className='text-center font-semibold'>Behavior</div>}
+          title={<div className='font-semibold text-center'>Behavior</div>}
           content={
             <div className='flex flex-col gap-y-2'>
-              <Button type='default' className='text-left text-xs'>
+              <Button type='default' className='text-xs text-left'>
                 Add Card
               </Button>
-              <Button type='default' className='text-left text-xs '>
+              <Button type='default' className='text-xs text-left '>
                 Add List
               </Button>
-              <Button type='default' className='text-left text-xs '>
+              <Button type='default' className='text-xs text-left '>
                 Copy List
               </Button>
-              <Button type='default' className='text-left text-xs '>
+              <Button type='default' className='text-xs text-left '>
                 Move List
               </Button>
-              <Button type='default' className='text-left text-xs '>
+              <Button type='default' className='text-xs text-left '>
                 Archive List
               </Button>
             </div>
           }
         >
           <div className='rounded px-1 transition-all hover:bg-[#091E4224]'>
-            <Ellipsis className='mt-1 h-5 w-5 text-slate-500' />
+            <Ellipsis className='w-5 h-5 mt-1 text-slate-500' />
           </div>
         </Popover>
       </div>
@@ -145,8 +145,8 @@ const ColumnContainer = ({ column, cards, updateColumn, deleteColumn, createCard
         >
           <Button
             type='dashed'
-            icon={<Plus className='h-4 w-4' />}
-            className='flex w-full items-center rounded-xl'
+            icon={<Plus className='w-4 h-4' />}
+            className='flex items-center w-full rounded-xl'
           >
             Add Card
           </Button>
@@ -156,7 +156,7 @@ const ColumnContainer = ({ column, cards, updateColumn, deleteColumn, createCard
             {/* hiện modal xác nhận xóa */}
             <Trash2
               onClick={() => deleteColumn(column.id)}
-              className='mt-1 h-4 w-4 text-slate-500'
+              className='w-4 h-4 mt-1 text-slate-500'
             />
           </div>
         </Tooltip>

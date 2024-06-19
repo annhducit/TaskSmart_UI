@@ -26,6 +26,7 @@ import { TabsProps } from 'antd/lib';
 import Setting from '../tsm/features/workspace/components/project/modify-card/popover/setting';
 import useCollapse from '@/shared/hooks/use-collapse';
 import { tsmAxios } from '@/configs/axios';
+import { ModifyMember } from '../tsm/features/workspace/components/project/modify-member';
 
 const ProjectFeature = lazy(() => import('../tsm/features/workspace/components/project'));
 const TableFeature = lazy(() => import('../tsm/features/workspace/components//table'));
@@ -53,9 +54,9 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div className='flex h-screen flex-col overflow-hidden'>
+    <div className='flex flex-col h-screen overflow-hidden'>
       <Header />
-      <div className='relative flex flex-1 flex-row'>
+      <div className='relative flex flex-row flex-1'>
         <div className='block'>
           <SidebarComponent
             typeSidebar={isWorkspace ? 'workspace' : 'home'}
@@ -127,10 +128,15 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
     ) : undefined,
   }));
 
+  const userDefault = <Avatar
+    style={{ backgroundColor: '#f56a00' }}
+    icon={<User size='12' />}
+  />
+
   return (
     <>
       <section
-        className='relative h-screen w-full bg-cover bg-center bg-no-repeat'
+        className='relative w-full h-screen bg-center bg-no-repeat bg-cover'
         style={{
           backgroundPosition: 'center',
           backgroundImage: `url(https://images.unsplash.com/photo-1715976788162-6421efc7ebc4?q=80&w=1854&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)`,
@@ -156,19 +162,26 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
             <Button size='middle' type='primary' icon={<ListChecks className='mt-1' size='14' />}>
               Add task
             </Button>
-            <Avatar.Group maxCount={2} className='flex items-center'>
-              <Tooltip title='Đức Duy' placement='top'>
-                <Avatar style={{ backgroundColor: '#f56a00' }} icon={<User size='12' />} />
-              </Tooltip>
-              <Tooltip title='Trọng Đức' placement='top'>
-                <Avatar style={{ backgroundColor: '#87d068' }} icon={<User size='12' />} />
-              </Tooltip>
-              <Tooltip title='Đức Duy' placement='top'>
-                <Avatar className='bg-cyan-500 text-white' icon={<User size='12' />} />
-              </Tooltip>
-              <Tooltip title='Trọng Đức' placement='top'>
-                <Avatar className='bg-red-500 text-white' icon={<User size='12' />} />
-              </Tooltip>
+            <Avatar.Group 
+              maxCount={2} 
+              className='flex items-center'
+            >
+              {
+                project.users.map((user) => (
+                  <Tooltip title={user.name} placement='top' key={user.id}>
+                    {user.profileImageId ?
+                    <div className='relative w-6 h-6 rounded-full'>
+                    <img
+                      src={`http://localhost:8888/api/img/${user.profileImageId}`}
+                      alt=''
+                      className='w-full h-full rounded-full'
+                    />
+                    <span className='absolute bottom-1 right-0 rounded-full bg-[#1ad67b] p-1' />
+                  </div>
+                      : userDefault}
+                  </Tooltip>
+                ))
+              }
             </Avatar.Group>
 
             <Popover
@@ -177,7 +190,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
               open={visible}
               onOpenChange={handleOpenChange}
             >
-              <div className='cursor-pointer rounded px-1 transition-all hover:bg-primary-default hover:text-white'>
+              <div className='px-1 transition-all rounded cursor-pointer hover:bg-primary-default hover:text-white'>
                 <Ellipsis size='20' color='white' className='mt-1' />
               </div>
             </Popover>

@@ -176,7 +176,7 @@ html *::-webkit-scrollbar:horizontal {
 .custom-tabs .ant-tabs-nav {
   @apply bg-gray-800 bg-opacity-50 backdrop-blur-lg;
   @apply backdrop-filter;
-  @apply bg-black/50 shadow-lg;
+  @apply shadow-lg bg-black/50;
   @apply px-6;
 }
 

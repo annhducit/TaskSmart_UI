@@ -45,8 +45,9 @@ const BackgroundReview = () => {
   const handleSubmitForm = (value: ProjectRequest) => {
     const createProject = async () => {
       try {
+        
         const res = await tsmAxios.post('/projects', value);
-        console.log(res.data);
+        console.log(value);
       } catch (error) {
         console.log(error);
       }
@@ -67,7 +68,7 @@ const BackgroundReview = () => {
           className='h-[120px] w-[246px] rounded'
         >
           <div className='mx-auto mt-2 h-[103px] w-[186px] rounded'>
-            <img src={dashboard} alt='dashboard' className='h-full w-full rounded' />
+            <img src={dashboard} alt='dashboard' className='w-full h-full rounded' />
           </div>
         </div>
         <div className='flex flex-col gap-y-1'>
@@ -81,7 +82,7 @@ const BackgroundReview = () => {
                 <img
                   src={item.url}
                   alt={item.name}
-                  className='h-full w-full rounded object-cover'
+                  className='object-cover w-full h-full rounded'
                 />
               </div>
             ))}
@@ -97,7 +98,7 @@ const BackgroundReview = () => {
                 className={`relative h-[32px] w-[40px] cursor-pointer rounded transition-all hover:brightness-125`}
               >
                 {item.color === background && (
-                  <Check className='absolute right-3 top-2 h-4 w-4 text-white' />
+                  <Check className='absolute w-4 h-4 text-white right-3 top-2' />
                 )}
               </div>
             ))}
@@ -112,13 +113,13 @@ const BackgroundReview = () => {
               }
             >
               <Button className='flex items-center'>
-                <Ellipsis className='h-4 w-4' />
+                <Ellipsis className='w-4 h-4' />
               </Button>
             </Popover>
           </div>
         </div>
       </div>
-      <div className='mt-4 flex items-center'>
+      <div className='flex items-center mt-4'>
         <Form.Item
           name='name'
           className='w-full'
@@ -134,7 +135,7 @@ const BackgroundReview = () => {
         </Form.Item>
         <Form.Item
           name='workspace'
-          className='mr-1 w-full'
+          className='w-full mr-1'
           label='Workspace'
           rules={[
             {
@@ -217,7 +218,7 @@ const SubBackgroundModal = ({
               className='h-[40px] w-[64px] cursor-pointer rounded transition-all hover:brightness-125'
               onClick={() => handleChangeBackground(item.url)}
             >
-              <img src={item.url} alt={item.name} className='h-full w-full rounded object-cover' />
+              <img src={item.url} alt={item.name} className='object-cover w-full h-full rounded' />
             </div>
           ))}
         </div>
@@ -233,7 +234,7 @@ const SubBackgroundModal = ({
               className={`relative h-[32px] w-[40px] cursor-pointer rounded transition-all hover:brightness-125`}
             >
               {item.color === color && (
-                <Check className='absolute right-3 top-2 h-4 w-4 text-white' />
+                <Check className='absolute w-4 h-4 text-white right-3 top-2' />
               )}
             </div>
           ))}
