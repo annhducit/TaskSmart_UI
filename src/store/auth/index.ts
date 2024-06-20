@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import cookieUtils from '@/utils/cookieUtil';
-import { signInAction } from './action';
+import { reSignInAction, signInAction } from './action';
 
 export type WorkSpaceType = {
   id: string;
@@ -103,6 +103,28 @@ export const auth = createSlice({
     });
 
     builder.addCase(signInAction.rejected, (state) => {
+      state.loadingState = 'failed';
+      state.data = {} as AuthData;
+      state.isSignedIn = false;
+      state.isLoaded = true;
+    });
+
+    /**
+     * reSignIn
+     */
+    builder.addCase(reSignInAction.pending, (state) => {
+      state.loadingState = 'loading';
+      state.isLoaded = false;
+    });
+    builder.addCase(reSignInAction.fulfilled, (state, action) => {
+      state.loadingState = 'succeeded';
+      if (action.payload) {
+        state.data = action.payload as unknown as AuthData;
+        cookieUtils.setCookie('access_token', state.data.accessToken, 30);
+        cookieUtils.setCookie('refresh_token', state.data.refreshToken, 30);
+      }
+    });
+    builder.addCase(reSignInAction.rejected, (state) => {
       state.loadingState = 'failed';
       state.data = {} as AuthData;
       state.isSignedIn = false;

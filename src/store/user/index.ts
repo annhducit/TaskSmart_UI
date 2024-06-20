@@ -48,7 +48,7 @@ export const user = createSlice({
 
     createWorkSpace: (state, action) => {
       state.data.workspaces.push(action.payload);
-    }
+    },
   },
   extraReducers: (builder) => {
     /**
@@ -73,7 +73,6 @@ export const user = createSlice({
       state.data = {} as UserData;
       state.isLoaded = true;
     });
-    
   },
 });
 

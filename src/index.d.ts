@@ -22,6 +22,16 @@ type Category = {
   name: string;
 };
 
+type Workspace = {
+  id: string;
+  name: string;
+  description: string;
+  category: Category;
+  users: User;
+  projects: Project[];
+  type: string;
+};
+
 type Project = {
   id: string;
   name: string;
@@ -104,4 +114,11 @@ type TSMNote = {
   deleted: boolean;
   content: null | string;
   createdAt: string;
+};
+
+type TSMProjectRequest = {
+  name: string;
+  description: string;
+  workspaceId: string;
+  background: string;
 };

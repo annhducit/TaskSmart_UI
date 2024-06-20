@@ -38,6 +38,10 @@ const tsmRoutes = createRouters([
     path: 'workspace/:workspaceId/*',
     element: <WorkspaceDetailFeature />,
   },
+  {
+    path: 'project/:projectId/*',
+    element: <></>,
+  },
   /**
    * Add more routes here
    */

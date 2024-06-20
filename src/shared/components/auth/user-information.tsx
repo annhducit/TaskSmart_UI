@@ -87,6 +87,6 @@ const UserInformation = (props: PropsWithChildren) => {
 
 export default UserInformation;
 
-const setTSMAxiosToken = (accessToken?: string) => {
+export const setTSMAxiosToken = (accessToken?: string) => {
   tsmAxios.defaults.headers.common['Authorization'] = !accessToken ? null : `Bearer ${accessToken}`;
 };

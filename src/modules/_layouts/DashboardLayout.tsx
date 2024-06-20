@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import Header from '../tsm/components/header';
 import SidebarComponent from '@/shared/components/sidebar';
-import { Suspense, lazy, useEffect, useState } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import { Avatar, Button, Popover, Tabs } from 'antd';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import SubHeader from '../tsm/components/sub-header';
@@ -25,8 +25,7 @@ import {
 import { TabsProps } from 'antd/lib';
 import Setting from '../tsm/features/workspace/components/project/modify-card/popover/setting';
 import useCollapse from '@/shared/hooks/use-collapse';
-import { tsmAxios } from '@/configs/axios';
-import { ModifyMember } from '../tsm/features/workspace/components/project/modify-member';
+import useGetProject from '../tsm/features/workspace/components/project/hooks/query/use-get-project';
 
 const ProjectFeature = lazy(() => import('../tsm/features/workspace/components/project'));
 const TableFeature = lazy(() => import('../tsm/features/workspace/components//table'));
@@ -47,19 +46,18 @@ const DashboardLayout = () => {
   const { path } = useGetPath();
 
   const isProject = path.includes('project');
-  const isWorkspace = path.includes('workspace') && path.length > 2;
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
 
   return (
-    <div className='flex flex-col h-screen overflow-hidden'>
+    <div className='flex h-screen flex-col overflow-hidden'>
       <Header />
-      <div className='relative flex flex-row flex-1'>
+      <div className='relative flex flex-1 flex-row'>
         <div className='block'>
           <SidebarComponent
-            typeSidebar={isWorkspace ? 'workspace' : 'home'}
+            typeSidebar={isProject ? 'workspace' : 'home'}
             isCollapse={collapsed}
             toggleCollapsed={toggleCollapsed}
           />
@@ -90,28 +88,8 @@ const DashboardLayout = () => {
 export default DashboardLayout;
 
 export const ProjectContainer = (props: { layoutControl: boolean }) => {
-  const projectId = '666811ebf61a2e3287ee5a45';
-  const [project, setProject] = useState<Project>({
-    id: '',
-    name: '',
-    description: '',
-    background: '',
-    inviteCode: '',
-    listCards: [],
-    users: [],
-  } as Project);
+  const { data: project } = useGetProject();
 
-  useEffect(() => {
-    const fetchProject = async () => {
-      try {
-        const res = await tsmAxios.get(`/projects/${projectId}`);
-        setProject(res.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchProject();
-  }, []);
   const [viewParam, setView] = useSearchParam(SEARCH_PARAMS.VIEW, {
     defaultValue: 'overview',
   });
@@ -128,15 +106,12 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
     ) : undefined,
   }));
 
-  const userDefault = <Avatar
-    style={{ backgroundColor: '#f56a00' }}
-    icon={<User size='12' />}
-  />
+  const userDefault = <Avatar style={{ backgroundColor: '#f56a00' }} icon={<User size='12' />} />;
 
   return (
     <>
       <section
-        className='relative w-full h-screen bg-center bg-no-repeat bg-cover'
+        className='relative h-screen w-full bg-cover bg-center bg-no-repeat'
         style={{
           backgroundPosition: 'center',
           backgroundImage: `url(https://images.unsplash.com/photo-1715976788162-6421efc7ebc4?q=80&w=1854&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)`,
@@ -144,16 +119,20 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
       >
         <div className='absolute inset-0 bg-black bg-opacity-40' />
         <div className='flex items-start gap-x-2'>
-          <Tabs
-            defaultActiveKey={viewParam}
-            tabBarGutter={12}
-            onChange={setView}
-            items={tabList}
-            className={`custom-tabs mb-0 ${props.layoutControl ? 'w-[calc(100vw-80px)]' : 'w-[calc(100vw-256px)]'} text-white`}
-            tabBarExtraContent={{
-              left: <p className='m-0 w-40 truncate text-[18px] font-bold'>{project.name || ''}</p>,
-            }}
-          />
+          <div>
+            <Tabs
+              defaultActiveKey={viewParam}
+              tabBarGutter={12}
+              onChange={setView}
+              items={tabList}
+              className={`custom-tabs mb-0 ${props.layoutControl ? 'w-[calc(100vw-80px)]' : 'w-[calc(100vw-256px)]'} text-white`}
+              tabBarExtraContent={{
+                left: (
+                  <p className='m-0 w-40 truncate text-[18px] font-bold'>{project?.name || ''}</p>
+                ),
+              }}
+            />
+          </div>
 
           <div className='absolute right-5 top-[10px] flex items-center gap-x-4'>
             <Button size='middle' type='default' icon={<Search className='mt-1' size='14' />}>
@@ -162,26 +141,23 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
             <Button size='middle' type='primary' icon={<ListChecks className='mt-1' size='14' />}>
               Add task
             </Button>
-            <Avatar.Group 
-              maxCount={2} 
-              className='flex items-center'
-            >
-              {
-                project.users.map((user) => (
-                  <Tooltip title={user.name} placement='top' key={user.id}>
-                    {user.profileImageId ?
-                    <div className='relative w-6 h-6 rounded-full'>
-                    <img
-                      src={`http://localhost:8888/api/img/${user.profileImageId}`}
-                      alt=''
-                      className='w-full h-full rounded-full'
-                    />
-                    <span className='absolute bottom-1 right-0 rounded-full bg-[#1ad67b] p-1' />
-                  </div>
-                      : userDefault}
-                  </Tooltip>
-                ))
-              }
+            <Avatar.Group maxCount={2} className='flex items-center'>
+              {project?.users.map((user) => (
+                <Tooltip title={user.name} placement='top' key={user.id}>
+                  {user.profileImageId ? (
+                    <div className='relative h-6 w-6 rounded-full'>
+                      <img
+                        src={`http://localhost:8888/api/img/${user.profileImageId}`}
+                        alt=''
+                        className='h-full w-full rounded-full'
+                      />
+                      <span className='absolute bottom-1 right-0 rounded-full bg-[#1ad67b] p-1' />
+                    </div>
+                  ) : (
+                    userDefault
+                  )}
+                </Tooltip>
+              ))}
             </Avatar.Group>
 
             <Popover
@@ -190,7 +166,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
               open={visible}
               onOpenChange={handleOpenChange}
             >
-              <div className='px-1 transition-all rounded cursor-pointer hover:bg-primary-default hover:text-white'>
+              <div className='cursor-pointer rounded px-1 transition-all hover:bg-primary-default hover:text-white'>
                 <Ellipsis size='20' color='white' className='mt-1' />
               </div>
             </Popover>

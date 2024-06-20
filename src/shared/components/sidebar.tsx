@@ -10,13 +10,12 @@ import { FolderKanban, LayoutTemplate, Rocket, SquarePlus } from 'lucide-react';
 
 import wspImg from '@/assets/images/karban.png';
 import Tooltip from './tooltip';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import useSearchParam from '../hooks/use-search-param';
-import { useState, useEffect } from 'react';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '../constant/search-param';
 
-import { tsmAxios } from '@/configs/axios';
-import { useSelector } from '@/store';
+import useGetProfile from '@/modules/tsm/components/hooks/use-profile';
+import useGetCategories from '@/modules/tsm/features/workspace/hooks/query/use-get-categories';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -63,27 +62,17 @@ const Sidebar = ({
    * @returns page based on the key
    */
 
-  const data = useSelector((store) => store.user.data);
+  const { data: categories } = useGetCategories();
+
+  const { data } = useGetProfile();
+
+  const { workspaceId } = useParams();
 
   const [, setDialog] = useSearchParam(SEARCH_PARAMS.DIALOG);
 
   const handleOpenModal = () => {
     setDialog(SEARCH_PARAMS_VALUE.WORKSPACE);
   };
-
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  useEffect(() => {
-    const fetchCategory = async () => {
-      try {
-        const res = await tsmAxios.get('/categories');
-        setCategories([{ id: 'all', name: 'All' }, ...res.data]);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchCategory();
-  }, []);
 
   const onClick: MenuProps['onClick'] = (e) => {
     switch (e.key) {
@@ -96,29 +85,11 @@ const Sidebar = ({
       case 'mail':
         navigate('tsm/mail', { replace: true });
         break;
-      case 'sub5':
-        console.log('Workspaces');
-        break;
       case 'sub6':
         navigate('tsm/workspace', { replace: true });
         break;
-      case 'sub7':
-        console.log('Team Workspace');
-        break;
-      case 'sub8':
-        console.log('Project DoubleD');
-        break;
-      case 'sub9':
-        console.log('Project Design Table');
-        break;
-      case 'sub10':
-        console.log('Personal Workspace');
-        break;
       case 'sub11':
-        console.log('Finace Management');
-        break;
-      case 'sub12':
-        console.log('Create Workspace');
+        navigate(`tsm/workspace/${e.key}`, { replace: true });
         break;
       case 'sub14':
         navigate('tsm/workspace/1/project/1', { replace: true });
@@ -151,7 +122,7 @@ const Sidebar = ({
       key: 'template',
       label: 'Templates',
       icon: <LayoutTemplate className='h-4 w-4' />,
-      children: categories.map((item) => {
+      children: categories?.map((item) => {
         return { key: item.id, label: item.name, icon: <LayoutTemplate className='h-4 w-4' /> };
       }),
     },
@@ -170,15 +141,17 @@ const Sidebar = ({
       style: { display: type === 'private' ? 'none' : '' },
       label: data?.personalWorkSpace?.name || 'Personal Workspace',
       icon: <Rocket className='h-4 w-4' />,
+      onClick: () => navigate(`tsm/workspace/${data?.personalWorkSpace?.id}`, { replace: true }),
     },
     {
-      key: 'sub7',
+      key: 'workspace',
       label: 'Team Workspace',
       icon: <Rocket className='h-4 w-4' />,
       children: data?.workspaces?.map((workspace) => ({
         key: workspace.id,
         label: workspace.name,
         icon: <FolderKanban className='h-4 w-4' />,
+        onClick: () => navigate(`tsm/workspace/${workspace.id}`, { replace: true }),
       })),
     },
     {
@@ -197,14 +170,15 @@ const Sidebar = ({
       key: 'sub13',
       label: 'Your projects',
       type: 'group',
+      className: 'hidden', // Hide the group, need to be implemented
 
-      children: [
-        {
-          key: 'sub14',
-          label: 'Double D Thesis',
-          icon: <FolderKanban className='h-4 w-4' />,
-        },
-      ],
+      children: data?.projects?.map((project) => ({
+        key: project.id,
+        label: project.name,
+        icon: <FolderKanban className='h-4 w-4' />,
+        onClick: () =>
+          navigate(`tsm/workspace/${workspaceId}/project/${project.id}`, { replace: true }),
+      })),
     },
   ];
 

@@ -40,8 +40,8 @@ const Workspace = () => {
     <div className='flex h-screen flex-col gap-y-2 overflow-y-scroll'>
       <Typography.Title level={3}>Recent viewed</Typography.Title>
       <div className='grid grid-cols-4 gap-6'>
-        <ProjectItem />
-        <ProjectItem />
+        {/* <ProjectItem />
+        <ProjectItem /> */}
       </div>
       <Divider className='my-[4px]' />
       <Typography.Title level={3}>Your workspace</Typography.Title>
@@ -93,10 +93,10 @@ const Workspace = () => {
           </div>
           <Divider className='my-[1px]' />
           <div className='grid grid-cols-2 gap-6'>
+            {/* <ProjectItem />
             <ProjectItem />
             <ProjectItem />
-            <ProjectItem />
-            <ProjectItem />
+            <ProjectItem /> */}
           </div>
         </div>
       </div>

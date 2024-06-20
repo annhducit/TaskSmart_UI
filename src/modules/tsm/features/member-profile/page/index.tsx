@@ -3,11 +3,15 @@ import Activity from '../components/activity';
 import CardTable from '../components/card-table';
 import useSearchParam from '@/shared/hooks/use-search-param';
 import { SEARCH_PARAMS } from '@/shared/constant/search-param';
+import { useParams } from 'react-router-dom';
 
 const ProfileMember = () => {
   const [viewParam, setView] = useSearchParam(SEARCH_PARAMS.VIEW, {
     defaultValue: 'activity',
   });
+
+  const { memberId } = useParams();
+  console.log(memberId);
 
   return (
     <div className='flex flex-col gap-y-6'>

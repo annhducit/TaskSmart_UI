@@ -15,7 +15,13 @@ export const signInAction = createAsyncThunk(
   }
 );
 
-export const reSignInAction = createAsyncThunk('auth/re-sign-in', async () => {
-  const res = await tsmAxios.post<{ data: AuthData }>('/auth/refresh');
-  return res.data;
-});
+export const reSignInAction = createAsyncThunk(
+  'auth/re-sign-in',
+  async (payload: { refreshToken: string }) => {
+    const { refreshToken } = payload;
+    const res = await tsmAxios.post<{ data: AuthData }>('/auth/refresh', {
+      refresh: `Bearer ${refreshToken}`,
+    });
+    return res.data;
+  }
+);

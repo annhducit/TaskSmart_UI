@@ -1,4 +1,4 @@
-import { Button, Input, Popover } from 'antd';
+import { Button, Input } from 'antd';
 import ModifyCard from './modify-card/modify-card';
 import { Plus } from 'lucide-react';
 import useCollapse from '@/shared/hooks/use-collapse';
@@ -19,9 +19,10 @@ import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 import { createPortal } from 'react-dom';
 import { TaskCard } from './move-card';
 import { tsmAxios } from '@/configs/axios';
+import PopoverX from '@/shared/components/popover';
 
 const Project = () => {
-  const projectId = '666811ebf61a2e3287ee5a45';
+  const projectId = '6673f675a96d32783bd68d9c';
   const [project, setProject] = useState<Project>({
     id: '',
     name: '',
@@ -68,6 +69,7 @@ const Project = () => {
       }
     };
     fetchProject();
+    setVisible(false);
   };
 
   useEffect(() => {
@@ -181,7 +183,7 @@ const Project = () => {
   };
 
   return (
-    <>
+    <div>
       <DndContext
         sensors={sensors}
         onDragStart={onDragStart}
@@ -203,32 +205,31 @@ const Project = () => {
               ))}
             </SortableContext>
 
-            <Popover
-              trigger='click'
-              open={visible}
+            <PopoverX
+              visible={visible}
               onOpenChange={handleOpenChange}
-              placement='bottom'
               content={
                 <div className='flex w-[250px] flex-col gap-4'>
                   <Input
                     placeholder='Enter list title'
                     allowClear
                     size='large'
-                    className='text-sm font-semibold rounded '
+                    className='rounded text-sm font-semibold '
                     value={listCardCreationName}
                     onChange={(e) => setListCardCreationName(e.target.value)}
+                    onPressEnter={createListCard}
                   />
-                  <div className='flex items-center ml-auto gap-x-2'>
+                  <div className='ml-auto flex items-center gap-x-2'>
                     <Button
                       onClick={createListCard}
                       type='primary'
-                      className='w-20 text-xs font-semibold rounded'
+                      className='w-20 rounded text-xs font-semibold'
                     >
                       Add list
                     </Button>
                     <Button
                       type='default'
-                      className='w-16 text-xs font-semibold rounded'
+                      className='w-16 rounded text-xs font-semibold'
                       onClick={() => handleOpenChange(false)}
                     >
                       Cancel
@@ -238,13 +239,13 @@ const Project = () => {
               }
             >
               <Button
-                icon={<Plus className='w-4 h-4 opacity-65' />}
+                icon={<Plus className='h-4 w-4 opacity-65' />}
                 size='large'
                 className='flex w-[275px] items-center rounded-xl border-none bg-[#ffffff3d] text-sm font-semibold text-white'
               >
                 Add new list
               </Button>
-            </Popover>
+            </PopoverX>
           </div>
         </div>
         {createPortal(
@@ -261,7 +262,7 @@ const Project = () => {
         )}
       </DndContext>
       <ModifyCard />
-    </>
+    </div>
   );
 
   function onDragStart(event: DragStartEvent) {

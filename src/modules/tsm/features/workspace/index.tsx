@@ -1,19 +1,18 @@
 import { createRouters } from '@/shared/router/utils';
 import { lazy } from 'react';
-import {  useRoutes } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 
 const WorkspaceDetail = lazy(() => import('./page/workspace-detail'));
-
 
 const workspaceDetailRoutes = createRouters([
   {
     path: '/',
     element: <WorkspaceDetail />,
   },
-  {
-    path: 'project/:projectId',
-    element: <></>,
-  },
+  // {
+  //   path: 'project/:projectId',
+  //   element: <></>,
+  // },
 ]);
 
 export const WorkspaceDetailFeature = () => {
