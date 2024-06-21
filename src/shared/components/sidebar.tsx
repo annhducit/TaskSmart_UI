@@ -85,6 +85,9 @@ const Sidebar = ({
       case 'mail':
         navigate('tsm/mail', { replace: true });
         break;
+      case 'template':
+        navigate('tsm/template', { replace: true });
+        break;
       case 'sub6':
         navigate('tsm/workspace', { replace: true });
         break;
@@ -123,7 +126,14 @@ const Sidebar = ({
       label: 'Templates',
       icon: <LayoutTemplate className='h-4 w-4' />,
       children: categories?.map((item) => {
-        return { key: item.id, label: item.name, icon: <LayoutTemplate className='h-4 w-4' /> };
+        return {
+          key: item.id,
+          label: item.name,
+          icon: <LayoutTemplate className='h-4 w-4' />,
+          onClick: () => {
+            navigate(`tsm/template`, { replace: true });
+          },
+        };
       }),
     },
 

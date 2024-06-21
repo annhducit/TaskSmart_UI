@@ -114,7 +114,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
         className='relative h-screen w-full bg-cover bg-center bg-no-repeat'
         style={{
           backgroundPosition: 'center',
-          backgroundImage: `url(https://images.unsplash.com/photo-1715976788162-6421efc7ebc4?q=80&w=1854&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)`,
+          backgroundImage: `url(https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3Dhttps://images.unsplash.com/photo-1717719405874-441f212902a0?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)`,
         }}
       >
         <div className='absolute inset-0 bg-black bg-opacity-40' />

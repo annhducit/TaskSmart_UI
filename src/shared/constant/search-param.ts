@@ -42,6 +42,7 @@ export enum SEARCH_PARAMS_VALUE {
   SCHEDULE = 'schedule',
   REMINDER = 'reminder',
   NOTEPAD = 'notepad',
+  TEMPLATE = 'template',
 
   ADD_MEMBER = 'add-member',
 

@@ -1,7 +1,7 @@
 import TextEditor from '@/shared/components/text-editor';
 import useLocalStorage from '@/shared/hooks/use-local-storage';
-import useGetNote from './hooks/query/use-get-note';
-import useEditNote from './hooks/mutation/use-edit-note';
+import useGetNote from '../../hooks/query/use-get-note';
+import useEditNote from '../../hooks/mutation/use-edit-note';
 import { useEffect } from 'react';
 
 const NoteDetails = () => {
