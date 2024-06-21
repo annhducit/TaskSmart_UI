@@ -3,7 +3,7 @@ import single_logo from '@/assets/images/logo-single.png';
 import { useNavigate } from 'react-router-dom';
 
 type Logo = 'LOGO' | 'SINGLE_LOGO';
-const Logo = ({ type }: { type: Logo }) => {
+const Logo = ({ type, size = 'h-5 w-5' }: { type: Logo; size?: string }) => {
   const naviagte = useNavigate();
   return (
     <div className='block' onClick={() => naviagte('..')}>
@@ -13,7 +13,7 @@ const Logo = ({ type }: { type: Logo }) => {
         </div>
       )}
       {type === 'SINGLE_LOGO' && (
-        <div className='h-5 w-5'>
+        <div className={size}>
           <img src={single_logo} alt='' className='h-full w-full' />
         </div>
       )}

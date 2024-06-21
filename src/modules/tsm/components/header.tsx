@@ -27,7 +27,6 @@ import Dropdown from '@/shared/components/dropdown';
 import Tooltip from '@/shared/components/tooltip';
 import useSearchParam from '@/shared/hooks/use-search-param';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
-import { Notepad } from '../features/notepad';
 import { ModalAddProject, ModalAddWorkspace } from '../features/workspace/page';
 import ProfileFlyer from './profile-flyer';
 import useCollapse from '@/shared/hooks/use-collapse';
@@ -35,6 +34,7 @@ import { useDispatch, useSelector } from '@/store';
 import { toast } from 'sonner';
 import { clearAuthentication } from '@/store/auth';
 import { useNavigate } from 'react-router-dom';
+import Notepad from '../features/notepad/pages';
 
 const Header = () => {
   const [open, setOpen] = useCollapse<boolean>(false);

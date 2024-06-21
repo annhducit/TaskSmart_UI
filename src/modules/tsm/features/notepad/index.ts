@@ -1,1 +1,1 @@
-export * from './notepad';
+export * from './pages/notepad';

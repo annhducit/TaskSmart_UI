@@ -172,16 +172,19 @@ html *::-webkit-scrollbar:horizontal {
   @apply text-sm;
   @apply font-semibold;
   @apply py-4;
+  @apply rounded-lg;
 }
 .custom-tabs .ant-tabs-nav {
   @apply bg-gray-800 bg-opacity-50 backdrop-blur-lg;
   @apply backdrop-filter;
-  @apply shadow-lg bg-black/50;
+  @apply bg-black/50 shadow-lg;
   @apply px-6;
+  @apply rounded-lg;
 }
 
 .custom-tabs .ant-tabs-content {
   @apply overflow-x-scroll;
+  @apply rounded-lg;
 }
 /*  Custom css for width too large */
 .scroll-container {

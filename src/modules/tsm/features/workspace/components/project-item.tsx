@@ -10,9 +10,7 @@ const ProjectItem = ({ project }: { project: Project }) => {
   return (
     <div
       onClick={() => {
-        navigate(`/tsm/project/${project.id}`, {
-          replace: true,
-        });
+        navigate(`../../../tsm/project/${project.id}`);
         setProjectId(project.id);
       }}
       style={{

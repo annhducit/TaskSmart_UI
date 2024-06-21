@@ -12,7 +12,7 @@ const MailFeature = lazy(() => import('./features/mail'));
 const WorkspaceDetailFeature = lazy(() => import('./features/workspace'));
 const WorkspaceFeature = lazy(() => import('./features/workspace/page/workspace'));
 const ProfileMember = lazy(() => import('./features/member-profile'));
-
+const TemplateFeature = lazy(() => import('./features/templates'));
 const tsmRoutes = createRouters([
   {
     index: true,
@@ -29,6 +29,10 @@ const tsmRoutes = createRouters([
   {
     path: 'profile/:memberId/*',
     element: <ProfileMember />,
+  },
+  {
+    path: 'template/*',
+    element: <TemplateFeature />,
   },
   {
     path: 'workspace/*',

@@ -4,8 +4,8 @@ import { Divider, Input, InputRef, Typography } from 'antd';
 import { Archive, ArchiveIcon, CalendarClock, Pen, Save, Trash } from 'lucide-react';
 import dayjs from 'dayjs';
 import { DATE_TIME_FORMAT } from '@/shared/constant/date';
-import useRemoveNote from './hooks/action/use-remove-note';
-import useEditNote from './hooks/mutation/use-edit-note';
+import useRemoveNote from '../hooks/action/use-remove-note';
+import useEditNote from '../hooks/mutation/use-edit-note';
 import { useEffect, useRef, useState } from 'react';
 
 type NoteListProps = {

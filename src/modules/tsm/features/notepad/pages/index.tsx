@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Button, Dropdown, Input, Typography } from 'antd';
 import { Archive, ChevronLeft, Ellipsis, Pen, Search, Trash, X } from 'lucide-react';
-import NoteDetails from './note-detail';
-import NoteList from './list-note';
-import NotepadEmpty from './note-empty';
+import NoteDetails from './details/note-detail';
+import NoteList from '../components/list-note';
+import NotepadEmpty from '../components/note-empty';
 import useCollapse from '@/shared/hooks/use-collapse';
 import Loading from '@/shared/components/loading';
-import useGetNotes from './hooks/query/use-get-notes';
-import useCreateNote from './hooks/mutation/use-create-note';
-import useSearchNote from './hooks/query/use-search-note';
+import useGetNotes from '../hooks/query/use-get-notes';
+import useCreateNote from '../hooks/mutation/use-create-note';
+import useSearchNote from '../hooks/query/use-search-note';
 
 export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) => {
   const [note, setNote] = useState<string>('');

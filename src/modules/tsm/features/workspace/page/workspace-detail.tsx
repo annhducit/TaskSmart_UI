@@ -13,7 +13,6 @@ import createWps from '@/assets/gifs/create-workspace.gif';
 import useGetWorkspace from '../hooks/query/use-get-workspace';
 import useGetCategories from '../hooks/query/use-get-categories';
 import useCreateWorkspace from '../hooks/mutation/use-create-workspace';
-import { useDispatch } from '@/store';
 
 const WorkspaceDetail = () => {
   const { data: workspace } = useGetWorkspace();
