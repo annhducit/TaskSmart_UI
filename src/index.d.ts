@@ -39,11 +39,19 @@ type Project = {
   background: string;
   inviteCode: string;
   listCards: ListCard[];
-  users: UserGeneral[];
+  users: UserRelation[];
 };
 
 type UserGeneral = {
   id: string;
+  name: string;
+  username: string;
+  email: string;
+  profileImageId: string;
+};
+
+type UserRelation = {
+  userId: string;
   name: string;
   username: string;
   email: string;
@@ -74,13 +82,15 @@ type ListCard = {
 };
 
 type CheckList = {
+  id: string;
   name: string;
   checked: boolean;
 };
 
 type CheckListGroup = {
+  id: string;
   name: string;
-  checklist: CheckList[];
+  checkList: CheckList[];
 };
 
 type Card = {
@@ -93,17 +103,26 @@ type Card = {
   risk: ELevel;
   effort: ELevel;
   estimate: Date;
-  checkLists: CheckListGroup[];
   listCardId?: string;
+  checkLists: CheckListGroup[];
   attachments: Attachment[];
+  comments: CommentType[];
+  implementers: UserRelation[];
 };
 
 type Attachment = {
-  resourceId: string;
+  fileId: string;
   title: string;
-  type: 'image' | 'file';
+  type: 'image' | 'pdf';
   description?: string;
 };
+
+type CommentType = {
+  id: string;
+  user: UserRelation;
+  content: string;
+  createdAt: string;
+}
 
 type TSMNote = {
   id: string;

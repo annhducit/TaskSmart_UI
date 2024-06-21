@@ -22,7 +22,7 @@ import { tsmAxios } from '@/configs/axios';
 import PopoverX from '@/shared/components/popover';
 
 const Project = () => {
-  const projectId = '6673f675a96d32783bd68d9c';
+  const projectId = '6673a8a81fbe68659d504d85';
   const [project, setProject] = useState<Project>({
     id: '',
     name: '',
@@ -133,10 +133,11 @@ const Project = () => {
     const createCardAsync = async () => {
       try {
         const res = await tsmAxios.post(`/projects/${projectId}/${columnId}`, card);
-        const cardCreated: Card = res.data;
+        const cardCreated: Card = {...res.data, listCardId: columnId};
         setColumns((prev) => {
           return prev.map((col) => {
             if (col.id === columnId) {
+              setTasks((prev) => [...prev, cardCreated]);
               return { ...col, cards: [...col.cards, cardCreated] };
             }
             return col;
@@ -214,22 +215,22 @@ const Project = () => {
                     placeholder='Enter list title'
                     allowClear
                     size='large'
-                    className='rounded text-sm font-semibold '
+                    className='text-sm font-semibold rounded '
                     value={listCardCreationName}
                     onChange={(e) => setListCardCreationName(e.target.value)}
                     onPressEnter={createListCard}
                   />
-                  <div className='ml-auto flex items-center gap-x-2'>
+                  <div className='flex items-center ml-auto gap-x-2'>
                     <Button
                       onClick={createListCard}
                       type='primary'
-                      className='w-20 rounded text-xs font-semibold'
+                      className='w-20 text-xs font-semibold rounded'
                     >
                       Add list
                     </Button>
                     <Button
                       type='default'
-                      className='w-16 rounded text-xs font-semibold'
+                      className='w-16 text-xs font-semibold rounded'
                       onClick={() => handleOpenChange(false)}
                     >
                       Cancel
@@ -239,7 +240,7 @@ const Project = () => {
               }
             >
               <Button
-                icon={<Plus className='h-4 w-4 opacity-65' />}
+                icon={<Plus className='w-4 h-4 opacity-65' />}
                 size='large'
                 className='flex w-[275px] items-center rounded-xl border-none bg-[#ffffff3d] text-sm font-semibold text-white'
               >
@@ -261,7 +262,7 @@ const Project = () => {
           document.body
         )}
       </DndContext>
-      <ModifyCard />
+      <ModifyCard members={project.users} />
     </div>
   );
 

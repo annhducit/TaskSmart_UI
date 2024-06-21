@@ -1,12 +1,22 @@
 import { Avatar, Button, ConfigProvider, Input, List, Typography } from 'antd';
-import { color } from 'framer-motion';
-import { create } from 'lodash';
 import { MessageCircle } from 'lucide-react';
 import { useSelector } from '@/store';
+import { useState } from 'react';
+import { tsmAxios } from '@/configs/axios';
+import convertDateFormat from '@/utils/dateFormat';
 
-const CommentCard = ({ color }: { color: string }) => {
+const CommentCard = ({ color, cardId, comments, setCard }: { 
+  color: string;
+  cardId: string;
+  comments: CommentType[];
+  setCard: (card: Card) => void;
+ }) => {
+
+  console.log(comments);
   
   const userAuthenticated = useSelector((state) => state.user.data);
+
+  const [commentCreation, setCommentCreation] = useState<string>('');
   
   const theme = {
     components: {
@@ -15,80 +25,21 @@ const CommentCard = ({ color }: { color: string }) => {
       },
     },
   };
-  const data = [
-    {
-      user: {
-        name: 'John Doe',
-        profileImage: 'https://xsgames.co/randomusers/avatar.php?g=pixel&key=1',
-        createdAt: '2021-09-01',
-      },
-      comment: 'Ant Design Title 1',
-    },
-    // {
-    //   user: {
-    //     name: 'John Doe',
-    //     profileImage: 'https://xsgames.co/randomusers/avatar.php?g=pixel&key=1',
-    //     createdAt: '2021-09-01',
-    //   },
-    //   comment: 'Ant Design Title 2',
-    // },
-    // {
-    //   user: {
-    //     name: 'John Doe',
-    //     profileImage: 'https://xsgames.co/randomusers/avatar.php?g=pixel&key=1',
-    //     createdAt: '2021-09-01',
-    //   },
-    //   comment: 'Ant Design Title 3',
-    // },
-    // {
-    //   user: {
-    //     name: 'John Doe',
-    //     profileImage: 'https://xsgames.co/randomusers/avatar.php?g=pixel&key=1',
-    //     createdAt: '2021-09-01',
-    //   },
-    //   comment: 'Ant Design Title 4',
-    // },
-    // {
-    //   user: {
-    //     name: 'John Doe',
-    //     profileImage: 'https://xsgames.co/randomusers/avatar.php?g=pixel&key=1',
-    //     createdAt: '2021-09-01',
-    //   },
-    //   comment: 'Ant Design Title 4',
-    // },
-    // {
-    //   user: {
-    //     name: 'John Doe',
-    //     profileImage: 'https://xsgames.co/randomusers/avatar.php?g=pixel&key=1',
-    //     createdAt: '2021-09-01',
-    //   },
-    //   comment: 'Ant Design Title 4',
-    // },
-    // {
-    //   user: {
-    //     name: 'John Doe',
-    //     profileImage: 'https://xsgames.co/randomusers/avatar.php?g=pixel&key=1',
-    //     createdAt: '2021-09-01',
-    //   },
-    //   comment: 'Ant Design Title 4',
-    // },
-    // {
-    //   user: {
-    //     name: 'John Doe',
-    //     profileImage: 'https://xsgames.co/randomusers/avatar.php?g=pixel&key=1',
-    //     createdAt: '2021-09-01',
-    //   },
-    //   comment: 'Ant Design Title 4',
-    // },
-    // {
-    //   user: {
-    //     name: 'John Doe',
-    //     profileImage: 'https://xsgames.co/randomusers/avatar.php?g=pixel&key=1',
-    //     createdAt: '2021-09-01',
-    //   },
-    //   comment: 'Ant Design Title 4',
-    // },
-  ];
+
+  const createComment = () => {
+    const createCommentAsync = async () => {
+      try {
+        const res = await tsmAxios.post(`/cards/${cardId}/comment`, {
+          content: commentCreation,
+        });
+        setCard(res.data as Card);
+        setCommentCreation('');
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    createCommentAsync();
+  }
   return (
     <div className='flex flex-col gap-2 mt-5'>
       <div className='flex items-center gap-x-2'>
@@ -98,25 +49,25 @@ const CommentCard = ({ color }: { color: string }) => {
       <List
         className='max-h-[200px] px-3 overflow-x-scroll'
         itemLayout='horizontal'
-        dataSource={data}
+        dataSource={comments}
         renderItem={(item, index) => (
           <List.Item>
             <List.Item.Meta
-              avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${item.user.profileImage}`} />}
+              avatar={<Avatar src={`http://localhost:8888/api/img/${item.user.profileImageId}`} />}
               title={<div className='flex justify-between gap-x-2'>
                   <span>{item.user.name}</span>
-                  <span className='text-xs font-light'>{item.user.createdAt}</span>
+                  <span className='text-xs font-light'>{convertDateFormat(item.createdAt) || ""}</span>
                 </div>}
-              description={item.comment}
+              description={item.content}
             />
           </List.Item>
         )}
       />
       <div className='flex items-center gap-x-2'>
         <Avatar className='w-10' src={userAuthenticated.profileImage} />
-        <Input placeholder='Add a comment...' className='bg-white' />
+        <Input value={commentCreation} onChange={(e)=>{setCommentCreation(e.target.value)}} placeholder='Add a comment...' className='bg-white' />
         <ConfigProvider theme={theme}>
-          <Button>Comment</Button>
+          <Button onClick={createComment}>Comment</Button>
         </ConfigProvider>
       </div>
     </div>

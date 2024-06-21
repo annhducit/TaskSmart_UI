@@ -17,14 +17,13 @@ import {
   Tabs,
   ConfigProvider,
 } from 'antd';
-import type { ColorPickerProps, TableProps, UploadProps, TabsProps } from 'antd';
+import type { ColorPickerProps, TableProps, UploadProps,UploadFile, TabsProps,GetProp } from 'antd';
 import { green, presetPalettes, red, gold, blue, cyan, purple, magenta } from '@ant-design/colors';
 import { DATE_TIME_FORMAT } from '@/shared/constant/date';
 import { DatePicker } from 'antd';
 
 import {
   LayoutList,
-  Pencil,
   Plus,
   Text,
   Upload as UploadIcon,
@@ -34,6 +33,8 @@ import {
   Trash,
   List,
   EyeOff,
+  Divide,
+  Minus,
 } from 'lucide-react';
 import Activity from './activity';
 import CommentCard from './comment';
@@ -45,8 +46,11 @@ import { useEffect, useState } from 'react';
 import { tsmAxios } from '@/configs/axios';
 import type { MenuProps } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
+import { set } from 'lodash';
+import cookieUtil from '@/utils/cookieUtil';
+type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
-const ModifyCard = () => {
+const ModifyCard = ({ members }: { members: UserRelation[] }) => {
   return (
     <Dialog.Param
       className='custom-modal-content'
@@ -54,7 +58,7 @@ const ModifyCard = () => {
       paramKey={SEARCH_PARAMS.DIALOG}
       paramValue={SEARCH_PARAMS_VALUE.CARD}
     >
-      <ModifyCardModal />
+      <ModifyCardModal members={members} />
     </Dialog.Param>
   );
 };
@@ -73,6 +77,8 @@ const cardUndefine: Card = {
   estimate: new Date(),
   checkLists: [],
   attachments: [],
+  comments: [],
+  implementers: [],
 };
 
 type PreviewImage = {
@@ -80,7 +86,7 @@ type PreviewImage = {
   src: string;
 };
 
-const ModifyCardModal = () => {
+const ModifyCardModal = ({ members }: { members: UserRelation[] }) => {
   const { onClose } = useDialogContext();
 
   const searhParams = useSearchParams();
@@ -88,26 +94,6 @@ const ModifyCardModal = () => {
   const [card, setCard] = useState<Card>(cardUndefine);
 
   const defaultCardColor = '1677ff';
-
-  const tabs: TabsProps['items'] = [
-    {
-      key: '1',
-      label: 'Overview',
-      children: (
-        <OverviewCardTab card={card} color={card.color || defaultCardColor} setCard={setCard} />
-      ),
-    },
-    {
-      key: '2',
-      label: 'Attachments',
-      children: <AttachmentTab card={card} color={card.color || defaultCardColor} />,
-    },
-    {
-      key: '3',
-      label: 'Activity',
-      children: <ActivityTab />,
-    },
-  ];
 
   useEffect(() => {
     const cardId = searhParams.get(SEARCH_PARAMS.ID);
@@ -132,14 +118,52 @@ const ModifyCardModal = () => {
     });
   };
 
+  const updateCardOverView = async (data: Partial<Card>) => {
+    const updateCardAsync = async () => {
+      try {
+        const res = await tsmAxios.patch(`/cards/${card.id}`, data);
+        setCard({ ...card, ...data });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    updateCardAsync();
+  };
+
   const operations = (
     <ColorAndMembers
       card={card}
       color={card.color || defaultCardColor}
+      updateCard={updateCardOverView}
       setCard={setCard}
+      members={members}
     ></ColorAndMembers>
   );
 
+  const tabs: TabsProps['items'] = [
+    {
+      key: '1',
+      label: 'Overview',
+      children: (
+        <OverviewCardTab
+          card={card}
+          color={card.color || defaultCardColor}
+          setCard={setCard}
+          updateCard={updateCardOverView}
+        />
+      ),
+    },
+    {
+      key: '2',
+      label: 'Attachments',
+      children: <AttachmentTab card={card} color={card.color || defaultCardColor} />,
+    },
+    {
+      key: '3',
+      label: 'Activity',
+      children: <ActivityTab />,
+    },
+  ];
   return (
     <>
       <Dialog.CloseButton onClose={handleClose} />
@@ -195,12 +219,25 @@ const ModifyCardModal = () => {
         </div>
 
         <div className='flex px-5 py-0'>
-          <Tabs
-            defaultActiveKey='1'
-            items={tabs}
-            tabBarExtraContent={operations}
-            className='w-full'
-          />
+          <ConfigProvider
+            theme={{
+              components: {
+                Tabs: {
+                  itemActiveColor: `#${card.color || defaultCardColor}`,
+                  itemHoverColor: `#${card.color || defaultCardColor}`,
+                  itemSelectedColor: `#${card.color || defaultCardColor}`,
+                  inkBarColor: `#${card.color || defaultCardColor}`,
+                },
+              },
+            }}
+          >
+            <Tabs
+              defaultActiveKey='1'
+              items={tabs}
+              tabBarExtraContent={operations}
+              className='w-full'
+            />
+          </ConfigProvider>
         </div>
       </div>
     </>
@@ -211,10 +248,12 @@ const OverviewCardTab = ({
   card,
   color,
   setCard,
+  updateCard,
 }: {
   card: Card;
   color: string;
   setCard: React.Dispatch<React.SetStateAction<Card>>;
+  updateCard: (data: Partial<Card>) => void;
 }) => {
   const status: MenuProps['items'] = EStatusArray;
   const priority: MenuProps['items'] = ELevelArray;
@@ -226,25 +265,29 @@ const OverviewCardTab = ({
   };
 
   const handleStatusClick: MenuProps['onClick'] = (e) => {
-    setCard({ ...card, status: e.key as EStatus });
+    updateCard({ status: e.key as EStatus });
   };
 
   const handlePriorityClick: MenuProps['onClick'] = (e) => {
-    setCard({ ...card, priority: e.key as ELevel });
+    updateCard({ priority: e.key as ELevel });
   };
 
   const handleRiskClick: MenuProps['onClick'] = (e) => {
-    setCard({ ...card, risk: e.key as ELevel });
+    updateCard({ risk: e.key as ELevel });
   };
 
   const handleEffortClick: MenuProps['onClick'] = (e) => {
-    setCard({ ...card, effort: e.key as ELevel });
+    updateCard({ effort: e.key as ELevel });
   };
 
-  const btnTheme  = {
+  const handleSaveDescriptionClick = () => {
+    updateCard({ description: card.description });
+  };
+
+  const btnTheme = {
     components: {
       Button: {
-        defaultBg: color,
+        defaultBg: `#${color}`,
       },
     },
   };
@@ -358,13 +401,15 @@ const OverviewCardTab = ({
             <Typography.Text className='text-base font-semibold'>Description</Typography.Text>
           </div>
           <div className='flex flex-col gap-2 px-6'>
-            <Input.TextArea className='mt-1 h-[auto]' value={card.description} />
+            <Input.TextArea
+              className='mt-1 h-[auto]'
+              value={card.description}
+              onChange={(e) => setCard({ ...card, description: e.target.value })}
+            />
             <div className='flex justify-end'>
               <div className='flex gap-2'>
-                <ConfigProvider
-                  theme={btnTheme}
-                >
-                  <Button className='w-[90px]'>
+                <ConfigProvider theme={btnTheme}>
+                  <Button onClick={handleSaveDescriptionClick} className='w-[90px]'>
                     Save
                   </Button>
                 </ConfigProvider>
@@ -377,49 +422,67 @@ const OverviewCardTab = ({
         </div>
 
         {/* Check list */}
-        <CheckList list={card.checkLists} color={`#${color}`} />
+        <CheckList
+          cardId={card.id}
+          list={card.checkLists}
+          setCheckList={(checkLists: CheckListGroup[]) => {
+            setCard({ ...card, checkLists });
+          }}
+          color={`#${color}`}
+        />
       </div>
 
       {/* Comment */}
       <div className='mt-4'>
-        <CommentCard color={`#${color}`} />
+        <CommentCard
+          cardId={card.id}
+          comments={card.comments}
+          setCard={(card: Card) => {
+            setCard(card);
+          }}
+          color={`#${color}`}
+        />
       </div>
     </div>
   );
 };
 
 const AttachmentTab = (props: { card: Card; color: string }) => {
-  const uploadProps: UploadProps = {
-    multiple: true,
-    onChange(info) {
-      const { status } = info.file;
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
+
+  const [attachments, setAttachments] = useState<Attachment[]>(props.card.attachments);
+
+  const handleUpload = (fileList: FileType[]) => {
+    if (fileList.length === 0) {
+      console.log("No files to upload");
+      return;
+    }
+
+    const formData = new FormData();
+    fileList.forEach((file,index) => {
+      formData.append(`files`, file as FileType);
+    });
+    
+    const UploadAsync= async () =>{
+      try {
+        console.log(formData.get('files'))
+        const res = await tsmAxios.post(`/cards/${props.card.id}/attachment`, formData,{
+          headers: {'Content-Type': 'multipart/form-data'}
+        })
+        setAttachments(res.data);
+      } catch (error) {
+        console.log(error);
       }
-      if (status === 'done') {
-      } else if (status === 'error') {
-      }
-    },
+    }
+    UploadAsync()
   };
 
-  const file: Attachment[] = [
-    {
-      resourceId: '1',
-      title: 'Image 1',
-      type: 'image',
-      description: 'This is a image 1, it is a beautiful image.',
+  const uploadProp: UploadProps = {
+    beforeUpload: (_file, fileList) => {
+      console.log(fileList as FileType[]);
+      handleUpload(fileList as FileType[]);
+      return false;
     },
-    {
-      resourceId: '2',
-      title: 'File 1',
-      type: 'file',
-    },
-    {
-      resourceId: '3',
-      title: 'Image 1',
-      type: 'image',
-    },
-  ];
+  };
 
   return (
     <div className='flex min-h-[400px] w-full flex-col px-0 py-0'>
@@ -432,11 +495,11 @@ const AttachmentTab = (props: { card: Card; color: string }) => {
                   >
                     Upload
                   </Button> */}
-          <Upload {...uploadProps}>
+          <Upload multiple {...uploadProp}>
             <Button icon={<UploadIcon />}>Upload</Button>
           </Upload>
         </div>
-        <AttachmentFile data={file} />
+        <AttachmentFile cardId={props.card.id} data={attachments} />
       </div>
     </div>
   );
@@ -466,7 +529,7 @@ const ActivityTab = () => {
   );
 };
 
-const AttachmentFile = ({ data }: { data: Attachment[] }) => {
+const AttachmentFile = ({ cardId, data }: { cardId: string ,data: Attachment[] }) => {
   const [previewImage, setPreviewImage] = useState<PreviewImage>({ visible: false, src: '' });
 
   const attachmentColumns: TableProps<Attachment>['columns'] = [
@@ -508,7 +571,7 @@ const AttachmentFile = ({ data }: { data: Attachment[] }) => {
             onClick={() =>
               setPreviewImage({
                 visible: true,
-                src: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                src: `http://localhost:8888/api/projects/6673a8a81fbe68659d504d85/assets/${record.fileId}`,
               })
             }
           />
@@ -559,10 +622,14 @@ const AttachmentFile = ({ data }: { data: Attachment[] }) => {
 const ColorAndMembers = ({
   card,
   color,
+  updateCard,
+  members,
   setCard,
 }: {
   card: Card;
   color: string;
+  updateCard: (data: Partial<Card>) => void;
+  members: UserRelation[];
   setCard: React.Dispatch<React.SetStateAction<Card>>;
 }) => {
   const presets = genPresets({ red, green, gold, blue, cyan, purple, magenta });
@@ -571,6 +638,19 @@ const ColorAndMembers = ({
       <Presets />
     </div>
   );
+  const updateImplementers = (implementers: UserRelation[]) => {
+    const updateImplementersAsync = async () => {
+      try {
+        const userIds = implementers.map((user) => user.userId);
+        const res = await tsmAxios.post(`/cards/${card.id}/implementers`, { userIds });
+        console.log(implementers);
+        setCard(res.data as Card);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    updateImplementersAsync();
+  };
   return (
     <div className='flex items-center justify-end py-1 gap-x-6'>
       <div className='flex gap-y-1'>
@@ -581,26 +661,116 @@ const ColorAndMembers = ({
           panelRender={customPanelRender}
           size='small'
           onChange={(color) => {
-            setCard({ ...card, color: color.toHex() });
+            updateCard({ color: color.toHex() });
           }}
         />
       </div>
       <div className='flex gap-y-1'>
         <Typography.Text className='mr-1 text-sm font-semibold'>Members:</Typography.Text>
         <Avatar.Group size='small' maxCount={2}>
-          <Tooltip title='Anh Duc'>
-            <Popover
-              trigger='click'
-              placement='bottom'
-              overlayClassName='custom-popover-member-info'
-              content={<MemberInfo />}
-            >
-              <Avatar style={{ backgroundColor: '#f56a00' }} icon={<User size='12' />} />
-            </Popover>
-          </Tooltip>
-          <Avatar className='bg-[#b2bec3] hover:bg-[#636e72]' icon={<Plus size='12' />} />
+          {card.implementers?.map((user) => (
+            <Tooltip title={user.name} key={user.userId}>
+              <Popover
+                trigger='click'
+                placement='bottom'
+                overlayClassName='custom-popover-member-info'
+                content={<MemberInfo />}
+              >
+                <Avatar src={`http://localhost:8888/api/img/${user.profileImageId}`} icon={<User size='12' />} />
+              </Popover>
+            </Tooltip>
+          ))}
+          <Popover
+            trigger='click'
+            placement='bottomRight'
+            content={
+              <MemberInviteCard color={color} members={members} implementers={card.implementers} updateImplementers={updateImplementers} />
+            }
+            className='p-0'
+          >
+            <Avatar className='bg-[#b2bec3] hover:bg-[#636e72]' icon={<Plus size='12' />} />
+          </Popover>
         </Avatar.Group>
       </div>
+    </div>
+  );
+};
+
+const MemberInviteCard = ({
+  members,
+  color,
+  implementers,
+  updateImplementers,
+}: {
+  color: string;
+  members: UserRelation[];
+  implementers: UserRelation[];
+  updateImplementers: (implementers: UserRelation[]) => void;
+}) => {
+  const [impls, setImpls] = useState<UserRelation[]>(implementers);
+  const [notImplementer, setNotImplementer] = useState<UserRelation[]>([]);
+  useEffect(() => {
+    setNotImplementer(members.filter((member) => !impls.find((impl) => impl.userId === member.userId)));
+  }, [impls]);
+
+  return (
+    <div className='flex flex-col p-0 rounded-none gap-y-1'>
+      <span>Implementers:</span>
+      {impls.map((member) => (
+        <div
+          key={member.userId}
+          className='flex items-center gap-x-2 rounded px-2 py-1 hover:bg-[#ecf0f1]'
+        >
+          <div className='flex gap-x-2'>
+            <Avatar
+              src={`http://localhost:8888/api/img/${member.profileImageId}`}
+              icon={<User size='12' />}
+            />
+            <Typography.Text>{member.name}</Typography.Text>
+          </div>
+          <div className='w-5'>
+            <Minus 
+              onClick={() => {
+                setImpls((prev) => (prev.filter((impl) => impl.userId !== member.userId)));
+              }} 
+              className='w-3 h-3 cursor-pointer hover:h-4 hover:w-4'></Minus>
+          </div>
+        </div>
+      ))}
+      <div className='h-[1px] w-full bg-[#7f8c8d]'></div>
+      {notImplementer.map((member) => (
+        <div
+          key={member.userId}
+          className='flex items-center gap-x-2 rounded px-2 py-1 hover:bg-[#ecf0f1]'
+        >
+          <div className='flex gap-x-2'>
+            <Avatar
+              src={`http://localhost:8888/api/img/${member.profileImageId}`}
+              icon={<User size='12' />}
+            />
+            <Typography.Text>{member.name}</Typography.Text>
+          </div>
+          <div className='w-5'>
+            <Plus
+              onClick={() => {
+                setImpls((prev) => [...prev, member]);
+              }}
+              className='w-3 h-3 cursor-pointer hover:h-4 hover:w-4'
+            ></Plus>
+          </div>
+        </div>
+      ))}
+      <ConfigProvider
+        theme={{
+          components: {
+            Button: {
+              defaultBg: `${color}`,
+            },
+          },
+        }}
+      >
+        <Button onClick={()=>{updateImplementers(impls)}} className='h-[30px] w-[60px] p-0'>Save</Button>
+      </ConfigProvider>
     </div>
   );
 };
