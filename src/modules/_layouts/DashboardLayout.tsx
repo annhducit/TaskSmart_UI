@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom';
 import Header from '../tsm/components/header';
 import SidebarComponent from '@/shared/components/sidebar';
 import { Suspense, lazy, useState } from 'react';
-import { Avatar, Button, Popover, Tabs } from 'antd';
+import { Avatar, Badge, Button, Popover, Tabs } from 'antd';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import SubHeader from '../tsm/components/sub-header';
 import useGetPath from '@/shared/hooks/use-get-path';
@@ -106,7 +106,9 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
     ) : undefined,
   }));
 
-  const userDefault = <Avatar style={{ backgroundColor: '#f56a00' }} icon={<User size='12' />} />;
+  const userDefault = (
+    <Avatar size={28} style={{ backgroundColor: '#f56a00' }} icon={<User size='12' />} />
+  );
 
   return (
     <>
@@ -143,15 +145,18 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
             </Button>
             <Avatar.Group maxCount={2} className='flex items-center'>
               {project?.users.map((user) => (
-                <Tooltip title={user.name} placement='top' key={user.id}>
+                <Tooltip title={user.name} placement='top' key={user.userId}>
                   {user.profileImageId ? (
-                    <div className='relative h-6 w-6 rounded-full'>
+                    <div
+                      style={{ width: '28px', height: '28px' }}
+                      className='relative rounded-full'
+                    >
                       <img
                         src={`http://localhost:8888/api/img/${user.profileImageId}`}
-                        alt=''
-                        className='h-full w-full rounded-full'
-                      />
-                      <span className='absolute bottom-1 right-0 rounded-full bg-[#1ad67b] p-1' />
+                        className='rounded-full object-cover'
+                        style={{ width: '28px', height: '28px' }}
+                      ></img>
+                      <Badge status='success' className='absolute -right-[2px] -top-1 z-[99999]' />
                     </div>
                   ) : (
                     userDefault

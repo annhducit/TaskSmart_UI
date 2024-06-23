@@ -18,35 +18,41 @@ import { useMemo, useState, useEffect } from 'react';
 import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 import { createPortal } from 'react-dom';
 import { TaskCard } from './move-card';
-import { tsmAxios } from '@/configs/axios';
 import PopoverX from '@/shared/components/popover';
+import useGetProject from './hooks/query/use-get-project';
+import useCreateListCard from './hooks/mutation/use-create-listcard';
+import useCreateCard from './hooks/mutation/use-create-card';
+import useUpdateListCard from './hooks/mutation/use-update-listcard';
+import useDeleteListCard from './hooks/action/use-delete-listcard';
+import useSetColumnMove from './hooks/action/use-set-column-move';
+import useSetCardMove from './hooks/action/use-set-card-move';
+import Loading from '@/shared/components/loading';
 
 const Project = () => {
-  const projectId = '6673a8a81fbe68659d504d85';
-  const [project, setProject] = useState<Project>({
-    id: '',
-    name: '',
-    description: '',
-    background: '',
-    inviteCode: '',
-    listCards: [],
-    users: [],
-  } as Project);
-
   const [visible, setVisible] = useCollapse<boolean>(false);
   const handleOpenChange = (open: boolean) => {
     setVisible(open);
   };
 
-  const [columns, setColumns] = useState<ListCard[]>([]);
-  const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
   const [listCardCreationName, setListCardCreationName] = useState('');
-
+  const [activeColumn, setActiveColumn] = useState<ListCard | null>(null);
+  const [activeTask, setActiveTask] = useState<Card | null>(null);
+  const [columns, setColumns] = useState<ListCard[]>([]);
   const [tasks, setTasks] = useState<Card[]>([]);
 
-  const [activeColumn, setActiveColumn] = useState<ListCard | null>(null);
+  /**
+   * Tanstack React Query
+   */
+  const { data: project, isLoading } = useGetProject();
 
-  const [activeTask, setActiveTask] = useState<Card | null>(null);
+  const { mutate: createListCardMutate } = useCreateListCard();
+  const { mutate: updateListCardMutate } = useUpdateListCard();
+  const { mutate: deleteListCardMutate } = useDeleteListCard();
+  const { mutate: createCardMutate } = useCreateCard();
+  const { mutate: moveColumn } = useSetColumnMove();
+  const { mutate: moveCard } = useSetCardMove();
+
+  const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -56,130 +62,46 @@ const Project = () => {
     })
   );
 
-  const createListCard = async () => {
-    const fetchProject = async () => {
-      try {
-        const res = await tsmAxios.post(`/projects/${projectId}`, { name: listCardCreationName });
-        setProject((prev) => {
-          return { ...prev, listCards: [...prev.listCards, res.data] };
-        });
-        setListCardCreationName('');
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchProject();
-    setVisible(false);
-  };
-
-  useEffect(() => {
-    const fetchProject = async () => {
-      try {
-        const res = await tsmAxios.get(`/projects/${projectId}`);
-        setProject(res.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchProject();
-  }, []);
-
   useEffect(() => {
     const listCardIterator: Card[] = [];
-    project.listCards.forEach((listCard) => {
+    project?.listCards.forEach((listCard) => {
       listCard.cards.forEach((card) => {
         listCardIterator.push({ ...card, listCardId: listCard.id });
       });
     });
-    setColumns(project.listCards);
+    project?.listCards && setColumns(project?.listCards);
     setTasks(listCardIterator);
   }, [project]);
 
-  const updateListCard = async (listCard: ListCard) => {
-    const updateListCard = async () => {
-      try {
-        const res = await tsmAxios.put(`/projects/${projectId}/${listCard.id}`, listCard);
-        const columnUpdated: ListCard = res.data;
-        setColumns((prev) => {
-          return prev.map((col) => {
-            if (col.id === columnUpdated.id) {
-              return columnUpdated;
-            }
-            return col;
-          });
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    updateListCard();
+  const createListCard = async () => {
+    createListCardMutate({
+      name: listCardCreationName,
+    });
+    setVisible(false);
+  };
+
+  const updateListCard = (listCard: ListCard) => {
+    updateListCardMutate(listCard);
   };
 
   const deleteListCard = async (listCardId: String) => {
-    const deleteListCardAsync = async () => {
-      try {
-        await tsmAxios.delete(`/projects/${projectId}/${listCardId}`);
-        setColumns((prev) => {
-          return prev.filter((col) => col.id !== listCardId);
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    deleteListCardAsync();
+    deleteListCardMutate(listCardId);
   };
 
-  const createCard = async (columnId: String, card: Card) => {
-    const createCardAsync = async () => {
-      try {
-        const res = await tsmAxios.post(`/projects/${projectId}/${columnId}`, card);
-        const cardCreated: Card = {...res.data, listCardId: columnId};
-        setColumns((prev) => {
-          return prev.map((col) => {
-            if (col.id === columnId) {
-              setTasks((prev) => [...prev, cardCreated]);
-              return { ...col, cards: [...col.cards, cardCreated] };
-            }
-            return col;
-          });
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    createCardAsync();
+  const createCard = (columnId: string, card: Card) => {
+    createCardMutate({
+      columnId,
+      card,
+    });
   };
 
   const setColumnsMoved = (columns: ListCard[]) => {
-    const moveColumnsAsync = async () => {
-      try {
-        await tsmAxios.post(`/projects/${projectId}/move/listcard`, {
-          ids: columns.map((col) => col.id),
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    moveColumnsAsync();
+    moveColumn(columns);
     setColumns(columns);
   };
 
   const setCardsMoved = (cards: Card[]) => {
-    const ids = columns.map((col) => ({
-      listCardId: col.id,
-      cardIds: cards.filter((card) => card.listCardId === col.id).map((card) => card.id),
-    }));
-    console.log(ids);
-    const moveCardsAsync = async () => {
-      try {
-        await tsmAxios.post(`/projects/${projectId}/move/card`, { ids }).then((res) => {
-          console.log(res);
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    moveCardsAsync();
+    moveCard({ columns, cards });
     setTasks(cards);
   };
 
@@ -191,64 +113,69 @@ const Project = () => {
         onDragEnd={onDragEnd}
         onDragOver={onDragOver}
       >
-        <div className='inline-block min-h-screen px-6 '>
-          <div className='flex items-start gap-x-3'>
-            <SortableContext items={columnsId}>
-              {columns.map((col) => (
-                <ColumnContainer
-                  key={col.id}
-                  column={col}
-                  cards={tasks.filter((task) => task.listCardId === col.id)}
-                  updateColumn={updateListCard}
-                  deleteColumn={deleteListCard}
-                  createCard={createCard}
-                />
-              ))}
-            </SortableContext>
-
-            <PopoverX
-              visible={visible}
-              onOpenChange={handleOpenChange}
-              content={
-                <div className='flex w-[250px] flex-col gap-4'>
-                  <Input
-                    placeholder='Enter list title'
-                    allowClear
-                    size='large'
-                    className='text-sm font-semibold rounded '
-                    value={listCardCreationName}
-                    onChange={(e) => setListCardCreationName(e.target.value)}
-                    onPressEnter={createListCard}
+        {isLoading ? (
+          <Loading.Page size='full' />
+        ) : (
+          <div className='inline-block min-h-screen px-6 '>
+            <div className='flex items-start gap-x-3'>
+              <SortableContext items={columnsId}>
+                {columns.map((col) => (
+                  <ColumnContainer
+                    key={col.id}
+                    column={col}
+                    cards={tasks.filter((task) => task.listCardId === col.id)}
+                    updateColumn={updateListCard}
+                    deleteColumn={deleteListCard}
+                    createCard={createCard}
                   />
-                  <div className='flex items-center ml-auto gap-x-2'>
-                    <Button
-                      onClick={createListCard}
-                      type='primary'
-                      className='w-20 text-xs font-semibold rounded'
-                    >
-                      Add list
-                    </Button>
-                    <Button
-                      type='default'
-                      className='w-16 text-xs font-semibold rounded'
-                      onClick={() => handleOpenChange(false)}
-                    >
-                      Cancel
-                    </Button>
+                ))}
+              </SortableContext>
+
+              <PopoverX
+                visible={visible}
+                onOpenChange={handleOpenChange}
+                content={
+                  <div className='flex w-[250px] flex-col gap-4'>
+                    <Input
+                      placeholder='Enter list title'
+                      allowClear
+                      size='large'
+                      className='rounded text-sm font-semibold '
+                      value={listCardCreationName}
+                      onChange={(e) => setListCardCreationName(e.target.value)}
+                      onPressEnter={createListCard}
+                    />
+                    <div className='ml-auto flex items-center gap-x-2'>
+                      <Button
+                        onClick={createListCard}
+                        type='primary'
+                        className='w-20 rounded text-xs font-semibold'
+                      >
+                        Add list
+                      </Button>
+                      <Button
+                        type='default'
+                        className='w-16 rounded text-xs font-semibold'
+                        onClick={() => handleOpenChange(false)}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              }
-            >
-              <Button
-                icon={<Plus className='w-4 h-4 opacity-65' />}
-                size='large'
-                className='flex w-[275px] items-center rounded-xl border-none bg-[#ffffff3d] text-sm font-semibold text-white'
+                }
               >
-                Add new list
-              </Button>
-            </PopoverX>
+                <Button
+                  icon={<Plus className='h-4 w-4 opacity-65' />}
+                  size='large'
+                  className='flex w-[275px] items-center rounded-xl border-none bg-[#ffffff3d] text-sm font-semibold text-white'
+                >
+                  Add new list
+                </Button>
+              </PopoverX>
+            </div>
           </div>
-        </div>
+        )}
+
         {createPortal(
           <DragOverlay>
             {activeColumn && (
@@ -262,7 +189,7 @@ const Project = () => {
           document.body
         )}
       </DndContext>
-      <ModifyCard members={project.users} />
+      {project?.users && <ModifyCard members={project?.users} />}
     </div>
   );
 

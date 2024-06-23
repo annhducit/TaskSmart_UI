@@ -2,7 +2,7 @@ import Tooltip from '@/shared/components/tooltip';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
 import useSearchParams from '@/shared/hooks/use-search-params';
 import { useSortable } from '@dnd-kit/sortable';
-import { Avatar, Typography } from 'antd';
+import { Avatar, Popover, Typography } from 'antd';
 import { Paperclip, Rss, Text, User } from 'lucide-react';
 import { CSS } from '@dnd-kit/utilities';
 
@@ -96,14 +96,20 @@ function TaskCard({ card }: Props) {
               </div>
             </div>
           </div>
-          <Avatar.Group maxCount={2} size='small'>
-            <Tooltip title='Đức Duy' placement='top'>
-              <Avatar style={{ backgroundColor: '#f56a00' }} icon={<User size='12' />} />
-            </Tooltip>
-            <Tooltip title='Trọng Đức' placement='top'>
-              <Avatar style={{ backgroundColor: '#87d068' }} icon={<User size='12' />} />
-            </Tooltip>
-          </Avatar.Group>
+          <div className='flex items-center'>
+            {card.implementers?.map((user) => (
+              <Avatar.Group maxCount={2} size='small'>
+                <Tooltip title={user.name} key={user.userId}>
+                  <Popover trigger='click' placement='bottom'>
+                    <Avatar
+                      src={`http://localhost:8888/api/img/${user.profileImageId}`}
+                      icon={<User size='12' />}
+                    />
+                  </Popover>
+                </Tooltip>
+              </Avatar.Group>
+            ))}
+          </div>
         </div>
       </div>
     </>

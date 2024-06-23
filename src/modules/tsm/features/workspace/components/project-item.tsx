@@ -1,17 +1,14 @@
 import Tooltip from '@/shared/components/tooltip';
-import useLocalStorage from '@/shared/hooks/use-local-storage';
 import { Avatar, Typography } from 'antd';
 import { LockKeyhole } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const ProjectItem = ({ project }: { project: Project }) => {
   const navigate = useNavigate();
-  const [, setProjectId] = useLocalStorage('project_id', '');
   return (
     <div
       onClick={() => {
         navigate(`../../../tsm/project/${project.id}`);
-        setProjectId(project.id);
       }}
       style={{
         backgroundImage: `url(https://images.unsplash.com/photo-1716251642302-72006415465b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)`,

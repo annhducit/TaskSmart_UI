@@ -10,12 +10,14 @@ import { FolderKanban, LayoutTemplate, Rocket, SquarePlus } from 'lucide-react';
 
 import wspImg from '@/assets/images/karban.png';
 import Tooltip from './tooltip';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useSearchParam from '../hooks/use-search-param';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '../constant/search-param';
 
 import useGetProfile from '@/modules/tsm/components/hooks/use-profile';
 import useGetCategories from '@/modules/tsm/features/workspace/hooks/query/use-get-categories';
+import useGetWorkspace from '@/modules/tsm/features/workspace/hooks/query/use-get-workspace';
+import { useState } from 'react';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -66,8 +68,6 @@ const Sidebar = ({
 
   const { data } = useGetProfile();
 
-  const { workspaceId } = useParams();
-
   const [, setDialog] = useSearchParam(SEARCH_PARAMS.DIALOG);
 
   const handleOpenModal = () => {
@@ -80,22 +80,19 @@ const Sidebar = ({
         navigate('tsm/home', { replace: true });
         break;
       case 'workspace':
-        navigate('tsm/workspace', { replace: true });
+        navigate('../../../tsm/workspace');
         break;
       case 'mail':
-        navigate('tsm/mail', { replace: true });
+        navigate('../../../tsm/mail');
         break;
       case 'template':
-        navigate('tsm/template', { replace: true });
+        navigate('../../../tsm/template');
         break;
       case 'sub6':
-        navigate('tsm/workspace', { replace: true });
+        navigate('../../../tsm/workspace');
         break;
       case 'sub11':
-        navigate(`tsm/workspace/${e.key}`, { replace: true });
-        break;
-      case 'sub14':
-        navigate('tsm/workspace/1/project/1', { replace: true });
+        navigate(`../../tsm/workspace/${e.key}`);
         break;
       default:
         break;
@@ -131,7 +128,7 @@ const Sidebar = ({
           label: item.name,
           icon: <LayoutTemplate className='h-4 w-4' />,
           onClick: () => {
-            navigate(`tsm/template`, { replace: true });
+            navigate(`../../../tsm/template`);
           },
         };
       }),
@@ -151,7 +148,8 @@ const Sidebar = ({
       style: { display: type === 'private' ? 'none' : '' },
       label: data?.personalWorkSpace?.name || 'Personal Workspace',
       icon: <Rocket className='h-4 w-4' />,
-      onClick: () => navigate(`tsm/workspace/${data?.personalWorkSpace?.id}`, { replace: true }),
+
+      onClick: () => navigate(`../../../tsm/workspace/${data?.personalWorkSpace?.id}`),
     },
     {
       key: 'workspace',
@@ -161,7 +159,7 @@ const Sidebar = ({
         key: workspace.id,
         label: workspace.name,
         icon: <FolderKanban className='h-4 w-4' />,
-        onClick: () => navigate(`tsm/workspace/${workspace.id}`, { replace: true }),
+        onClick: () => navigate(`../../../tsm/workspace/${workspace.id}`),
       })),
     },
     {
@@ -180,17 +178,20 @@ const Sidebar = ({
       key: 'sub13',
       label: 'Your projects',
       type: 'group',
-      className: 'hidden', // Hide the group, need to be implemented
-
+      className: 'hidden',
       children: data?.projects?.map((project) => ({
         key: project.id,
         label: project.name,
         icon: <FolderKanban className='h-4 w-4' />,
-        onClick: () =>
-          navigate(`tsm/workspace/${workspaceId}/project/${project.id}`, { replace: true }),
+        onClick: () => navigate(`../../project/${project.id}`, { replace: true }),
       })),
     },
   ];
+
+  /**
+   * Need to fix again
+   */
+  const { data: workspace } = useGetWorkspace();
 
   return (
     <aside
@@ -211,7 +212,7 @@ const Sidebar = ({
               }}
             >
               <p className='w-[150px] truncate text-sm font-semibold'>TaskSmart Workspace</p>
-              <p className='text-xs'> Team workspace</p>
+              <p className='text-xs'>{workspace?.name}</p>
             </div>
           </div>
         </Tooltip>

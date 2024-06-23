@@ -102,7 +102,7 @@ type Card = {
   priority: ELevel;
   risk: ELevel;
   effort: ELevel;
-  estimate: Date;
+  estimate: Date | string | null;
   listCardId?: string;
   checkLists: CheckListGroup[];
   attachments: Attachment[];
@@ -122,7 +122,7 @@ type CommentType = {
   user: UserRelation;
   content: string;
   createdAt: string;
-}
+};
 
 type TSMNote = {
   id: string;

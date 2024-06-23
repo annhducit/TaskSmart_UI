@@ -1,6 +1,5 @@
 import Dialog from '@/shared/components/dialog';
 import { useDialogContext } from '@/shared/components/dialog/provider';
-import TextEditor from '@/shared/components/text-editor';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
 import {
   Avatar,
@@ -17,9 +16,9 @@ import {
   Tabs,
   ConfigProvider,
 } from 'antd';
-import type { ColorPickerProps, TableProps, UploadProps,UploadFile, TabsProps,GetProp } from 'antd';
+import type { ColorPickerProps, TableProps, UploadProps, TabsProps, GetProp } from 'antd';
 import { green, presetPalettes, red, gold, blue, cyan, purple, magenta } from '@ant-design/colors';
-import { DATE_TIME_FORMAT } from '@/shared/constant/date';
+import { DATE_TIME_FORMAT, DB_DATE_TIME_FORMAT } from '@/shared/constant/date';
 import { DatePicker } from 'antd';
 
 import {
@@ -33,7 +32,6 @@ import {
   Trash,
   List,
   EyeOff,
-  Divide,
   Minus,
 } from 'lucide-react';
 import Activity from './activity';
@@ -41,13 +39,14 @@ import CommentCard from './comment';
 import CheckList from './check-list';
 import MemberInfo from './popover/member-info';
 import Tooltip from '@/shared/components/tooltip';
-import useSearchParams from '@/shared/hooks/use-search-params';
 import { useEffect, useState } from 'react';
 import { tsmAxios } from '@/configs/axios';
 import type { MenuProps } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
-import { set } from 'lodash';
-import cookieUtil from '@/utils/cookieUtil';
+import useGetCard from '../hooks/query/use-get-card';
+import useUpdateCard from '../hooks/mutation/use-update-card';
+import useUpdateCardImplementer from '../hooks/mutation/use-update-card-implementer';
+import dayjs from 'dayjs';
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
 const ModifyCard = ({ members }: { members: UserRelation[] }) => {
@@ -65,22 +64,6 @@ const ModifyCard = ({ members }: { members: UserRelation[] }) => {
 
 export default ModifyCard;
 
-const cardUndefine: Card = {
-  id: '',
-  name: '',
-  color: '',
-  description: '',
-  status: 'none',
-  priority: 'none',
-  risk: 'none',
-  effort: 'none',
-  estimate: new Date(),
-  checkLists: [],
-  attachments: [],
-  comments: [],
-  implementers: [],
-};
-
 type PreviewImage = {
   visible: boolean;
   src: string;
@@ -89,26 +72,30 @@ type PreviewImage = {
 const ModifyCardModal = ({ members }: { members: UserRelation[] }) => {
   const { onClose } = useDialogContext();
 
-  const searhParams = useSearchParams();
-
-  const [card, setCard] = useState<Card>(cardUndefine);
+  const [_cards, setCard] = useState<Card>({
+    id: '',
+    name: '',
+    color: '',
+    description: '',
+    status: 'none',
+    priority: 'none',
+    risk: 'none',
+    effort: 'none',
+    estimate: new Date(),
+    checkLists: [],
+    attachments: [],
+    comments: [],
+    implementers: [],
+  });
 
   const defaultCardColor = '1677ff';
 
-  useEffect(() => {
-    const cardId = searhParams.get(SEARCH_PARAMS.ID);
-    const createCardAsync = async () => {
-      try {
-        const res = await tsmAxios.get(`/cards/${cardId}`);
-        setCard(res.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    if (cardId) {
-      createCardAsync();
-    }
-  }, []);
+  /**
+   * Get card by id
+   * @description Tanstack React Query
+   */
+  const { data: card } = useGetCard();
+  const { mutate: updateCard } = useUpdateCard();
 
   const handleClose = () => {
     onClose((searchParam) => {
@@ -118,19 +105,15 @@ const ModifyCardModal = ({ members }: { members: UserRelation[] }) => {
     });
   };
 
-  const updateCardOverView = async (data: Partial<Card>) => {
-    const updateCardAsync = async () => {
-      try {
-        const res = await tsmAxios.patch(`/cards/${card.id}`, data);
-        setCard({ ...card, ...data });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    updateCardAsync();
+  const updateCardOverView = (data: Partial<Card>) => {
+    updateCard({
+      id: card?.id,
+      ...data,
+    });
+    card && setCard({ ...card, ...data });
   };
 
-  const operations = (
+  const operations = card && (
     <ColorAndMembers
       card={card}
       color={card.color || defaultCardColor}
@@ -145,18 +128,24 @@ const ModifyCardModal = ({ members }: { members: UserRelation[] }) => {
       key: '1',
       label: 'Overview',
       children: (
-        <OverviewCardTab
-          card={card}
-          color={card.color || defaultCardColor}
-          setCard={setCard}
-          updateCard={updateCardOverView}
-        />
+        <>
+          {card && (
+            <OverviewCardTab
+              card={card}
+              color={card.color || defaultCardColor}
+              setCard={setCard}
+              updateCard={updateCardOverView}
+            />
+          )}
+        </>
       ),
     },
     {
       key: '2',
       label: 'Attachments',
-      children: <AttachmentTab card={card} color={card.color || defaultCardColor} />,
+      children: (
+        <> {card && <AttachmentTab card={card} color={card.color || defaultCardColor} />}</>
+      ),
     },
     {
       key: '3',
@@ -167,50 +156,16 @@ const ModifyCardModal = ({ members }: { members: UserRelation[] }) => {
   return (
     <>
       <Dialog.CloseButton onClose={handleClose} />
-      {/* Left content */}
-      {/* <div className='col-span-2'>
-            <Typography.Text className='text-xs'>Action</Typography.Text>
-            <Button
-              icon={<Move className='w-3 h-3' />}
-              type='default'
-              className='flex items-center text-left bg-slate-100 text-slate-500'
-            >
-              Move
-            </Button>
-            <Button
-              icon={<Copy className='w-3 h-3' />}
-              type='default'
-              className='flex items-center text-left bg-slate-100 text-slate-500'
-            >
-              Copy
-            </Button>
-            <Divider className='my-[1px]' />
-            <Button
-              icon={<Archive className='w-3 h-3' />}
-              type='default'
-              className='flex items-center text-left bg-slate-100 text-slate-500'
-            >
-              Archive
-            </Button>
-            <Button
-              icon={<Share className='w-3 h-3' />}
-              type='default'
-              className='flex items-center text-left bg-slate-100 text-slate-500'
-            >
-              Share
-            </Button>
-          </div>
-        </div> */}
 
       <div className='w-[auto]'>
         <div
-          style={{ backgroundColor: `#${card.color || defaultCardColor}` }}
+          style={{ backgroundColor: `#${card?.color || defaultCardColor}` }}
           className={`flex min-h-[100px] items-center justify-between overflow-hidden rounded-t-lg px-10`}
         >
           <div className='flex items-start gap-x-2'>
             <LayoutList className='mt-[2px] h-5 w-5 opacity-40' />
             <div className={`flex flex-col`}>
-              <Typography.Text className='text-xl font-semibold'>{card.name}</Typography.Text>
+              <Typography.Text className='text-xl font-semibold'>{card?.name}</Typography.Text>
               <Typography.Text className='text-xs underline'>
                 in <b>Backlog</b> list
               </Typography.Text>
@@ -223,10 +178,10 @@ const ModifyCardModal = ({ members }: { members: UserRelation[] }) => {
             theme={{
               components: {
                 Tabs: {
-                  itemActiveColor: `#${card.color || defaultCardColor}`,
-                  itemHoverColor: `#${card.color || defaultCardColor}`,
-                  itemSelectedColor: `#${card.color || defaultCardColor}`,
-                  inkBarColor: `#${card.color || defaultCardColor}`,
+                  itemActiveColor: `#${card?.color || defaultCardColor}`,
+                  itemHoverColor: `#${card?.color || defaultCardColor}`,
+                  itemSelectedColor: `#${card?.color || defaultCardColor}`,
+                  inkBarColor: `#${card?.color || defaultCardColor}`,
                 },
               },
             }}
@@ -260,6 +215,8 @@ const OverviewCardTab = ({
   const effort: MenuProps['items'] = ELevelArray;
   const risk: MenuProps['items'] = ELevelArray;
 
+  const [description, setDescription] = useState(card.description);
+
   const getLabel = (key: string, array: any[]): string => {
     return array.find((item) => item.key === key)?.label || 'Not Set';
   };
@@ -281,7 +238,7 @@ const OverviewCardTab = ({
   };
 
   const handleSaveDescriptionClick = () => {
-    updateCard({ description: card.description });
+    updateCard({ ...card, description });
   };
 
   const btnTheme = {
@@ -296,7 +253,7 @@ const OverviewCardTab = ({
     <div className='flex min-h-[400px] w-full flex-col justify-between pb-5'>
       <div className='flex-col px-0 py-0'>
         <div className='flex items-center justify-evenly gap-x-6'>
-          <div className='flex flex-col mt-1 gap-y-1'>
+          <div className='mt-1 flex flex-col gap-y-1'>
             <Typography.Text className='text-xs font-semibold'>Status</Typography.Text>
             <Dropdown
               placement='bottom'
@@ -304,7 +261,7 @@ const OverviewCardTab = ({
                 items: status,
                 onClick: handleStatusClick,
                 selectable: true,
-                defaultSelectedKeys: [card.status || 'none'],
+                defaultSelectedKeys: [card?.status || 'none'],
               }}
             >
               <Button className='w-[125px]'>
@@ -316,7 +273,7 @@ const OverviewCardTab = ({
             </Dropdown>
           </div>
 
-          <div className='flex flex-col mt-1 gap-y-1'>
+          <div className='mt-1 flex flex-col gap-y-1'>
             <Typography.Text className='text-xs font-semibold'>Priority</Typography.Text>
             <Dropdown
               placement='bottom'
@@ -336,7 +293,7 @@ const OverviewCardTab = ({
             </Dropdown>
           </div>
 
-          <div className='flex flex-col mt-1 gap-y-1'>
+          <div className='mt-1 flex flex-col gap-y-1'>
             <Typography.Text className='text-xs font-semibold'>Risk</Typography.Text>
             <Dropdown
               placement='bottom'
@@ -356,7 +313,7 @@ const OverviewCardTab = ({
             </Dropdown>
           </div>
 
-          <div className='flex flex-col mt-1 gap-y-1'>
+          <div className='mt-1 flex flex-col gap-y-1'>
             <Typography.Text className='text-xs font-semibold'>Effort</Typography.Text>
             <Dropdown
               placement='bottom'
@@ -376,7 +333,7 @@ const OverviewCardTab = ({
             </Dropdown>
           </div>
 
-          <div className='flex flex-col mt-1 gap-y-1'>
+          <div className='mt-1 flex flex-col gap-y-1'>
             <Typography.Text className='text-xs font-semibold'>Estimate</Typography.Text>
             <DatePicker
               format={{
@@ -385,9 +342,9 @@ const OverviewCardTab = ({
               }}
               placeholder='Estimate time'
               showTime
-              onChange={(value, dateString) => {
-                console.log('Selected Time: ', value);
-                console.log('Formatted Selected Time: ', dateString);
+              value={dayjs(card.estimate)}
+              onChange={(value, _dateString) => {
+                updateCard({ estimate: dayjs(value).format(DB_DATE_TIME_FORMAT) });
               }}
               className='w-[160px]'
             />
@@ -403,8 +360,8 @@ const OverviewCardTab = ({
           <div className='flex flex-col gap-2 px-6'>
             <Input.TextArea
               className='mt-1 h-[auto]'
-              value={card.description}
-              onChange={(e) => setCard({ ...card, description: e.target.value })}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             />
             <div className='flex justify-end'>
               <div className='flex gap-2'>
@@ -423,7 +380,6 @@ const OverviewCardTab = ({
 
         {/* Check list */}
         <CheckList
-          cardId={card.id}
           list={card.checkLists}
           setCheckList={(checkLists: CheckListGroup[]) => {
             setCard({ ...card, checkLists });
@@ -435,10 +391,9 @@ const OverviewCardTab = ({
       {/* Comment */}
       <div className='mt-4'>
         <CommentCard
-          cardId={card.id}
           comments={card.comments}
-          setCard={(card: Card) => {
-            setCard(card);
+          setCard={(cards: Card) => {
+            setCard(cards);
           }}
           color={`#${color}`}
         />
@@ -448,32 +403,31 @@ const OverviewCardTab = ({
 };
 
 const AttachmentTab = (props: { card: Card; color: string }) => {
-
   const [attachments, setAttachments] = useState<Attachment[]>(props.card.attachments);
 
   const handleUpload = (fileList: FileType[]) => {
     if (fileList.length === 0) {
-      console.log("No files to upload");
+      console.log('No files to upload');
       return;
     }
 
     const formData = new FormData();
-    fileList.forEach((file,index) => {
+    fileList.forEach((file, _index) => {
       formData.append(`files`, file as FileType);
     });
-    
-    const UploadAsync= async () =>{
+
+    const UploadAsync = async () => {
       try {
-        console.log(formData.get('files'))
-        const res = await tsmAxios.post(`/cards/${props.card.id}/attachment`, formData,{
-          headers: {'Content-Type': 'multipart/form-data'}
-        })
+        console.log(formData.get('files'));
+        const res = await tsmAxios.post(`/cards/${props.card.id}/attachment`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
         setAttachments(res.data);
       } catch (error) {
         console.log(error);
       }
-    }
-    UploadAsync()
+    };
+    UploadAsync();
   };
 
   const uploadProp: UploadProps = {
@@ -486,7 +440,7 @@ const AttachmentTab = (props: { card: Card; color: string }) => {
 
   return (
     <div className='flex min-h-[400px] w-full flex-col px-0 py-0'>
-      <div className='w-full mt-6'>
+      <div className='mt-6 w-full'>
         <div className='flex items-center justify-center'>
           {/* <Button
                     icon={<Upload className='w-3 h-3 mt-1' />}
@@ -499,7 +453,7 @@ const AttachmentTab = (props: { card: Card; color: string }) => {
             <Button icon={<UploadIcon />}>Upload</Button>
           </Upload>
         </div>
-        <AttachmentFile cardId={props.card.id} data={attachments} />
+        <AttachmentFile data={attachments} />
       </div>
     </div>
   );
@@ -513,10 +467,10 @@ const ActivityTab = () => {
       <div className='flex flex-col gap-y-4'>
         <div className='flex items-center justify-between'>
           <div className='flex items-center gap-x-4'>
-            <List className='w-5 h-5 mt-1 opacity-40' />
+            <List className='mt-1 h-5 w-5 opacity-40' />
             <Typography.Text className='text-base font-semibold'>Recent activities</Typography.Text>
           </div>
-          <Button icon={<EyeOff className='w-3 h-3 mt-1' />} className='w-[90px]' type='default'>
+          <Button icon={<EyeOff className='mt-1 h-3 w-3' />} className='w-[90px]' type='default'>
             Hide
           </Button>
         </div>
@@ -529,7 +483,7 @@ const ActivityTab = () => {
   );
 };
 
-const AttachmentFile = ({ cardId, data }: { cardId: string ,data: Attachment[] }) => {
+const AttachmentFile = ({ data }: { data: Attachment[] }) => {
   const [previewImage, setPreviewImage] = useState<PreviewImage>({ visible: false, src: '' });
 
   const attachmentColumns: TableProps<Attachment>['columns'] = [
@@ -543,7 +497,7 @@ const AttachmentFile = ({ cardId, data }: { cardId: string ,data: Attachment[] }
           allowClear
           type='text'
           defaultValue={text}
-          className='w-full px-3 text-base font-bold transition-all border-none cursor-pointer h-7 rounded-xl'
+          className='h-7 w-full cursor-pointer rounded-xl border-none px-3 text-base font-bold transition-all'
         />
       ),
     },
@@ -556,7 +510,7 @@ const AttachmentFile = ({ cardId, data }: { cardId: string ,data: Attachment[] }
           allowClear
           type='text'
           defaultValue={text}
-          className='w-full px-3 text-sm font-bold transition-all border-none cursor-pointer h-7 rounded-xl'
+          className='h-7 w-full cursor-pointer rounded-xl border-none px-3 text-sm font-bold transition-all'
         />
       ),
     },
@@ -565,7 +519,7 @@ const AttachmentFile = ({ cardId, data }: { cardId: string ,data: Attachment[] }
       key: 'action',
       width: 100,
       render: (_, record) => (
-        <Space className='flex justify-end w-full'>
+        <Space className='flex w-full justify-end'>
           <Eye
             className={`${record.type !== 'image' ? 'invisible' : ''} h-3 w-3`}
             onClick={() =>
@@ -575,15 +529,15 @@ const AttachmentFile = ({ cardId, data }: { cardId: string ,data: Attachment[] }
               })
             }
           />
-          <Download className='w-3 h-3' />
-          <Trash className='w-3 h-3' />
+          <Download className='h-3 w-3' />
+          <Trash className='h-3 w-3' />
         </Space>
       ),
     },
   ];
 
   return (
-    <div className='flex w-full mt-2 gap-y-1'>
+    <div className='mt-2 flex w-full gap-y-1'>
       {/* Table of file */}
       <ConfigProvider
         theme={{
@@ -638,21 +592,15 @@ const ColorAndMembers = ({
       <Presets />
     </div>
   );
+
+  const { mutate: updateCardImplementer, data } = useUpdateCardImplementer();
   const updateImplementers = (implementers: UserRelation[]) => {
-    const updateImplementersAsync = async () => {
-      try {
-        const userIds = implementers.map((user) => user.userId);
-        const res = await tsmAxios.post(`/cards/${card.id}/implementers`, { userIds });
-        console.log(implementers);
-        setCard(res.data as Card);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    updateImplementersAsync();
+    updateCardImplementer(implementers);
+    setCard(data as Card);
   };
+
   return (
-    <div className='flex items-center justify-end py-1 gap-x-6'>
+    <div className='flex items-center justify-end gap-x-6 py-1'>
       <div className='flex gap-y-1'>
         <Typography.Text className='mr-1 text-sm font-semibold'>Color:</Typography.Text>
         <ColorPicker
@@ -676,7 +624,10 @@ const ColorAndMembers = ({
                 overlayClassName='custom-popover-member-info'
                 content={<MemberInfo />}
               >
-                <Avatar src={`http://localhost:8888/api/img/${user.profileImageId}`} icon={<User size='12' />} />
+                <Avatar
+                  src={`http://localhost:8888/api/img/${user.profileImageId}`}
+                  icon={<User size='12' />}
+                />
               </Popover>
             </Tooltip>
           ))}
@@ -684,7 +635,12 @@ const ColorAndMembers = ({
             trigger='click'
             placement='bottomRight'
             content={
-              <MemberInviteCard color={color} members={members} implementers={card.implementers} updateImplementers={updateImplementers} />
+              <MemberInviteCard
+                color={color}
+                members={members}
+                implementers={card.implementers}
+                updateImplementers={updateImplementers}
+              />
             }
             className='p-0'
           >
@@ -710,11 +666,13 @@ const MemberInviteCard = ({
   const [impls, setImpls] = useState<UserRelation[]>(implementers);
   const [notImplementer, setNotImplementer] = useState<UserRelation[]>([]);
   useEffect(() => {
-    setNotImplementer(members.filter((member) => !impls.find((impl) => impl.userId === member.userId)));
+    setNotImplementer(
+      members.filter((member) => !impls.find((impl) => impl.userId === member.userId))
+    );
   }, [impls]);
 
   return (
-    <div className='flex flex-col p-0 rounded-none gap-y-1'>
+    <div className='flex flex-col gap-y-1 rounded-none p-0'>
       <span>Implementers:</span>
       {impls.map((member) => (
         <div
@@ -729,11 +687,12 @@ const MemberInviteCard = ({
             <Typography.Text>{member.name}</Typography.Text>
           </div>
           <div className='w-5'>
-            <Minus 
+            <Minus
               onClick={() => {
-                setImpls((prev) => (prev.filter((impl) => impl.userId !== member.userId)));
-              }} 
-              className='w-3 h-3 cursor-pointer hover:h-4 hover:w-4'></Minus>
+                setImpls((prev) => prev.filter((impl) => impl.userId !== member.userId));
+              }}
+              className='h-3 w-3 cursor-pointer hover:h-4 hover:w-4'
+            ></Minus>
           </div>
         </div>
       ))}
@@ -755,7 +714,7 @@ const MemberInviteCard = ({
               onClick={() => {
                 setImpls((prev) => [...prev, member]);
               }}
-              className='w-3 h-3 cursor-pointer hover:h-4 hover:w-4'
+              className='h-3 w-3 cursor-pointer hover:h-4 hover:w-4'
             ></Plus>
           </div>
         </div>
@@ -769,7 +728,14 @@ const MemberInviteCard = ({
           },
         }}
       >
-        <Button onClick={()=>{updateImplementers(impls)}} className='h-[30px] w-[60px] p-0'>Save</Button>
+        <Button
+          onClick={() => {
+            updateImplementers(impls);
+          }}
+          className='h-[30px] w-[60px] p-0'
+        >
+          Save
+        </Button>
       </ConfigProvider>
     </div>
   );
@@ -798,3 +764,46 @@ const ELevelArray: { key: ELevel; label: string }[] = [
   { key: 'NotSure', label: 'Not Sure' },
   { key: 'none', label: 'Not Set' },
 ];
+
+/**
+ * Code comment
+ */
+
+{
+  /* Left content */
+}
+{
+  /* <div className='col-span-2'>
+            <Typography.Text className='text-xs'>Action</Typography.Text>
+            <Button
+              icon={<Move className='w-3 h-3' />}
+              type='default'
+              className='flex items-center text-left bg-slate-100 text-slate-500'
+            >
+              Move
+            </Button>
+            <Button
+              icon={<Copy className='w-3 h-3' />}
+              type='default'
+              className='flex items-center text-left bg-slate-100 text-slate-500'
+            >
+              Copy
+            </Button>
+            <Divider className='my-[1px]' />
+            <Button
+              icon={<Archive className='w-3 h-3' />}
+              type='default'
+              className='flex items-center text-left bg-slate-100 text-slate-500'
+            >
+              Archive
+            </Button>
+            <Button
+              icon={<Share className='w-3 h-3' />}
+              type='default'
+              className='flex items-center text-left bg-slate-100 text-slate-500'
+            >
+              Share
+            </Button>
+          </div>
+        </div> */
+}
