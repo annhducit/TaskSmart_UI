@@ -2,12 +2,12 @@ import { useDispatch, useSelector } from '@/store';
 import { reSignInAction } from '@/store/auth/action';
 import { useCallback } from 'react';
 import { UNAUTHORIZED_CODE } from '../constant/response-code';
-import { clearAuthentication } from '@/store/auth';
+import { forceSignOut } from '@/store/auth';
 
 const useUnAuthorized = () => {
   const dispatch = useDispatch();
 
-  const refreshToken = useSelector((store) => store.auth?.data?.refreshToken);
+  const refreshToken = useSelector((store) => store?.auth?.data?.refreshToken);
 
   const unAuthorized = useCallback(async () => {
     if (refreshToken) {
@@ -21,7 +21,7 @@ const useUnAuthorized = () => {
       }
     }
 
-    dispatch(clearAuthentication());
+    dispatch(forceSignOut());
   }, [dispatch, refreshToken]);
 
   return unAuthorized;

@@ -9,11 +9,11 @@ const AxiosInterceptor = (props: PropsWithChildren) => {
   const { onError } = useAxiosInterceptor();
 
   useEffect(() => {
-    const nppInterceptor = tsmAxios.interceptors.response.use(axiosSuccessResponse, onError);
+    const tsmInterceptor = tsmAxios.interceptors.response.use(axiosSuccessResponse, onError);
     setIsSet(true);
 
     return () => {
-      tsmAxios.interceptors.response.eject(nppInterceptor);
+      tsmAxios.interceptors.response.eject(tsmInterceptor);
       setIsSet(false);
     };
   }, [onError]);

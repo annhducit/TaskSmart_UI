@@ -40,6 +40,7 @@ const Signin = () => {
       setIsSubmitting(true);
 
       const res = await dispatch(signInAction(auth));
+      console.log(res);
       if (res.meta.requestStatus === 'rejected') {
         toast.error('Sign in failed', {
           description: 'Please check your username or password again',
@@ -89,7 +90,7 @@ const Signin = () => {
                 },
               ]}
             >
-              <Input prefix={<User className='mr-2 h-4 w-4 text-primary-default' />} size='large' />
+              <Input prefix={<User className='w-4 h-4 mr-2 text-primary-default' />} size='large' />
             </Form.Item>
             <Form.Item
               name='password'
@@ -102,7 +103,7 @@ const Signin = () => {
               ]}
             >
               <Input.Password
-                prefix={<Lock className='mr-2 h-4 w-4 text-primary-default' />}
+                prefix={<Lock className='w-4 h-4 mr-2 text-primary-default' />}
                 size='large'
                 type='password'
               />

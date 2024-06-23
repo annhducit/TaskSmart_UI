@@ -4,9 +4,12 @@ import { useDialogContext } from '@/shared/components/dialog/provider';
 import Tooltip from '@/shared/components/tooltip';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
 import useCollapse from '@/shared/hooks/use-collapse';
-import { Avatar, Button, Divider, Input, Switch, Tag, Typography } from 'antd';
+import { Avatar, Button, Input, Switch, Tag, Typography } from 'antd';
 import { ChevronDown, ChevronRight, User } from 'lucide-react';
+import useGetProject from '../hooks/query/use-get-project';
 import { useState } from 'react';
+import useLocalStorage from '@/shared/hooks/use-local-storage';
+import useGetInviteProject from '@/modules/tsm/features/invite/hooks/mutation/use-invite-project';
 
 const ModifyMember = () => {
   return (
@@ -24,7 +27,30 @@ export default ModifyMember;
 
 const ModalModifyMember = () => {
   const { onClose } = useDialogContext();
+  const [link, setLink] = useState<string>('');
+  const [projectId] = useLocalStorage('project_id', '');
 
+  const { mutate: isPublic } = useGetInviteProject({ isPublic: true, refresh: false });
+  const { mutate: isPrivate } = useGetInviteProject({ isPublic: false, refresh: false });
+
+  const { data: project, refetch } = useGetProject();
+
+  const { mutate: refresh } = useGetInviteProject({ isPublic: true, refresh: true });
+
+  const handleChangeSwitch = (value: boolean) => {
+    if (value) {
+      setLink(`${window.location.origin}/tsm/invite/${projectId}/${project?.inviteCode}`);
+      isPublic();
+    } else {
+      isPrivate();
+      setLink('');
+      refetch();
+    }
+  };
+
+  const handleRefeshLink = () => {
+    refresh();
+  };
   return (
     <>
       <Dialog.CloseButton onClose={() => onClose()} />
@@ -60,15 +86,28 @@ const ModalModifyMember = () => {
           </Button>
         </div>
 
-        <div>
-          <CopyUrlButton />
+        <div className='flex items-center justify-between'>
+          {link && <CopyUrlButton link={link} />}
+          <div className='flex items-center gap-x-2'>
+            <Tooltip title='Join by link'>
+              <Switch
+                size='small'
+                onChange={(value) => {
+                  handleChangeSwitch(value);
+                }}
+              />
+            </Tooltip>
+            <Button type='text' onClick={handleRefeshLink}>
+              Refresh
+            </Button>
+          </div>
         </div>
-        <Typography.Text className='text-sm font-semibold'>Share with</Typography.Text>
+        {/* <Typography.Text className='text-sm font-semibold'>Share with</Typography.Text>
 
-        <div className='mt-1 flex flex-col gap-3'>
+        <div className='flex flex-col gap-3 mt-1'>
           <MemberAlready type='WORKSPACE' />
           <MemberAlready type='PERSON' />
-        </div>
+        </div> */}
       </div>
     </>
   );
@@ -181,42 +220,45 @@ const MemberAlready = (props: { type?: MemberType }) => {
           </div>
         </div>
       )}
-      {visible && <Members />}
+      {/* {visible && <Members />} */}
     </>
   );
 };
 
-const Members = () => {
-  const [_checked, setChecked] = useState<boolean>(false);
+// const Members = () => {
+//   const [_checked, setChecked] = useState<boolean>(false);
 
-  const handleChangeSwitch = (
-    checked: boolean,
-    even: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    even.stopPropagation();
-    setChecked(checked);
-  };
-  return (
-    <>
-      <Divider className='my-[1px] mb-2' />
-      <Typography.Text className='text-sm font-semibold'>1 invited person</Typography.Text>
-      <div className='flex items-center justify-between'>
-        <div className='flex items-center gap-x-2'>
-          <Avatar size='small' style={{ backgroundColor: '#d29034' }}>
-            Đ
-          </Avatar>
-          <Typography.Text className='text-xs font-semibold'>Me</Typography.Text>
-          <Tag color='blue'>Workspace Owner</Tag>
-        </div>
-        <div>
-          <Switch
-            size='small'
-            onChange={(value, even) => {
-              handleChangeSwitch(value, even);
-            }}
-          />
-        </div>
-      </div>
-    </>
-  );
-};
+//   const { mutate, data: inviteCode } = useGetInvite({ isPublic: false, refresh: false });
+
+//   const handleChangeSwitch = (
+//     checked: boolean,
+//     even: React.MouseEvent<HTMLButtonElement, MouseEvent>
+//   ) => {
+//     even.stopPropagation();
+//     setChecked(checked);
+//     mutate();
+//   };
+//   return (
+//     <>
+//       <Divider className='my-[1px] mb-2' />
+//       <Typography.Text className='text-sm font-semibold'>1 invited person</Typography.Text>
+//       <div className='flex items-center justify-between'>
+//         <div className='flex items-center gap-x-2'>
+//           <Avatar size='small' style={{ backgroundColor: '#d29034' }}>
+//             Đ
+//           </Avatar>
+//           <Typography.Text className='text-xs font-semibold'>Me</Typography.Text>
+//           <Tag color='blue'>Workspace Owner</Tag>
+//         </div>
+//         <div>
+//           <Switch
+//             size='small'
+//             onChange={(value, even) => {
+//               handleChangeSwitch(value, even);
+//             }}
+//           />
+//         </div>
+//       </div>
+//     </>
+//   );
+// };

@@ -22,6 +22,6 @@ export const reSignInAction = createAsyncThunk(
     const res = await tsmAxios.post<{ data: AuthData }>('/auth/refresh', {
       refresh: `Bearer ${refreshToken}`,
     });
-    return res.data;
+    return res;
   }
 );

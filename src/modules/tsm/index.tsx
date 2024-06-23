@@ -13,6 +13,7 @@ const WorkspaceDetailFeature = lazy(() => import('./features/workspace'));
 const WorkspaceFeature = lazy(() => import('./features/workspace/page/workspace'));
 const ProfileMember = lazy(() => import('./features/member-profile'));
 const TemplateFeature = lazy(() => import('./features/templates'));
+const InviteFeature = lazy(() => import('./features/invite'));
 const tsmRoutes = createRouters([
   {
     index: true,
@@ -26,6 +27,11 @@ const tsmRoutes = createRouters([
     path: 'mail/*',
     element: <MailFeature />,
   },
+  {
+    path: 'invite/*',
+    element: <InviteFeature />,
+  },
+
   {
     path: 'profile/:memberId/*',
     element: <ProfileMember />,
@@ -46,6 +52,7 @@ const tsmRoutes = createRouters([
     path: 'project/:projectId/*',
     element: <></>,
   },
+
   /**
    * Add more routes here
    */

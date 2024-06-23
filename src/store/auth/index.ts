@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import cookieUtils from '@/utils/cookieUtil';
 import { reSignInAction, signInAction } from './action';
+import { persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
 export type WorkSpaceType = {
   id: string;
@@ -74,11 +75,6 @@ export const auth = createSlice({
       state.isSignedIn = false;
       state.loadingState = 'idle';
     },
-    clearAuthentication: (state) => {
-      cookieUtils.deleteCookie('access_token');
-      cookieUtils.deleteCookie('refresh_token');
-      state.data = undefined as unknown as AuthData;
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(signInAction.pending, (state) => {
@@ -94,8 +90,6 @@ export const auth = createSlice({
       if (action.payload.data) {
         state.data = action.payload.data as unknown as AuthData;
         state.isSignedIn = true;
-        cookieUtils.setCookie('access_token', state.data.accessToken, 30);
-        cookieUtils.setCookie('refresh_token', state.data.refreshToken, 30);
       } else {
         state.isSignedIn = false;
         state.data = {} as AuthData;
@@ -118,10 +112,8 @@ export const auth = createSlice({
     });
     builder.addCase(reSignInAction.fulfilled, (state, action) => {
       state.loadingState = 'succeeded';
-      if (action.payload) {
-        state.data = action.payload as unknown as AuthData;
-        cookieUtils.setCookie('access_token', state.data.accessToken, 30);
-        cookieUtils.setCookie('refresh_token', state.data.refreshToken, 30);
+      if (action.payload.data) {
+        state.data = action.payload.data as unknown as AuthData;
       }
     });
     builder.addCase(reSignInAction.rejected, (state) => {
@@ -133,5 +125,11 @@ export const auth = createSlice({
   },
 });
 
-export const { clearAuthentication, forceSignOut } = auth.actions;
-export default auth.reducer;
+export const { forceSignOut } = auth.actions;
+export default persistReducer(
+  {
+    key: 'auth',
+    storage,
+  },
+  auth.reducer
+);

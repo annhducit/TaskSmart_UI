@@ -6,13 +6,23 @@ import {
   useSelector as _useSelector,
   type TypedUseSelectorHook,
 } from 'react-redux';
+import { persistStore } from 'redux-persist';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     user: userReducer,
   },
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ['persist/PERSIST'],
+      },
+    });
+  },
 });
+
+export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

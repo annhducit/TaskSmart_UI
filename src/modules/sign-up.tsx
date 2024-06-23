@@ -1,4 +1,4 @@
-import { Button, Form, FormProps, Input, Typography } from 'antd';
+import { Button, Form, FormProps, Input, Select, Typography } from 'antd';
 import { ArrowLeft, ArrowRight, Lock, Mail, Plus, User } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -18,6 +18,7 @@ export type AuthType = {
   password: string;
   confirmPassword: string;
   email: string;
+  gender: string;
   timeZone: number;
   verifyCode: string;
 };
@@ -46,7 +47,6 @@ const Signup = () => {
     await tsmAxios
       .post(`/verify?email=${email}`)
       .then((res) => {
-        // console.log(res);
         if (res.status === 200 || res.status === 201) {
           setHasCodeSent(true);
           toast.success('Email was send successfully');
@@ -130,23 +130,6 @@ const Signup = () => {
             {step === 1 && (
               <>
                 <Form.Item
-                  name='name'
-                  label='Fullname'
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please enter your fullname',
-                    },
-                  ]}
-                >
-                  <Input
-                    placeholder='John Doe'
-                    prefix={<User className='mr-2 h-4 w-4 text-primary-default' />}
-                    size='large'
-                  />
-                </Form.Item>
-
-                <Form.Item
                   name='email'
                   label='Email'
                   initialValue='@gmail.com'
@@ -167,6 +150,45 @@ const Signup = () => {
                     placeholder='example@gmail.com'
                   />
                 </Form.Item>
+                <div className='flex flex-1 items-center gap-x-4'>
+                  <Form.Item
+                    name='name'
+                    label='Fullname'
+                    className='flex-1'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please enter your fullname',
+                      },
+                    ]}
+                  >
+                    <Input
+                      placeholder='John Doe'
+                      prefix={<User className='mr-2 h-4 w-4 text-primary-default' />}
+                      size='large'
+                    />
+                  </Form.Item>
+                  <Form.Item name='gender' className='flex-1' label='Gender'>
+                    <Select
+                      placeholder='Male'
+                      defaultValue='male'
+                      options={[
+                        {
+                          value: 'male',
+                          label: 'Male',
+                        },
+                        {
+                          value: 'female',
+                          label: 'Female',
+                        },
+                        {
+                          value: 'other',
+                          label: 'Other',
+                        },
+                      ]}
+                    />
+                  </Form.Item>
+                </div>
                 <div className='flex flex-1 items-center gap-x-4'>
                   <Form.Item
                     name='username'
@@ -198,6 +220,7 @@ const Signup = () => {
                   >
                     <Input
                       type='number'
+                      defaultValue={7}
                       prefix={<Plus className='mr-2 h-3 w-3' />}
                       min={0}
                       max={24}

@@ -5,15 +5,16 @@ import { useState } from 'react';
 
 type Props = {
   className?: string;
+  link: string;
 };
 
 export default function CopyUrlButton(props: Props) {
-  const { className } = props;
+  const { className, link } = props;
 
   const [isCopied, setIsCopied] = useState(false);
 
   const handleClick = () => {
-    navigator.clipboard.writeText(window.location.href);
+    navigator.clipboard.writeText(link);
     setIsCopied(true);
 
     setTimeout(() => {

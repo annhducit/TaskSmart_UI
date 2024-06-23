@@ -5,21 +5,20 @@ import Loading from '../loading';
 import { useAppDispatch } from '@/shared/hooks/use-redux';
 import useUnAuthorized from '@/shared/hooks/use-un-authorized';
 import { queryClient } from '@/configs/query-client';
-import cookieUtils from '@/utils/cookieUtil';
 import { useSelector } from '@/store';
 import { getUserInformationAction } from '@/store/user/action';
 import { clearInformation } from '@/store/user';
-import { tsmAxios } from '@/configs/axios';
 import { UNAUTHORIZED_CODE } from '@/shared/constant/response-code';
+import { setTSMAxiosToken } from '../utils/axios';
 
 const UserInformation = (props: PropsWithChildren) => {
   const { children } = props;
   const dispatch = useAppDispatch();
   const unAuthorized = useUnAuthorized();
+  const accessToken = useSelector((store) => store.auth.data.accessToken);
   const userId = useSelector((store) => store.user.data.id);
   const userIsLoaded = useSelector((store) => store.user.isLoaded);
 
-  const accessToken = cookieUtils.getCookie('access_token');
   /**
    * Effect xử lý gắn accessToken cho axios
    */
@@ -86,7 +85,3 @@ const UserInformation = (props: PropsWithChildren) => {
 };
 
 export default UserInformation;
-
-export const setTSMAxiosToken = (accessToken?: string) => {
-  tsmAxios.defaults.headers.common['Authorization'] = !accessToken ? null : `Bearer ${accessToken}`;
-};

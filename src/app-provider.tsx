@@ -10,7 +10,9 @@ import { theme } from './configs/theme';
 import { queryClient } from './configs/query-client';
 import { PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
-import { store } from './store';
+import { persistor, store } from './store';
+import { PersistGate } from 'redux-persist/integration/react';
+import Loading from './shared/components/loading';
 
 const AppProvider = (props: PropsWithChildren) => {
   const { children } = props;
@@ -20,10 +22,9 @@ const AppProvider = (props: PropsWithChildren) => {
         <QueryClientProvider client={queryClient}>
           <ConfigProvider theme={theme} locale={locale}>
             <Provider store={store}>
-              {/* <PersistGate loading={<Loading.Page />} persistor={persistor}> */}
-              {/* <AxiosInterceptor>{children}</AxiosInterceptor> */}
-              {children}
-              {/* </PersistGate> */}
+              <PersistGate loading={<Loading.Page />} persistor={persistor}>
+                {children}
+              </PersistGate>
             </Provider>
             <Toaster
               position='bottom-right'
