@@ -28,7 +28,7 @@ export type UserData = {
   position: string;
   organization: string;
   timeZone: number;
-  profileImage: string;
+  profileImagePath: string;
   personalWorkSpace: WorkSpaceType;
   workspaces: WorkSpaceType[];
   projects: ProjectType[];
@@ -57,7 +57,7 @@ const initialState: AuthState = {
       position: '',
       organization: '',
       timeZone: 0,
-      profileImage: '',
+      profileImagePath: '',
       personalWorkSpace: {} as WorkSpaceType,
       workspaces: [],
       projects: [],

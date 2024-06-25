@@ -108,7 +108,7 @@ const Sidebar = ({
     {
       key: 'workspace',
       label: 'Workspace',
-      icon: <FolderKanban className='h-4 w-4' />,
+      icon: <FolderKanban className='w-4 h-4' />,
     },
     {
       key: 'mail',
@@ -121,12 +121,12 @@ const Sidebar = ({
     {
       key: 'template',
       label: 'Templates',
-      icon: <LayoutTemplate className='h-4 w-4' />,
+      icon: <LayoutTemplate className='w-4 h-4' />,
       children: categories?.map((item) => {
         return {
           key: item.id,
           label: item.name,
-          icon: <LayoutTemplate className='h-4 w-4' />,
+          icon: <LayoutTemplate className='w-4 h-4' />,
           onClick: () => {
             navigate(`../../../tsm/template`);
           },
@@ -147,18 +147,18 @@ const Sidebar = ({
       key: 'sub10',
       style: { display: type === 'private' ? 'none' : '' },
       label: data?.personalWorkSpace?.name || 'Personal Workspace',
-      icon: <Rocket className='h-4 w-4' />,
+      icon: <Rocket className='w-4 h-4' />,
 
       onClick: () => navigate(`../../../tsm/workspace/${data?.personalWorkSpace?.id}`),
     },
     {
       key: 'workspace',
       label: 'Team Workspace',
-      icon: <Rocket className='h-4 w-4' />,
+      icon: <Rocket className='w-4 h-4' />,
       children: data?.workspaces?.map((workspace) => ({
         key: workspace.id,
         label: workspace.name,
-        icon: <FolderKanban className='h-4 w-4' />,
+        icon: <FolderKanban className='w-4 h-4' />,
         onClick: () => navigate(`../../../tsm/workspace/${workspace.id}`),
       })),
     },
@@ -168,7 +168,7 @@ const Sidebar = ({
     {
       key: 'sub12',
       label: 'Create Workspace',
-      icon: <SquarePlus className='h-4 w-4' />,
+      icon: <SquarePlus className='w-4 h-4' />,
       onClick: handleOpenModal,
     },
     {
@@ -182,7 +182,7 @@ const Sidebar = ({
       children: data?.projects?.map((project) => ({
         key: project.id,
         label: project.name,
-        icon: <FolderKanban className='h-4 w-4' />,
+        icon: <FolderKanban className='w-4 h-4' />,
         onClick: () => navigate(`../../project/${project.id}`, { replace: true }),
       })),
     },
@@ -201,9 +201,9 @@ const Sidebar = ({
       {/* Workspace item */}
       {type === 'workspace' && (
         <Tooltip title='TaskSmart Workspace'>
-          <div className='flex items-center gap-x-2 p-2 pt-3'>
+          <div className='flex items-center p-2 pt-3 gap-x-2'>
             <div className={`${isCollapse ? 'ml-4 h-8 w-8' : 'h-10 w-10'} rounded-lg`}>
-              <img src={wspImg} alt='' className='w-full rounded-lg object-contain' />
+              <img src={wspImg} alt='' className='object-contain w-full rounded-lg' />
             </div>
             <div
               className='flex flex-col gap-y-1'

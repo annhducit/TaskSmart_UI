@@ -62,6 +62,8 @@ const ProfileFlyer = ({ isVisible }: { isVisible: () => void }) => {
     },
   ];
 
+  const userProfileImage = data?.profileImagePath ? `http://localhost:8888/api/image/${data.profileImagePath}` : user
+
   return (
     <>
       <div
@@ -72,18 +74,18 @@ const ProfileFlyer = ({ isVisible }: { isVisible: () => void }) => {
       >
         <div className='relative'>
           <div className='h-[4px] w-full bg-primary-default' />
-          <div className='flex w-full items-center gap-x-6 px-8'>
-            <div className='relative h-16 w-16 rounded-full'>
-              <img src={data?.profileImage || user} alt='' className='h-full w-full rounded-full' />
+          <div className='flex items-center w-full px-8 gap-x-6'>
+            <div className='relative w-16 h-16 rounded-full'>
+              <img src={userProfileImage} alt='' className='w-full h-full rounded-full' />
               <span className='absolute right-1 top-1 rounded-full bg-[#1ad67b] p-[6px]'></span>
             </div>
-            <div className='mt-6 flex flex-col gap-y-2'>
+            <div className='flex flex-col mt-6 gap-y-2'>
               <div className='flex items-center justify-between'>
                 <p className='text-lg font-semibold text-black'>{data?.name || ''}</p>
                 <Button
                   type='primary'
                   className='rounded-full'
-                  icon={<UserCog className='h-3 w-3 ' />}
+                  icon={<UserCog className='w-3 h-3 ' />}
                   onClick={() => {
                     setDialog(SEARCH_PARAMS_VALUE.PROFILE);
                     isVisible();
@@ -113,7 +115,7 @@ const ProfileFlyer = ({ isVisible }: { isVisible: () => void }) => {
               </div>
             </div>
           </div>
-          <div className='mt-6 px-6'>
+          <div className='px-6 mt-6'>
             <Tabs items={items} />
           </div>
           <div

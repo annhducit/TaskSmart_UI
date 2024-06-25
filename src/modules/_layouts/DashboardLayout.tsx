@@ -52,9 +52,9 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div className='flex h-screen flex-col overflow-hidden'>
+    <div className='flex flex-col h-screen overflow-hidden'>
       <Header />
-      <div className='relative flex flex-1 flex-row'>
+      <div className='relative flex flex-row flex-1'>
         <div className='block'>
           <SidebarComponent
             typeSidebar={isProject ? 'workspace' : 'home'}
@@ -113,7 +113,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
   return (
     <>
       <section
-        className='relative h-screen w-full bg-cover bg-center bg-no-repeat'
+        className='relative w-full h-screen bg-center bg-no-repeat bg-cover'
         style={{
           backgroundPosition: 'center',
           backgroundImage: `url(https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3Dhttps://images.unsplash.com/photo-1717719405874-441f212902a0?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)`,
@@ -146,14 +146,14 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
             <Avatar.Group maxCount={2} className='flex items-center'>
               {project?.users.map((user) => (
                 <Tooltip title={user.name} placement='top' key={user.userId}>
-                  {user.profileImageId ? (
+                  {user.profileImagePath ? (
                     <div
                       style={{ width: '28px', height: '28px' }}
                       className='relative rounded-full'
                     >
                       <img
-                        src={`http://localhost:8888/api/img/${user.profileImageId}`}
-                        className='rounded-full object-cover'
+                        src={`http://localhost:8888/api/image/${user.profileImagePath}`}
+                        className='object-cover rounded-full'
                         style={{ width: '28px', height: '28px' }}
                       ></img>
                       <Badge status='success' className='absolute -right-[2px] -top-1 z-[99999]' />
@@ -171,7 +171,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
               open={visible}
               onOpenChange={handleOpenChange}
             >
-              <div className='cursor-pointer rounded px-1 transition-all hover:bg-primary-default hover:text-white'>
+              <div className='px-1 transition-all rounded cursor-pointer hover:bg-primary-default hover:text-white'>
                 <Ellipsis size='20' color='white' className='mt-1' />
               </div>
             </Popover>

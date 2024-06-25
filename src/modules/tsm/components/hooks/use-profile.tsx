@@ -3,11 +3,8 @@ import { queryClient } from '@/configs/query-client';
 import { useQuery } from '@tanstack/react-query';
 
 const getProfile = async () => {
-  const user = await tsmAxios.get<UserData>(`users/profile`);
-  return {
-    ...user.data,
-    profileImage: 'http://localhost:8888/api/img/' + user.data.profileImage,
-  };
+  const res = await tsmAxios.get<UserData>(`users/profile`);
+  return res.data;
 };
 
 const useGetProfile = () => {

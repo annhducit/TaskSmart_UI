@@ -33,7 +33,7 @@ const CommentCard = ({
   };
 
   return (
-    <div className='mt-5 flex flex-col gap-2'>
+    <div className='flex flex-col gap-2 mt-5'>
       <div className='flex items-center gap-x-2'>
         <MessageCircle color={color} className='mt-[2px] h-5 w-5 opacity-40' />
         <Typography.Text className='text-base font-semibold'>Comment</Typography.Text>
@@ -45,7 +45,7 @@ const CommentCard = ({
         renderItem={(item, _index) => (
           <List.Item>
             <List.Item.Meta
-              avatar={<Avatar src={`http://localhost:8888/api/img/${item.user.profileImageId}`} />}
+              avatar={<Avatar src={`http://localhost:8888/api/image/${item.user.profileImagePath}`} />}
               title={
                 <div className='flex justify-between gap-x-2'>
                   <span>{item.user.name}</span>
@@ -60,7 +60,7 @@ const CommentCard = ({
         )}
       />
       <div className='flex items-center gap-x-2'>
-        <Avatar className='w-10' src={userAuthenticated.profileImage} />
+        <Avatar className='w-10' src={userAuthenticated.profileImagePath} />
         <Input
           value={commentCreation}
           onChange={(e) => {

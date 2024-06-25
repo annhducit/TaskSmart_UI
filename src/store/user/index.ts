@@ -30,7 +30,7 @@ const initialState: AuthState = {
     position: '',
     organization: '',
     timeZone: 0,
-    profileImage: '',
+    profileImagePath: '',
     personalWorkSpace: {} as WorkSpaceType,
     workspaces: [],
     projects: [],

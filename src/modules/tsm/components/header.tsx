@@ -64,6 +64,8 @@ const Header = () => {
 
   const userAuthenticated = useSelector((state) => state.user.data);
 
+  const userProfileImage = userAuthenticated?.profileImagePath ? `http://localhost:8888/api/image/${userAuthenticated?.profileImagePath}` : user
+
   return (
     <>
       <header className='relative bg-[#263e50] px-6 py-1 shadow'>
@@ -153,7 +155,7 @@ const Header = () => {
                   <div className='flex items-center gap-x-3'>
                     <div className='relative rounded-full h-9 w-9'>
                       <img
-                        src={userAuthenticated?.profileImage || user}
+                        src={userProfileImage}
                         alt=''
                         className='w-full h-full rounded-full'
                       />
@@ -236,7 +238,7 @@ const Header = () => {
               <div className='relative'>
                 <div className='w-6 h-6 rounded-full'>
                   <img
-                    src={userAuthenticated?.profileImage || user}
+                    src={userProfileImage}
                     className='w-full h-full rounded-full'
                   />
                 </div>

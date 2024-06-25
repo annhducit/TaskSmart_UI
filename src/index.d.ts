@@ -47,7 +47,7 @@ type UserGeneral = {
   name: string;
   username: string;
   email: string;
-  profileImageId: string;
+  profileImagePath: string;
 };
 
 type UserRelation = {
@@ -55,7 +55,7 @@ type UserRelation = {
   name: string;
   username: string;
   email: string;
-  profileImageId: string;
+  profileImagePath: string;
 };
 
 type UserData = {
@@ -67,7 +67,7 @@ type UserData = {
   position: string;
   organization: string;
   timeZone: number;
-  profileImage: string;
+  profileImagePath: string;
   personalWorkSpace: WorkSpaceType;
   workspaces: WorkSpaceType[];
   projects: ProjectType[];
