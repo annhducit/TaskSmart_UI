@@ -141,3 +141,38 @@ type TSMProjectRequest = {
   workspaceId: string;
   background: string;
 };
+
+type TSMTemplate = {
+  id: string;
+  name: string;
+  description: string;
+  viewCount: number;
+  useCount: number;
+  imageUrl: string;
+  category: {
+    id: Category['id'];
+    name: Category['name'];
+  };
+  createdDate: string;
+};
+
+type TSMTemplateDetail = {
+  id: string;
+  name: string;
+  description: string;
+  viewCount: number;
+  useCount: number;
+  imageUrl: null | string;
+  category: {
+    id: Category['id'];
+    name: Category['name'];
+  };
+  project: {
+    id: string;
+    name: string;
+    background: string;
+    description: string;
+    listCards: ListCard[];
+  };
+  createdDate: string;
+};

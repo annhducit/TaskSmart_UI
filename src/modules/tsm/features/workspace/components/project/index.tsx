@@ -73,7 +73,7 @@ const Project = () => {
     setTasks(listCardIterator);
   }, [project]);
 
-  const createListCard = async () => {
+  const createListCard = () => {
     createListCardMutate({
       name: listCardCreationName,
     });
@@ -84,7 +84,7 @@ const Project = () => {
     updateListCardMutate(listCard);
   };
 
-  const deleteListCard = async (listCardId: String) => {
+  const deleteListCard = (listCardId: String) => {
     deleteListCardMutate(listCardId);
   };
 

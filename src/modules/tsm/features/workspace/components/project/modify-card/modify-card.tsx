@@ -342,7 +342,7 @@ const OverviewCardTab = ({
               }}
               placeholder='Estimate time'
               showTime
-              value={dayjs(card.estimate)}
+              value={card.estimate && dayjs(card.estimate)}
               onChange={(value, _dateString) => {
                 updateCard({ estimate: dayjs(value).format(DB_DATE_TIME_FORMAT) });
               }}

@@ -1,34 +1,50 @@
 import Logo from '@/shared/components/logo';
-import { Avatar, Button, Divider, Input, Popover, Tabs, Tag, Typography } from 'antd';
+import { Avatar, Button, Divider, Input, Popover, Spin, Tabs, Tag, Typography } from 'antd';
 import { AudioWaveform, ListChecks, Plus, Search, User } from 'lucide-react';
 import CreateProjectBySample from '../../components/create-project-by-sample';
 import TemplateItem from '../../components/template-item';
+import useGetTemplates from '../../../workspace/components/project/hooks/query/use-get-templates';
+import useGetTemplate from '../../../workspace/components/project/hooks/query/use-get-template';
 
 const TemplateDetail = () => {
+  const { data: template, isLoading: isLoadingDT } = useGetTemplate();
+  const { data: templates, isLoading } = useGetTemplates();
+
   return (
     <div className='flex flex-col gap-y-4 px-8 pb-20'>
       <div className='flex items-center justify-between'>
-        <div className='flex items-center gap-x-6'>
-          <div className='rounded bg-white'>
-            <Logo type='SINGLE_LOGO' size='w-16 h-16' />
-          </div>
-          <div className='flex flex-col gap-y-1'>
-            <Typography.Text className='text-xl font-semibold'>Double 2D Project</Typography.Text>
-            <Typography.Text className='block text-xs font-normal'>
-              by <span className='font-semibold text-primary-default'>Tasksmart</span> team
-            </Typography.Text>
-            <Typography.Text className='block text-xs font-normal'>@Double2D Corp</Typography.Text>
-          </div>{' '}
-        </div>
-        <Popover trigger='click' placement='leftBottom' content={<CreateProjectBySample />}>
-          <Button
-            size='large'
-            type='primary'
-            icon={<AudioWaveform className='flex items-center' size='14' />}
-          >
-            Use template
-          </Button>
-        </Popover>
+        {isLoadingDT ? (
+          <Spin />
+        ) : (
+          <>
+            <div className='flex items-center gap-x-6'>
+              <div className='rounded bg-white'>
+                <Logo type='SINGLE_LOGO' size='w-16 h-16' />
+              </div>
+              <div className='flex flex-col gap-y-1'>
+                <Typography.Text className='text-xl font-semibold'>
+                  {template?.name}
+                </Typography.Text>
+
+                <Typography.Text className='block text-xs font-normal'>
+                  by <span className='font-semibold text-primary-default'>Tasksmart</span> team
+                </Typography.Text>
+                <Typography.Text className='block text-xs font-normal'>
+                  @Double2D Corp
+                </Typography.Text>
+              </div>{' '}
+            </div>
+            <Popover trigger='click' placement='leftBottom' content={<CreateProjectBySample />}>
+              <Button
+                size='large'
+                type='primary'
+                icon={<AudioWaveform className='flex items-center' size='14' />}
+              >
+                Use template
+              </Button>
+            </Popover>
+          </>
+        )}
       </div>
       <Divider className='my-[1px]' />
       <div className='my-2'>
@@ -45,13 +61,7 @@ const TemplateDetail = () => {
         </Typography.Text>
         <br />
         <Typography.Text className='block text-sm font-normal'>
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
-          been the industry's standard dummy text ever since the 1500s, when an unknown printer took
-          a galley of type and scrambled it to make a type specimen book. It has survived not only
-          five centuries, but also the leap into electronic typesetting, remaining essentially
-          unchanged. It was popularised in the 1960s with the release of Letraset sheets containing
-          Lorem Ipsum passages, and more recently with desktop publishing software like Aldus
-          PageMaker including versions of Lorem Ipsum.
+          {template?.description}
         </Typography.Text>
       </div>
       <section
@@ -87,8 +97,16 @@ const TemplateDetail = () => {
               tabBarExtraContent={{
                 left: (
                   <div className='mr-8 flex items-center'>
-                    <p className='mr-4 max-w-48 truncate text-[18px] font-bold'>Project 1 </p>
-                    <Tag color='cyan'>Sample</Tag>
+                    {isLoadingDT ? (
+                      <Spin />
+                    ) : (
+                      <>
+                        <p className='mr-4 max-w-48 truncate text-[18px] font-bold'>
+                          {template?.name}
+                        </p>
+                        <Tag color='cyan'>Sample</Tag>
+                      </>
+                    )}
                   </div>
                 ),
               }}
@@ -118,11 +136,16 @@ const TemplateDetail = () => {
           Relative templates
         </Typography.Text>
       </div>
-      <div className='mx-auto grid grid-cols-3 gap-6'>
-        {[1, 2, 3, 4, 5].map((index) => (
-          <TemplateItem key={index} />
-        ))}
-      </div>
+      {isLoading ? (
+        <div className='flex items-center justify-center'>
+          {' '}
+          <Spin />
+        </div>
+      ) : (
+        <div className='mx-auto grid grid-cols-3 gap-6'>
+          {templates?.map((item, index) => <TemplateItem template={item} key={index} />)}
+        </div>
+      )}
     </div>
   );
 };

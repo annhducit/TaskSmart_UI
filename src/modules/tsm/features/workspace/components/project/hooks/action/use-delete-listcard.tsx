@@ -7,7 +7,6 @@ import { isStatusCodeValid } from '@/shared/components/status';
 
 const deleteListCard = async (projectId: string, listCardId: String) => {
   const data = await tsmAxios.delete(`/projects/${projectId}/${listCardId}`);
-  console.log(data);
   return data;
 };
 

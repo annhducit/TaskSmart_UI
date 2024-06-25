@@ -2,12 +2,12 @@ import { Divider, Tag, Typography } from 'antd';
 import Logo from '@/shared/components/logo';
 import { useNavigate } from 'react-router-dom';
 
-const TemplateItem = () => {
+const TemplateItem = ({ template }: { template: TSMTemplate }) => {
   const navigate = useNavigate();
 
   return (
     <div
-      onClick={() => navigate(`../../../tsm/template/${1}`)}
+      onClick={() => navigate(`../../../tsm/template/${template.id}`)}
       className='flex cursor-pointer flex-col rounded-lg bg-white shadow-xl transition-all'
       onMouseEnter={(e) => (e.currentTarget.style.boxShadow = '0px 0px 10px rgba(0,0,0,0.3)')}
       onMouseLeave={(e) => (e.currentTarget.style.boxShadow = '0px 0px 8px rgba(0,0,0,0.1)')}
@@ -24,18 +24,15 @@ const TemplateItem = () => {
       </div>
       <div className='flex flex-col gap-y-1 p-3 py-4'>
         <div className='flex items-center justify-between'>
-          <Typography.Text className='block text-lg font-semibold'>
-            New Hire Onboarding
-          </Typography.Text>
-          <Tag color='blue'>Business</Tag>
+          <Typography.Text className='block text-lg font-semibold'>{template.name}</Typography.Text>
+          <Tag color='blue'>{template.category.name}</Tag>
         </div>
         <Divider className='my-[1px]' />
         <Typography.Text className='block text-xs font-normal'>
           by <span className='font-semibold text-primary-default'>Tasksmart</span> team
         </Typography.Text>
         <Typography.Text className='line-clamp-2 block truncate text-sm font-normal'>
-          This template provides a centralized space for every new hire to tackle all the
-          job-related logistical items and business requirements to get onboarded.
+          {template.description}
         </Typography.Text>
       </div>
     </div>

@@ -1,9 +1,11 @@
-import { Divider, Input, Typography } from 'antd';
+import { Divider, Input, Spin, Typography } from 'antd';
 import { Search } from 'lucide-react';
 import TemplateItem from '../components/template-item';
 import TemplateDetailModal from '../components/template-detail';
+import useGetTemplates from '../../workspace/components/project/hooks/query/use-get-templates';
 
 const Template = () => {
+  const { data: templates, isLoading } = useGetTemplates();
   return (
     <>
       <div className='flex flex-col gap-y-2 px-2'>
@@ -21,11 +23,15 @@ const Template = () => {
               <HighlightIcon />
             </div>
           </div>
-          <div className='grid grid-cols-4 gap-4'>
-            {[1, 2, 3, 4, 5].map((item) => (
-              <TemplateItem key={item} />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className='flex items-center justify-center'>
+              <Spin />
+            </div>
+          ) : (
+            <div className='grid grid-cols-4 gap-4'>
+              {templates?.map((item, index) => <TemplateItem template={item} key={index} />)}
+            </div>
+          )}
         </div>
         <div className='flex flex-col gap-y-2'>
           <div className='flex items-center gap-x-2'>
@@ -34,19 +40,27 @@ const Template = () => {
               <NewIcon />
             </div>
           </div>{' '}
-          <div className='grid grid-cols-4 gap-4'>
-            {[1, 2, 3].map((item) => (
-              <TemplateItem key={item} />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className='flex items-center justify-center'>
+              <Spin />
+            </div>
+          ) : (
+            <div className='grid grid-cols-4 gap-4'>
+              {templates?.map((item, index) => <TemplateItem template={item} key={index} />)}
+            </div>
+          )}
         </div>
         <div className='flex flex-col gap-y-2'>
           <Typography.Text className='text-base'>All template</Typography.Text>
-          <div className='grid grid-cols-4 gap-8'>
-            {[1, 2, 3].map((item) => (
-              <TemplateItem key={item} />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className='flex items-center justify-center'>
+              <Spin />
+            </div>
+          ) : (
+            <div className='grid grid-cols-4 gap-4'>
+              {templates?.map((item, index) => <TemplateItem template={item} key={index} />)}
+            </div>
+          )}
         </div>
       </div>
       <TemplateDetailModal />
