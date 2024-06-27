@@ -43,7 +43,7 @@ export enum SEARCH_PARAMS_VALUE {
   REMINDER = 'reminder',
   NOTEPAD = 'notepad',
   TEMPLATE = 'template',
-
+  UPDATE_EMAIL = 'update-email',
   ADD_MEMBER = 'add-member',
 
   PROFILE = 'profile',

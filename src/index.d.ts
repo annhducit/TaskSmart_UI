@@ -37,6 +37,10 @@ type Project = {
   name: string;
   description: string;
   background: string;
+  workspace : {
+    id: Workspace['id'];
+    name: Workspace['name'];
+  }
   inviteCode: string;
   listCards: ListCard[];
   users: UserRelation[];

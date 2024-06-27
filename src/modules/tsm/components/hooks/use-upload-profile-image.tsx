@@ -1,0 +1,29 @@
+import { tsmAxios } from '@/configs/axios';
+import { MULTIPART_FORM_DATA } from '@/shared/constant';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { useInvalidateProfile } from './use-profile';
+async function uploadImage(payload: { image: File }) {
+  const formData = new FormData();
+  payload.image && formData.append('file', payload.image);
+
+  await tsmAxios.post('/users/profileImage', formData, {
+    headers: {
+      'Content-Type': MULTIPART_FORM_DATA,
+    },
+  });
+}
+
+export const useUploadProfileImage = () => {
+  const invalidateProfile = useInvalidateProfile();
+  return useMutation({
+    mutationFn: uploadImage,
+    onSuccess: () => {
+      invalidateProfile();
+      toast.success('Upload image success');
+    },
+    onError: (_error) => {
+      toast.error('Upload image failed');
+    },
+  });
+};

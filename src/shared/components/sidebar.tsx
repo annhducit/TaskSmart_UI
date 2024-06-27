@@ -16,8 +16,7 @@ import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '../constant/search-param';
 
 import useGetProfile from '@/modules/tsm/components/hooks/use-profile';
 import useGetCategories from '@/modules/tsm/features/workspace/hooks/query/use-get-categories';
-import useGetWorkspace from '@/modules/tsm/features/workspace/hooks/query/use-get-workspace';
-import { useState } from 'react';
+import useGetProject from '@/modules/tsm/features/workspace/components/project/hooks/query/use-get-project';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -191,7 +190,7 @@ const Sidebar = ({
   /**
    * Need to fix again
    */
-  const { data: workspace } = useGetWorkspace();
+  const { data: project } = useGetProject();
 
   return (
     <aside
@@ -212,7 +211,7 @@ const Sidebar = ({
               }}
             >
               <p className='w-[150px] truncate text-sm font-semibold'>TaskSmart Workspace</p>
-              <p className='text-xs'>{workspace?.name}</p>
+              <p className='text-xs'>{project?.workspace.name}</p>
             </div>
           </div>
         </Tooltip>
