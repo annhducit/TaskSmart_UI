@@ -8,7 +8,6 @@ import {
   Modal,
   Select,
   Tabs,
-  Tag,
   Typography,
   Upload,
   UploadFile,
@@ -19,10 +18,13 @@ import {
   Activity,
   CalendarDays,
   ChevronsRight,
+  FilePenLine,
   Layers3,
   Mail,
   NotebookPen,
   ShieldCheck,
+  UploadCloud,
+  UploadIcon,
   UserCog,
   UserRoundCheck,
 } from 'lucide-react';
@@ -79,7 +81,6 @@ const ProfileFlyer = ({ isVisible }: { isVisible: () => void }) => {
 
   const { data } = useGetProfile();
   const { data: profileImage } = useGetImage(data?.profileImagePath as string);
-  const { mutate: uploadImage } = useUploadProfileImage();
   const items = [
     {
       label: 'Activity',
@@ -113,14 +114,6 @@ const ProfileFlyer = ({ isVisible }: { isVisible: () => void }) => {
     },
   ];
 
-  const [file, setFile] = useState<File>();
-
-  const handleUploadImage = () => {
-    if (file) {
-      uploadImage({ image: file });
-      setFile(undefined);
-    }
-  };
   return (
     <>
       <div
@@ -131,46 +124,34 @@ const ProfileFlyer = ({ isVisible }: { isVisible: () => void }) => {
       >
         <div className='relative'>
           <div className='h-[4px] w-full bg-primary-default' />
-          <div className='flex w-full items-center gap-x-4 px-8 '>
-            <ImgCrop
-              rotationSlider
-              onModalCancel={() => {
-                setFile(undefined);
-              }}
-              onModalOk={() => {
-                handleUploadImage();
-              }}
-              modalClassName='z-[9999]'
-            >
-              <Upload
-                name='avatar'
-                listType='picture-circle'
-                className='avatar-uploader flex items-center border-none border-transparent object-cover'
-                beforeUpload={() => false}
-                showUploadList={false}
-                onPreview={onPreview}
-                onChange={(e) => {
-                  setFile(e?.file as unknown as File);
-                }}
-              >
-                <div className='relative rounded-full'>
-                  {profileImage && (
-                    <Tooltip trigger='hover' placement='bottom' title='Upload image'>
-                      <div className='h-[100px] w-[100px]'>
-                        <img
-                          src={profileImage}
-                          alt='avatar'
-                          className='h-full w-full rounded-full object-cover'
-                          style={{ width: '100%' }}
-                        />
-                      </div>
-                    </Tooltip>
-                  )}
-                  <span className='absolute right-1 top-1 rounded-full bg-[#1ad67b] p-[6px]'></span>
+          <div className='flex w-full items-center gap-x-4 px-8 pt-6'>
+            <div className='relative flex flex-col rounded-full'>
+              {profileImage && (
+                <div className='h-[100px] w-[100px]'>
+                  <img
+                    src={profileImage}
+                    alt='avatar'
+                    className='h-full w-full rounded-full object-cover'
+                    style={{ width: '100%' }}
+                  />
                 </div>
-              </Upload>
-            </ImgCrop>
-            <div className='mt-6 flex flex-col'>
+              )}
+
+              <Tooltip trigger='hover' placement='bottom' title='Upload image'>
+                <UploadCloud
+                  onClick={() => {
+                    setDialog(SEARCH_PARAMS_VALUE.PROFILE_IMAGE);
+                    isVisible();
+                  }}
+                  size={18}
+                  className='absolute -bottom-3 right-1 cursor-pointer text-primary-default transition-all hover:opacity-60'
+                />
+              </Tooltip>
+
+              <span className='absolute right-1 top-1 rounded-full bg-[#1ad67b] p-[6px]'></span>
+            </div>
+
+            <div className='flex flex-col'>
               <div className='flex items-center justify-between'>
                 <p className='text-lg font-semibold text-black'>{data?.name || ''}</p>
                 <Button
@@ -186,42 +167,40 @@ const ProfileFlyer = ({ isVisible }: { isVisible: () => void }) => {
                 </Button>
               </div>
               <p className='text-sm text-gray-400'>{data?.username || ''}</p>
-              <div className='mt-1 flex items-center gap-x-3'>
+              <div className='flex items-center gap-x-3'>
                 <div className='flex flex-col gap-y-1'>
                   <Typography.Text className='font-semibold'> Position </Typography.Text>
-                  <Typography.Text className='w-36 truncate text-xs font-semibold opacity-60'>
+                  <Typography.Text className='w-32 truncate text-xs font-semibold opacity-60'>
                     {' '}
                     {data?.position || ''}{' '}
                   </Typography.Text>
                 </div>
                 <div className='flex flex-col gap-y-1'>
                   <Typography.Text className='font-semibold'> Organization </Typography.Text>
-                  <Typography.Text className='w-36 truncate text-xs font-semibold opacity-60'>
+                  <Typography.Text className='w-32 truncate text-xs font-semibold opacity-60'>
                     {' '}
                     {data?.organization || ''}{' '}
                   </Typography.Text>
                 </div>
                 <div className='flex flex-col gap-y-1'>
-                  <div className='flex items-center justify-between'>
+                  <div className='flex items-center gap-x-2'>
                     <Typography.Text className='font-semibold'> Email </Typography.Text>
-                    <Tag
+                    <FilePenLine
                       onClick={() => {
                         setDialog(SEARCH_PARAMS_VALUE.UPDATE_EMAIL);
                         isVisible();
                       }}
-                      color='blue'
-                      className='cursor-pointer transition-all hover:opacity-60'
-                    >
-                      Update
-                    </Tag>
+                      size={14}
+                      className='cursor-pointer text-primary-default transition-all hover:opacity-60'
+                    />
                   </div>
-                  <Typography.Text className='w-36 truncate text-xs font-semibold opacity-60'>
+                  <Typography.Text className='w-32 truncate text-xs font-semibold opacity-60'>
                     {data?.email || ''}
                   </Typography.Text>
                 </div>
                 <div className='flex flex-col gap-y-1'>
                   <Typography.Text className='font-semibold'> Local time </Typography.Text>
-                  <Typography.Text className='text-xs font-semibold opacity-60'>
+                  <Typography.Text className='text-center text-xs font-semibold opacity-60'>
                     {data?.timeZone}
                   </Typography.Text>
                 </div>
@@ -241,6 +220,7 @@ const ProfileFlyer = ({ isVisible }: { isVisible: () => void }) => {
       </div>
       <ModifyProfile />
       <ModifyEmail />
+      <ModifyProfileImage />
     </>
   );
 };
@@ -267,6 +247,26 @@ const ModifyEmail = () => {
       size='xxs'
     >
       <ModalModifyEmail />
+    </Dialog.Param>
+  );
+};
+
+const ModifyProfileImage = () => {
+  const { mutate: uploadImage, isPending } = useUploadProfileImage();
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const handleUploadImage = () => {
+    if (fileList.length > 0) {
+      uploadImage({ image: fileList[0].originFileObj as File });
+      setFileList([]);
+    }
+  };
+  return (
+    <Dialog.Param
+      paramKey={SEARCH_PARAMS.MODAL}
+      paramValue={SEARCH_PARAMS_VALUE.PROFILE_IMAGE}
+      size='xxs'
+    >
+      <UploadProfileImg />
     </Dialog.Param>
   );
 };
@@ -485,6 +485,71 @@ const ModalModifyEmail = () => {
           </Typography.Text>
         </div>
       </Modal>
+    </>
+  );
+};
+
+const UploadProfileImg = () => {
+  const { mutate: uploadImage, isPending } = useUploadProfileImage();
+
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+
+  const handleUploadImage = () => {
+    if (fileList.length > 0) {
+      uploadImage({ image: fileList[0].originFileObj as File });
+    }
+  };
+  const { onClose } = useDialogContext();
+
+  return (
+    <>
+      <Dialog.CloseButton onClose={() => onClose()} />
+      <div className='flex flex-col gap-y-2'>
+        <div className='flex justify-center'>
+          <Typography.Title level={4}>Upload image</Typography.Title>
+        </div>
+        <div className='mx-auto mt-2'>
+          <ImgCrop
+            rotationSlider
+            onModalCancel={() => {
+              setFileList([]);
+            }}
+            modalClassName='z-[9999]'
+          >
+            <Upload
+              name='avatar'
+              listType='picture-circle'
+              className='avatar-uploader flex w-full items-center border-none border-transparent object-cover'
+              beforeUpload={() => false}
+              showUploadList={true}
+              onPreview={onPreview}
+              onChange={(e) => {
+                setFileList(e?.fileList);
+              }}
+            >
+              {fileList.length < 1 && (
+                <Button
+                  type='default'
+                  size='small'
+                  className='flex w-20 items-center justify-center text-xs'
+                  icon={<UploadIcon className='flex h-4 w-4 items-center text-xs' />}
+                >
+                  Upload
+                </Button>
+              )}
+            </Upload>
+          </ImgCrop>
+        </div>
+        <Button
+          type='primary'
+          onClick={handleUploadImage}
+          disabled={fileList.length < 1}
+          className='mt-4 w-full'
+          loading={isPending}
+        >
+          Save
+        </Button>
+      </div>
     </>
   );
 };

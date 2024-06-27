@@ -45,6 +45,7 @@ export enum SEARCH_PARAMS_VALUE {
   TEMPLATE = 'template',
   UPDATE_EMAIL = 'update-email',
   ADD_MEMBER = 'add-member',
+  PROFILE_IMAGE = 'profile-image',
 
   PROFILE = 'profile',
   CARD = 'card',
