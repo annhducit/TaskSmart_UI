@@ -1,11 +1,13 @@
-import { Button, Divider, Form, Input, Popover, Select, Typography } from 'antd';
-import { Check, CodeSquare, Ellipsis } from 'lucide-react';
-import { useState } from 'react';
+import { Button, Divider, Form, Input, Popover, Select, Typography, List } from 'antd';
+import { Check, SearchIcon, Ellipsis } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 import dashboard from '@/assets/svgs/dashboard.svg';
 import { useSelector } from '@/store';
 import { tsmAxios } from '@/configs/axios';
 import useCreateProject from '../project/hooks/mutation/use-create-project';
+import type { SearchProps } from 'antd/es/input';
+import { isBuffer } from 'lodash';
 
 /**
  * @description Project background component
@@ -25,6 +27,7 @@ export default ProjectBackground;
 const BackgroundReview = () => {
   const { TextArea } = Input;
   const [background, setBackground] = useState<string>('#00aecc');
+  const [backgroundUnsplash, setBackgroundUnsplash] = useState<UnsplashResponse>();
 
   const [form] = Form.useForm<TSMProjectRequest>();
   const { mutate: createProject } = useCreateProject();
@@ -32,27 +35,55 @@ const BackgroundReview = () => {
   const userAuthenticated = useSelector((state) => state.user.data);
   const userWorkspaces = [userAuthenticated.personalWorkSpace, ...userAuthenticated.workspaces];
 
-  const handleChangeBackground = (value: string) => {
+  const handleChangeBackground = (value: UnsplashResponse) => {
+    setBackgroundUnsplash(value);
+    setBackground(value.urls.small);
+  };
+
+  const handleChangeBackgroundColor = (value: string) => {
     setBackground(value);
   };
 
   const handleSubmitForm = (value: TSMProjectRequest) => {
-    console.log(value);
-    createProject(value);
+    if(background.startsWith("#") && background.length === 7){
+      createProject({...value, background});
+    }else{
+      createProject({...value, background: backgroundUnsplash?.id || ""});
+    }
   };
 
+  const [listBackground, setListBackground] = useState<UnsplashResponse[]>([]);
+  const fetchBackground = async () => {
+    try {
+      const response = await tsmAxios.get<UnsplashResponse[]>('unsplash/photos?page=1&per_page=8');
+      setListBackground(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    fetchBackground();
+  }, []);
+
   return (
-    <Form layout='vertical' form={form} name='create-project' onFinish={handleSubmitForm}>
-      <div className='flex items-center gap-x-6'>
+    <Form
+      layout='vertical'
+      className='w-full'
+      form={form}
+      name='create-project'
+      onFinish={handleSubmitForm}
+    >
+      <div className='flex flex-col items-center w-full gap-x-6'>
         <div
           style={{
             backgroundImage: `url(${background})`,
             backgroundColor: `${background}`,
             backgroundSize: 'cover',
           }}
-          className='h-[120px] w-[246px] rounded'
+          className='h-[120px] w-[192px] rounded'
         >
-          <div className='mx-auto mt-2 h-[103px] w-[186px] rounded'>
+          <div className='mx-auto mt-2 h-[103px] w-[160px] rounded'>
             <img src={dashboard} alt='dashboard' className='w-full h-full rounded' />
           </div>
         </div>
@@ -62,21 +93,21 @@ const BackgroundReview = () => {
             {listBackground.map((item) => (
               <div
                 className='h-[40px] w-[64px] cursor-pointer rounded transition-all hover:brightness-125'
-                onClick={() => handleChangeBackground(item.url)}
+                onClick={() => handleChangeBackground(item)}
               >
                 <img
-                  src={item.url}
-                  alt={item.name}
+                  src={item.urls.small}
+                  alt='background'
                   className='object-cover w-full h-full rounded'
                 />
               </div>
             ))}
           </div>
           <Divider className='my-1' />
-          <div className='flex items-center gap-x-2'>
-            {listColor.slice(0, 5).map((item) => (
+          <div className='flex items-center justify-center gap-x-2'>
+            {listColor.slice(0, 10).map((item) => (
               <div
-                onClick={() => handleChangeBackground(item.color)}
+                onClick={() => handleChangeBackgroundColor(item.color)}
                 style={{
                   backgroundColor: item.color,
                 }}
@@ -94,6 +125,8 @@ const BackgroundReview = () => {
                 <SubBackgroundModal
                   color={background}
                   handleChangeBackground={handleChangeBackground}
+                  handleChangeBackgroundColor={handleChangeBackgroundColor}
+                  defaultBackgrounds={listBackground}
                 />
               }
             >
@@ -158,35 +191,117 @@ const BackgroundReview = () => {
 
 const SubBackgroundModal = ({
   handleChangeBackground,
+  handleChangeBackgroundColor,
   color,
+  defaultBackgrounds,
 }: {
-  handleChangeBackground: (item: string) => void;
+  handleChangeBackground: (item: UnsplashResponse) => void;
+  handleChangeBackgroundColor: (color: string) => void;
   color: string;
+  defaultBackgrounds: UnsplashResponse[];
 }) => {
+  const [listBackground, setListBackground] = useState<UnsplashResponse[]>(defaultBackgrounds);
+  const [backgroundSearch, setBackgroundSearch] = useState<string>('');
+  const [page, setPage] = useState<number>(1);
+
+  const fetchBackgroundWithoutQuery = async () => {
+    try {
+      const response = await tsmAxios.get<UnsplashResponse[]>(
+        'unsplash/photos?page=1&per_page=8'
+      );
+      setListBackground((res) => [...res, ...response.data]);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchBackground = async (query: string) => {
+    try {
+      const response = await tsmAxios.get<UnsplashResponse[]>(
+        `unsplash/photos?query=${query}&page=${page}&per_page=8`
+      );
+      if(page === 1)
+        setListBackground(response.data);
+      else
+        setListBackground((res) => [...res, ...response.data]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onLoadMore = () => {
+    if(backgroundSearch){
+      fetchBackground(backgroundSearch);
+      setPage((pre)=>(pre+1))
+    }else{
+      fetchBackgroundWithoutQuery();
+    }
+  };
+
+  const loadMore = (
+    <div
+      style={{
+        textAlign: 'center',
+        marginTop: 12,
+        height: 32,
+        lineHeight: '32px',
+      }}
+    >
+      <Button onClick={onLoadMore}>Load more</Button>
+    </div>
+  );
+
+  const onSearch: SearchProps['onSearch'] = (value, _e, info) => {
+    if (value) {
+      fetchBackground(value);
+      setPage(2)
+    }
+  };
+
   return (
     <>
-      <div className='mx-auto mb-2 w-[9rem]'>
+      <div className='mx-auto mb-2 w-[9rem] transition-transform'>
         <Typography.Text className='text-base font-semibold'>Project background</Typography.Text>
       </div>
 
-      <div className='ml-4'>
+      <div className=''>
         <Typography.Text className='text-sm'>Wallpaper</Typography.Text>
-        <div className='mb-2 mt-1 flex w-[250px] flex-wrap items-center gap-2'>
-          {listBackground.map((item) => (
-            <div
-              className='h-[40px] w-[64px] cursor-pointer rounded transition-all hover:brightness-125'
-              onClick={() => handleChangeBackground(item.url)}
-            >
-              <img src={item.url} alt={item.name} className='object-cover w-full h-full rounded' />
-            </div>
-          ))}
+        <div>
+          <Input.Search
+            value={backgroundSearch}
+            onChange={(e) => {
+              setBackgroundSearch(e.target.value);
+            }}
+            placeholder='Search image ...'
+            onSearch={onSearch}
+          ></Input.Search>
+        </div>
+        <div className='mb-2 mt-1 flex w-[320px] flex-wrap items-center gap-2'>
+          <List
+            grid={{ column: 4 }}
+            loadMore={loadMore}
+            dataSource={listBackground}
+            renderItem={(item) => (
+              <div
+                className='ml-[auto] mr-[auto] mt-2 h-[40px] w-[64px] cursor-pointer rounded transition-all hover:brightness-125'
+                onClick={() => handleChangeBackground(item)}
+              >
+                <img
+                  src={item.urls.small}
+                  alt='background'
+                  className='object-cover w-full h-full rounded'
+                />
+              </div>
+            )}
+          ></List>
         </div>
         <Divider className='my-1' />
         <Typography.Text className='text-sm'>Color</Typography.Text>
-        <div className='mt-1 flex w-[250px] flex-wrap items-center gap-2'>
+        <div className='mt-1 flex w-[320px] flex-wrap items-center gap-2'>
           {listColor.map((item) => (
             <div
-              onClick={() => handleChangeBackground(item.color)}
+              onClick={() => handleChangeBackgroundColor(item.color)}
               style={{
                 backgroundColor: item.color,
               }}
@@ -202,29 +317,6 @@ const SubBackgroundModal = ({
     </>
   );
 };
-
-const listBackground = [
-  {
-    id: 1,
-    name: 'Background 1',
-    url: 'https://images.unsplash.com/photo-1487088678257-3a541e6e3922?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-  {
-    id: 2,
-    name: 'Background 2',
-    url: 'https://images.unsplash.com/photo-1498612753354-772a30629934?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-  {
-    id: 3,
-    name: 'Background 3',
-    url: 'https://images.unsplash.com/photo-1496715976403-7e36dc43f17b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-  {
-    id: 4,
-    name: 'Background 4',
-    url: 'https://images.unsplash.com/photo-1492892132812-a00a8b245c45?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-];
 
 const listColor = [
   {

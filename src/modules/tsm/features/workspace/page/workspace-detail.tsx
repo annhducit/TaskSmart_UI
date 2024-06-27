@@ -30,15 +30,15 @@ const WorkspaceDetail = () => {
     <>
       <div className='flex flex-col'>
         <div className='flex items-center gap-x-5'>
-          <div className='h-20 w-20 rounded'>
-            <img src={projectImg} alt='' className='h-full w-full rounded-lg' />
+          <div className='w-20 h-20 rounded'>
+            <img src={projectImg} alt='' className='w-full h-full rounded-lg' />
           </div>
           <div className='flex flex-col'>
             <Typography.Title level={3}>{workspace?.name}</Typography.Title>
             <div className='flex items-center gap-x-4'>
               <Tag color='gold'>Premium</Tag>
               <div className='flex items-center'>
-                <LockKeyhole color='red' className='mr-1 h-4 w-4' />
+                <LockKeyhole color='red' className='w-4 h-4 mr-1' />
                 <Tag color='red'>{workspace?.type}</Tag>
               </div>
             </div>
@@ -138,10 +138,10 @@ const WorkspaceDetail = () => {
               />
             </div>
           </div>
-          <div className='my-6 grid grid-cols-4 gap-4'>
+          <div className='grid grid-cols-4 gap-4 my-6'>
             <Button
-              className='mx-auto flex h-32 w-full items-center justify-center'
-              icon={<PlusCircle className='h-4 w-4' />}
+              className='flex items-center justify-center w-full h-32 mx-auto'
+              icon={<PlusCircle className='w-4 h-4' />}
               type='dashed'
               onClick={showModal}
             >
@@ -202,7 +202,7 @@ const ModalCreateWorkspace = () => {
               layout='vertical'
               onFinish={handleSubmit}
               name='create-workspace'
-              className='flex w-full flex-col'
+              className='flex flex-col w-full'
             >
               <Form.Item>
                 <Form.Item
@@ -240,7 +240,7 @@ const ModalCreateWorkspace = () => {
               </Button>
             </Form>
           </div>
-          <div className='col-span-1 flex flex-col'>
+          <div className='flex flex-col col-span-1'>
             <img loading='lazy' src={createWps} className='h-[360px] w-[350px]' />
           </div>
         </div>
@@ -271,7 +271,7 @@ export const ModalCreateProject = () => {
           <Typography.Text className='text-base font-semibold'>Create project</Typography.Text>
         </div>
 
-        <div className='flex items-center gap-x-6'>
+        <div className='flex items-center w-full gap-x-6'>
           <ProjectBackground />
         </div>
       </div>

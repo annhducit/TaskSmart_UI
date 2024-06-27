@@ -36,11 +36,12 @@ type Project = {
   id: string;
   name: string;
   description: string;
-  background: string;
   workspace : {
     id: Workspace['id'];
     name: Workspace['name'];
   }
+  backgroundColor: string;
+  backgroundUnsplash: UnsplashResponse;
   inviteCode: string;
   listCards: ListCard[];
   users: UserRelation[];
@@ -179,4 +180,16 @@ type TSMTemplateDetail = {
     listCards: ListCard[];
   };
   createdDate: string;
+};
+
+type UnsplashResponse = {
+  id: string;
+  color: string;
+  urls: {
+    raw: string;
+    full: string;
+    regular: string;
+    small: string;
+    thumb: string;
+  };
 };
