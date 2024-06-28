@@ -36,10 +36,10 @@ type Project = {
   id: string;
   name: string;
   description: string;
-  workspace : {
+  workspace: {
     id: Workspace['id'];
     name: Workspace['name'];
-  }
+  };
   backgroundColor: string;
   backgroundUnsplash: UnsplashResponse;
   inviteCode: string;
@@ -73,9 +73,12 @@ type UserData = {
   organization: string;
   timeZone: number;
   profileImagePath: string;
-  personalWorkSpace: WorkSpaceType;
-  workspaces: WorkSpaceType[];
-  projects: ProjectType[];
+  personalWorkSpace: {
+    id: Workspace['id'];
+    name: Workspace['name'];
+  };
+  workspaces: WorkSpace[];
+  projects: Project[];
 };
 
 type ListCard = {

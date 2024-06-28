@@ -11,13 +11,14 @@ const ProjectItem = ({ project }: { project: Project }) => {
         navigate(`../../../tsm/project/${project.id}`);
       }}
       style={{
-        backgroundImage: `url(https://images.unsplash.com/photo-1716251642302-72006415465b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
+        backgroundImage: `url(${project?.backgroundUnsplash?.urls?.full})`,
+        backgroundColor: `${project?.backgroundColor}`,
       }}
-      className='relative flex cursor-pointer flex-col gap-y-3 rounded-lg border border-solid border-slate-200 p-4 transition-all hover:border-primary-default hover:text-primary-default'
+      className='relative flex cursor-pointer flex-col gap-y-3 rounded-lg border border-solid border-slate-200 object-cover p-4 transition-all hover:border-primary-default hover:text-primary-default'
     >
-      <div className='absolute inset-0 rounded-lg bg-black opacity-40' />
+      <div className='absolute inset-0 rounded-lg bg-black opacity-50' />
       <div className='flex items-center justify-between'>
         <Typography.Text className='z-10 font-semibold text-white'>{project.name}</Typography.Text>
         <div className='z-10 flex items-center'>

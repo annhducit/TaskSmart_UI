@@ -164,7 +164,7 @@ html *::-webkit-scrollbar:horizontal {
 }
 
 /**
-  * Custom TabUI Antd
+  * Custom Main TabUI Antd 
   */
 
 .custom-tabs .ant-tabs-tab {
@@ -172,20 +172,41 @@ html *::-webkit-scrollbar:horizontal {
   @apply text-sm;
   @apply font-semibold;
   @apply py-4;
-  @apply rounded-lg;
 }
 .custom-tabs .ant-tabs-nav {
-  @apply bg-gray-800 bg-opacity-50 backdrop-blur-lg;
+  @apply bg-gray-600 bg-opacity-50 backdrop-blur-sm;
+  @apply backdrop-filter;
+  @apply bg-black/50 shadow-lg;
+  @apply px-6;
+}
+
+.custom-tabs .ant-tabs-content {
+  @apply overflow-x-scroll;
+}
+
+/**
+  * Custom Template TabUI Antd 
+  */
+.custom-tabs-template .ant-tabs-tab {
+  @apply text-white;
+  @apply text-sm;
+  @apply font-semibold;
+  @apply py-4;
+  @apply rounded-lg;
+}
+.custom-tabs-template .ant-tabs-nav {
+  @apply bg-gray-600 bg-opacity-50 backdrop-blur-sm;
   @apply backdrop-filter;
   @apply bg-black/50 shadow-lg;
   @apply px-6;
   @apply rounded-lg;
 }
 
-.custom-tabs .ant-tabs-content {
+.custom-tabs-template .ant-tabs-content {
   @apply overflow-x-scroll;
   @apply rounded-lg;
 }
+
 /*  Custom css for width too large */
 .scroll-container {
   overflow-x: auto; /* Enables horizontal scrolling */
@@ -202,9 +223,6 @@ html *::-webkit-scrollbar:horizontal {
   border-radius: 12px !important;
 }
 
-.custom-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-  /* @apply text-white; */
-}
 .custom-tabs .ant-tabs-tab-btn:focus,
 .custom-tabs .ant-tabs-tab-btn:hover {
   @apply text-white;
@@ -219,4 +237,30 @@ html *::-webkit-scrollbar:horizontal {
 
 .custom-select .ant-select-arrow {
   display: none;
+}
+
+/**
+  * Custom css for menu
+  */
+.custom-aside.ant-menu {
+  background: transparent;
+  @apply bg-gray-900 bg-opacity-50 backdrop-blur-lg;
+}
+
+.custom-aside .ant-menu-item,
+.custom-aside .ant-menu-submenu-title {
+  color: white !important;
+}
+
+.custom-aside .ant-menu-item:hover,
+.custom-aside .ant-menu-item-active,
+.custom-aside .ant-menu-submenu-title:hover,
+.custom-aside .ant-menu-submenu-title-active {
+  color: white !important;
+  background-color: #1890ff !important;
+}
+
+.custom-aside .ant-menu-item-selected {
+  color: white !important;
+  background-color: #1890ff !important;
 }

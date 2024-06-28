@@ -1,13 +1,13 @@
 import { Button, Divider, Form, Input, Popover, Select, Typography, List } from 'antd';
-import { Check, SearchIcon, Ellipsis } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Check, Ellipsis } from 'lucide-react';
+import { useState } from 'react';
 
 import dashboard from '@/assets/svgs/dashboard.svg';
 import { useSelector } from '@/store';
 import { tsmAxios } from '@/configs/axios';
 import useCreateProject from '../project/hooks/mutation/use-create-project';
 import type { SearchProps } from 'antd/es/input';
-import { isBuffer } from 'lodash';
+import useGetBackground from '../../hooks/query/use-get-background';
 
 /**
  * @description Project background component
@@ -30,7 +30,7 @@ const BackgroundReview = () => {
   const [backgroundUnsplash, setBackgroundUnsplash] = useState<UnsplashResponse>();
 
   const [form] = Form.useForm<TSMProjectRequest>();
-  const { mutate: createProject } = useCreateProject();
+  const { mutate: createProject, isPending } = useCreateProject();
 
   const userAuthenticated = useSelector((state) => state.user.data);
   const userWorkspaces = [userAuthenticated.personalWorkSpace, ...userAuthenticated.workspaces];
@@ -45,26 +45,14 @@ const BackgroundReview = () => {
   };
 
   const handleSubmitForm = (value: TSMProjectRequest) => {
-    if(background.startsWith("#") && background.length === 7){
-      createProject({...value, background});
-    }else{
-      createProject({...value, background: backgroundUnsplash?.id || ""});
+    if (background.startsWith('#') && background.length === 7) {
+      createProject({ ...value, background });
+    } else {
+      createProject({ ...value, background: backgroundUnsplash?.id || '' });
     }
   };
 
-  const [listBackground, setListBackground] = useState<UnsplashResponse[]>([]);
-  const fetchBackground = async () => {
-    try {
-      const response = await tsmAxios.get<UnsplashResponse[]>('unsplash/photos?page=1&per_page=8');
-      setListBackground(response.data);
-      console.log(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    fetchBackground();
-  }, []);
+  const { data: listBackground } = useGetBackground();
 
   return (
     <Form
@@ -74,7 +62,7 @@ const BackgroundReview = () => {
       name='create-project'
       onFinish={handleSubmitForm}
     >
-      <div className='flex flex-col items-center w-full gap-x-6'>
+      <div className='flex w-full flex-col items-center gap-x-6'>
         <div
           style={{
             backgroundImage: `url(${background})`,
@@ -84,21 +72,22 @@ const BackgroundReview = () => {
           className='h-[120px] w-[192px] rounded'
         >
           <div className='mx-auto mt-2 h-[103px] w-[160px] rounded'>
-            <img src={dashboard} alt='dashboard' className='w-full h-full rounded' />
+            <img src={dashboard} alt='dashboard' className='h-full w-full rounded' />
           </div>
         </div>
         <div className='flex flex-col gap-y-1'>
           <Typography.Text>Background</Typography.Text>
           <div className='flex items-center gap-x-2'>
-            {listBackground.map((item) => (
+            {listBackground?.map((item) => (
               <div
+                key={item.id}
                 className='h-[40px] w-[64px] cursor-pointer rounded transition-all hover:brightness-125'
                 onClick={() => handleChangeBackground(item)}
               >
                 <img
                   src={item.urls.small}
                   alt='background'
-                  className='object-cover w-full h-full rounded'
+                  className='h-full w-full rounded object-cover'
                 />
               </div>
             ))}
@@ -107,6 +96,7 @@ const BackgroundReview = () => {
           <div className='flex items-center justify-center gap-x-2'>
             {listColor.slice(0, 10).map((item) => (
               <div
+                key={item.id}
                 onClick={() => handleChangeBackgroundColor(item.color)}
                 style={{
                   backgroundColor: item.color,
@@ -114,7 +104,7 @@ const BackgroundReview = () => {
                 className={`relative h-[32px] w-[40px] cursor-pointer rounded transition-all hover:brightness-125`}
               >
                 {item.color === background && (
-                  <Check className='absolute w-4 h-4 text-white right-3 top-2' />
+                  <Check className='absolute right-3 top-2 h-4 w-4 text-white' />
                 )}
               </div>
             ))}
@@ -126,18 +116,18 @@ const BackgroundReview = () => {
                   color={background}
                   handleChangeBackground={handleChangeBackground}
                   handleChangeBackgroundColor={handleChangeBackgroundColor}
-                  defaultBackgrounds={listBackground}
+                  defaultBackgrounds={listBackground || []}
                 />
               }
             >
               <Button className='flex items-center'>
-                <Ellipsis className='w-4 h-4' />
+                <Ellipsis className='h-4 w-4' />
               </Button>
             </Popover>
           </div>
         </div>
       </div>
-      <div className='flex items-center mt-4'>
+      <div className='mt-4 flex items-center'>
         <Form.Item
           name='name'
           className='w-full'
@@ -153,7 +143,7 @@ const BackgroundReview = () => {
         </Form.Item>
         <Form.Item
           name='workspaceId'
-          className='w-full mr-1'
+          className='mr-1 w-full'
           label='Workspace'
           rules={[
             {
@@ -181,7 +171,7 @@ const BackgroundReview = () => {
 
       <div className='float-right mt-[6px] flex items-center gap-x-4'>
         <Button type='default'>Start with samples</Button>
-        <Button type='primary' htmlType='submit'>
+        <Button type='primary' htmlType='submit' loading={isPending}>
           Create
         </Button>
       </div>
@@ -206,11 +196,8 @@ const SubBackgroundModal = ({
 
   const fetchBackgroundWithoutQuery = async () => {
     try {
-      const response = await tsmAxios.get<UnsplashResponse[]>(
-        'unsplash/photos?page=1&per_page=8'
-      );
+      const response = await tsmAxios.get<UnsplashResponse[]>('unsplash/photos?page=1&per_page=8');
       setListBackground((res) => [...res, ...response.data]);
-      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -221,20 +208,18 @@ const SubBackgroundModal = ({
       const response = await tsmAxios.get<UnsplashResponse[]>(
         `unsplash/photos?query=${query}&page=${page}&per_page=8`
       );
-      if(page === 1)
-        setListBackground(response.data);
-      else
-        setListBackground((res) => [...res, ...response.data]);
+      if (page === 1) setListBackground(response.data);
+      else setListBackground((res) => [...res, ...response.data]);
     } catch (error) {
       console.log(error);
     }
   };
 
   const onLoadMore = () => {
-    if(backgroundSearch){
+    if (backgroundSearch) {
       fetchBackground(backgroundSearch);
-      setPage((pre)=>(pre+1))
-    }else{
+      setPage((pre) => pre + 1);
+    } else {
       fetchBackgroundWithoutQuery();
     }
   };
@@ -252,10 +237,10 @@ const SubBackgroundModal = ({
     </div>
   );
 
-  const onSearch: SearchProps['onSearch'] = (value, _e, info) => {
+  const onSearch: SearchProps['onSearch'] = (value, _e, _info) => {
     if (value) {
       fetchBackground(value);
-      setPage(2)
+      setPage(2);
     }
   };
 
@@ -290,7 +275,7 @@ const SubBackgroundModal = ({
                 <img
                   src={item.urls.small}
                   alt='background'
-                  className='object-cover w-full h-full rounded'
+                  className='h-full w-full rounded object-cover'
                 />
               </div>
             )}
@@ -308,7 +293,7 @@ const SubBackgroundModal = ({
               className={`relative h-[32px] w-[40px] cursor-pointer rounded transition-all hover:brightness-125`}
             >
               {item.color === color && (
-                <Check className='absolute w-4 h-4 text-white right-3 top-2' />
+                <Check className='absolute right-3 top-2 h-4 w-4 text-white' />
               )}
             </div>
           ))}

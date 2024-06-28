@@ -3,8 +3,8 @@ import { Avatar, Button, Divider, Input, Popover, Spin, Tabs, Tag, Typography } 
 import { AudioWaveform, ListChecks, Plus, Search, User } from 'lucide-react';
 import CreateProjectBySample from '../../components/create-project-by-sample';
 import TemplateItem from '../../components/template-item';
-import useGetTemplates from '../../../workspace/components/project/hooks/query/use-get-templates';
-import useGetTemplate from '../../../workspace/components/project/hooks/query/use-get-template';
+import useGetTemplates from '../../hooks/use-get-templates';
+import useGetTemplate from '../../hooks/use-get-template';
 
 const TemplateDetail = () => {
   const { data: template, isLoading: isLoadingDT } = useGetTemplate();
@@ -76,7 +76,7 @@ const TemplateDetail = () => {
           <div>
             <Tabs
               tabBarGutter={20}
-              className={`custom-tabs mb-0 w-[calc(100vw-400px)] text-white`}
+              className={`custom-tabs-template mb-0 w-[calc(100vw-400px)] text-white`}
               items={[
                 {
                   key: 'overview',

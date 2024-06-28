@@ -1,5 +1,5 @@
 import projectImg from '@/assets/images/karban.png';
-import { Button, Card, Divider, Form, Input, Select, Tag, Typography } from 'antd';
+import { Button, Card, Divider, Form, Input, Select, Spin, Tag, Typography } from 'antd';
 import { LockKeyhole, PlusCircle } from 'lucide-react';
 import Search from 'antd/es/input/Search';
 import ProjectItem from '../components/project-item';
@@ -11,11 +11,11 @@ import ProjectBackground from '../components/background-container/background';
 
 import createWps from '@/assets/gifs/create-workspace.gif';
 import useGetWorkspace from '../hooks/query/use-get-workspace';
-import useGetCategories from '../hooks/query/use-get-categories';
 import useCreateWorkspace from '../hooks/mutation/use-create-workspace';
+import useGetCategories from '@/modules/tsm/components/hooks/use-get-categories';
 
 const WorkspaceDetail = () => {
-  const { data: workspace } = useGetWorkspace();
+  const { data: workspace, isPending } = useGetWorkspace();
 
   const [, setDialog] = useSearchParam(SEARCH_PARAMS.DIALOG);
 
@@ -30,18 +30,24 @@ const WorkspaceDetail = () => {
     <>
       <div className='flex flex-col'>
         <div className='flex items-center gap-x-5'>
-          <div className='w-20 h-20 rounded'>
-            <img src={projectImg} alt='' className='w-full h-full rounded-lg' />
+          <div className='h-20 w-20 rounded'>
+            <img src={projectImg} alt='' className='h-full w-full rounded-lg' />
           </div>
           <div className='flex flex-col'>
-            <Typography.Title level={3}>{workspace?.name}</Typography.Title>
-            <div className='flex items-center gap-x-4'>
-              <Tag color='gold'>Premium</Tag>
-              <div className='flex items-center'>
-                <LockKeyhole color='red' className='w-4 h-4 mr-1' />
-                <Tag color='red'>{workspace?.type}</Tag>
-              </div>
-            </div>
+            {isPending ? (
+              <Spin size='small' />
+            ) : (
+              <>
+                <Typography.Title level={3}>{workspace?.name}</Typography.Title>
+                <div className='flex items-center gap-x-4'>
+                  <Tag color='gold'>Premium</Tag>
+                  <div className='flex items-center'>
+                    <LockKeyhole color='red' className='mr-1 h-4 w-4' />
+                    <Tag color='red'>{workspace?.type}</Tag>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
         <Divider />
@@ -138,16 +144,22 @@ const WorkspaceDetail = () => {
               />
             </div>
           </div>
-          <div className='grid grid-cols-4 gap-4 my-6'>
+          <div className='my-6 grid grid-cols-4 gap-4'>
             <Button
-              className='flex items-center justify-center w-full h-32 mx-auto'
-              icon={<PlusCircle className='w-4 h-4' />}
+              className='mx-auto flex h-32 w-full items-center justify-center'
+              icon={<PlusCircle className='h-4 w-4' />}
               type='dashed'
               onClick={showModal}
             >
               Create project
             </Button>
-            {workspace?.projects.map((item) => <ProjectItem key={item.id} project={item} />)}
+            {isPending ? (
+              <div className='mx-auto mt-6'>
+                <Spin />
+              </div>
+            ) : (
+              workspace?.projects.map((item) => <ProjectItem key={item.id} project={item} />)
+            )}
           </div>
         </div>
       </div>
@@ -202,7 +214,7 @@ const ModalCreateWorkspace = () => {
               layout='vertical'
               onFinish={handleSubmit}
               name='create-workspace'
-              className='flex flex-col w-full'
+              className='flex w-full flex-col'
             >
               <Form.Item>
                 <Form.Item
@@ -240,7 +252,7 @@ const ModalCreateWorkspace = () => {
               </Button>
             </Form>
           </div>
-          <div className='flex flex-col col-span-1'>
+          <div className='col-span-1 flex flex-col'>
             <img loading='lazy' src={createWps} className='h-[360px] w-[350px]' />
           </div>
         </div>
@@ -271,7 +283,7 @@ export const ModalCreateProject = () => {
           <Typography.Text className='text-base font-semibold'>Create project</Typography.Text>
         </div>
 
-        <div className='flex items-center w-full gap-x-6'>
+        <div className='flex w-full items-center gap-x-6'>
           <ProjectBackground />
         </div>
       </div>

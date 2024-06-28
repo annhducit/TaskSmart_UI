@@ -153,6 +153,7 @@ const ColumnContainer = ({ column, cards, updateColumn, deleteColumn, createCard
                   (() => {
                     createCard(column.id, cardCreation);
                     setVisible(false);
+                    setCardCreationName('');
                   })
                 }
               />
@@ -165,6 +166,7 @@ const ColumnContainer = ({ column, cards, updateColumn, deleteColumn, createCard
                   (() => {
                     createCard(column.id, cardCreation);
                     setVisible(false);
+                    setCardCreationName('');
                   })
                 }
               >

@@ -5,7 +5,7 @@ import {
   MenuUnfoldOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Button, Divider, Menu } from 'antd';
+import { Button, Menu, Typography } from 'antd';
 import { FolderKanban, LayoutTemplate, Rocket, SquarePlus } from 'lucide-react';
 
 import wspImg from '@/assets/images/karban.png';
@@ -15,8 +15,9 @@ import useSearchParam from '../hooks/use-search-param';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '../constant/search-param';
 
 import useGetProfile from '@/modules/tsm/components/hooks/use-profile';
-import useGetCategories from '@/modules/tsm/features/workspace/hooks/query/use-get-categories';
 import useGetProject from '@/modules/tsm/features/workspace/components/project/hooks/query/use-get-project';
+import useGetCategories from '@/modules/tsm/components/hooks/use-get-categories';
+import useGetPath from '../hooks/use-get-path';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -66,8 +67,12 @@ const Sidebar = ({
   const { data: categories } = useGetCategories();
 
   const { data } = useGetProfile();
+  const { path } = useGetPath();
+
+  const isProject = path.includes('project');
 
   const [, setDialog] = useSearchParam(SEARCH_PARAMS.DIALOG);
+  const [, setCategory] = useSearchParam(SEARCH_PARAMS.CATEOGORY);
 
   const handleOpenModal = () => {
     setDialog(SEARCH_PARAMS_VALUE.WORKSPACE);
@@ -107,7 +112,7 @@ const Sidebar = ({
     {
       key: 'workspace',
       label: 'Workspace',
-      icon: <FolderKanban className='w-4 h-4' />,
+      icon: <FolderKanban className='h-4 w-4' />,
     },
     {
       key: 'mail',
@@ -120,17 +125,26 @@ const Sidebar = ({
     {
       key: 'template',
       label: 'Templates',
-      icon: <LayoutTemplate className='w-4 h-4' />,
-      children: categories?.map((item) => {
-        return {
-          key: item.id,
-          label: item.name,
-          icon: <LayoutTemplate className='w-4 h-4' />,
+      icon: <LayoutTemplate className='h-4 w-4' />,
+      children: [
+        {
+          key: 'all',
+          label: 'All templates',
+          icon: <LayoutTemplate className='h-4 w-4' />,
           onClick: () => {
             navigate(`../../../tsm/template`);
           },
-        };
-      }),
+        },
+        ...(categories?.map((item) => ({
+          key: item.id,
+          label: item.name,
+          icon: <LayoutTemplate className='h-4 w-4' />,
+          onClick: () => {
+            navigate(`../../../tsm/template`);
+            setCategory(item.id);
+          },
+        })) || []),
+      ],
     },
 
     {
@@ -138,7 +152,12 @@ const Sidebar = ({
     },
     {
       key: 'sub5',
-      label: 'All Workspaces',
+      label: (
+        <Typography.Text className={`${isProject ? 'text-white' : 'text-black'}`}>
+          Your Workspaces
+        </Typography.Text>
+      ),
+      className: `${isProject ? 'text-white font-semibold' : 'text-black'}`,
       type: 'group',
     },
 
@@ -146,18 +165,18 @@ const Sidebar = ({
       key: 'sub10',
       style: { display: type === 'private' ? 'none' : '' },
       label: data?.personalWorkSpace?.name || 'Personal Workspace',
-      icon: <Rocket className='w-4 h-4' />,
+      icon: <Rocket className='h-4 w-4' />,
 
       onClick: () => navigate(`../../../tsm/workspace/${data?.personalWorkSpace?.id}`),
     },
     {
       key: 'workspace',
       label: 'Team Workspace',
-      icon: <Rocket className='w-4 h-4' />,
+      icon: <Rocket className='h-4 w-4' />,
       children: data?.workspaces?.map((workspace) => ({
         key: workspace.id,
         label: workspace.name,
-        icon: <FolderKanban className='w-4 h-4' />,
+        icon: <FolderKanban className='h-4 w-4' />,
         onClick: () => navigate(`../../../tsm/workspace/${workspace.id}`),
       })),
     },
@@ -167,7 +186,7 @@ const Sidebar = ({
     {
       key: 'sub12',
       label: 'Create Workspace',
-      icon: <SquarePlus className='w-4 h-4' />,
+      icon: <SquarePlus className='h-4 w-4' />,
       onClick: handleOpenModal,
     },
     {
@@ -175,34 +194,43 @@ const Sidebar = ({
     },
     {
       key: 'sub13',
-      label: 'Your projects',
+      label: (
+        <Typography.Text className={`${isProject ? 'text-white' : 'text-black'}`}>
+          Your projects
+        </Typography.Text>
+      ),
       type: 'group',
-      className: 'hidden',
+      className: `${isProject ? 'block  font-semibold' : 'hidden'}`,
       children: data?.projects?.map((project) => ({
         key: project.id,
         label: project.name,
-        icon: <FolderKanban className='w-4 h-4' />,
-        onClick: () => navigate(`../../project/${project.id}`, { replace: true }),
+        icon: <FolderKanban className='h-4 w-4' />,
+        onClick: () => navigate(`../../../tsm/project/${project.id}`),
       })),
     },
   ];
 
-  /**
-   * Need to fix again
-   */
   const { data: project } = useGetProject();
 
   return (
     <aside
-      style={{ width: isCollapse ? 80 : 256 }}
-      className='relative h-[calc(100vh-50px)] overflow-y-auto bg-[#f7f8f9] pb-4'
+      style={{
+        width: isCollapse ? 80 : 256,
+        backgroundImage: `${isProject && `url(${project?.backgroundUnsplash?.urls?.full})`}`,
+        backgroundPosition: 'top',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+      }}
+      className={`relative z-50 flex h-[calc(100vh-40px)] flex-col ${isProject && 'bg-black/50 bg-gray-900 bg-opacity-50  text-white shadow-lg backdrop-blur-lg backdrop-filter'}`}
     >
       {/* Workspace item */}
       {type === 'workspace' && (
-        <Tooltip title='TaskSmart Workspace'>
-          <div className='flex items-center p-2 pt-3 gap-x-2'>
-            <div className={`${isCollapse ? 'ml-4 h-8 w-8' : 'h-10 w-10'} rounded-lg`}>
-              <img src={wspImg} alt='' className='object-contain w-full rounded-lg' />
+        <Tooltip title={project?.workspace.name}>
+          <div
+            className={`flex items-center gap-x-2  p-2 pt-3 shadow-lg ${isProject && 'bg-black/50 bg-gray-900 bg-opacity-50 backdrop-blur-lg backdrop-filter'}`}
+          >
+            <div className={`${isCollapse ? 'ml-4 h-8 w-8' : 'h-10 w-10'} rounded-lg `}>
+              <img src={wspImg} alt='' className='w-full rounded-lg object-contain' />
             </div>
             <div
               className='flex flex-col gap-y-1'
@@ -217,10 +245,6 @@ const Sidebar = ({
         </Tooltip>
       )}
 
-      {/* End Workspace item */}
-
-      {type === 'workspace' && <Divider className='my-1' />}
-      {/* Collapse */}
       <Button
         type='primary'
         size='small'
@@ -232,7 +256,7 @@ const Sidebar = ({
       {/* End Collapse */}
 
       <Menu
-        className={`'bg-[#f7f8f9] ${type === 'workspace' ? 'pt-2' : 'pt-0'}`}
+        className={`${isProject && 'custom-aside'} ${type === 'workspace' ? 'pt-2' : 'pt-0'} ${isProject ? 'h-[calc(100vh-90px)]' : 'h-[calc(100vh-40px)]'} overflow-y-scroll`}
         onClick={onClick}
         defaultSelectedKeys={['home']}
         inlineCollapsed={isCollapse}

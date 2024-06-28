@@ -6,7 +6,7 @@ import { Avatar, Badge, Button, Popover, Tabs } from 'antd';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import SubHeader from '../tsm/components/sub-header';
 import useGetPath from '@/shared/hooks/use-get-path';
-import { SEARCH_PARAMS } from '@/shared/constant/search-param';
+import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
 import useSearchParam from '@/shared/hooks/use-search-param';
 import Loading from '@/shared/components/loading';
 import Tooltip from '@/shared/components/tooltip';
@@ -16,16 +16,17 @@ import {
   FolderKanban,
   GanttChart,
   Kanban,
-  ListChecks,
   PanelsTopLeft,
   Search,
   SquareKanban,
   User,
+  UserPlus,
 } from 'lucide-react';
 import { TabsProps } from 'antd/lib';
 import Setting from '../tsm/features/workspace/components/project/modify-card/popover/setting';
 import useCollapse from '@/shared/hooks/use-collapse';
 import useGetProject from '../tsm/features/workspace/components/project/hooks/query/use-get-project';
+import { ModifyMember } from '../tsm/features/workspace/components/project/modify-member';
 
 const ProjectFeature = lazy(() => import('../tsm/features/workspace/components/project'));
 const TableFeature = lazy(() => import('../tsm/features/workspace/components//table'));
@@ -52,9 +53,9 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div className='flex flex-col h-screen overflow-hidden'>
+    <div className='flex h-screen flex-col overflow-hidden'>
       <Header />
-      <div className='relative flex flex-row flex-1'>
+      <div className='relative flex flex-1 flex-row'>
         <div className='block'>
           <SidebarComponent
             typeSidebar={isProject ? 'workspace' : 'home'}
@@ -69,12 +70,18 @@ const DashboardLayout = () => {
           onClick={toggleCollapsed}
           className={`absolute ${collapsed ? 'left-16 right-0' : 'hidden'} top-[15px] z-50 w-8`}
         >
-          {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          {collapsed ? (
+            <MenuUnfoldOutlined className='text-primary-default' />
+          ) : (
+            <MenuFoldOutlined />
+          )}
         </Button>
         <div className={`flex-1`}>
-          <div>
-            <SubHeader />
-          </div>
+          {!isProject && (
+            <div>
+              <SubHeader />
+            </div>
+          )}
           {isProject && <ProjectContainer layoutControl={collapsed} />}
           <div className={`max-h-[92vh] overflow-y-scroll ${!isProject ? 'p-4' : ''}`}>
             <Outlet />
@@ -93,6 +100,8 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
   const [viewParam, setView] = useSearchParam(SEARCH_PARAMS.VIEW, {
     defaultValue: 'overview',
   });
+
+  const [, setModal] = useSearchParam(SEARCH_PARAMS.MODAL);
 
   const [visible, setVisible] = useCollapse<boolean>(false);
 
@@ -113,10 +122,11 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
   return (
     <>
       <section
-        className='relative w-full h-screen bg-center bg-no-repeat bg-cover'
+        className='relative h-screen w-full bg-cover bg-center bg-no-repeat object-contain'
         style={{
           backgroundPosition: 'center',
-          backgroundImage: `url(${project?.backgroundUnsplash.urls.full})`,
+          backgroundSize: 'cover',
+          backgroundImage: `url(${project?.backgroundUnsplash?.urls?.full})`,
           backgroundColor: `${project?.backgroundColor}`,
         }}
       >
@@ -131,19 +141,33 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
               className={`custom-tabs mb-0 ${props.layoutControl ? 'w-[calc(100vw-80px)]' : 'w-[calc(100vw-256px)]'} text-white`}
               tabBarExtraContent={{
                 left: (
-                  <p className='m-0 w-40 truncate text-[18px] font-bold'>{project?.name || ''}</p>
+                  <Tooltip title={project?.name}>
+                    <p className='m-0 mr-6 max-w-40 truncate text-[18px] font-bold'>
+                      {project?.name}
+                    </p>
+                  </Tooltip>
                 ),
               }}
             />
           </div>
 
           <div className='absolute right-5 top-[10px] flex items-center gap-x-4'>
-            <Button size='middle' type='default' icon={<Search className='mt-1' size='14' />}>
+            <Button
+              size='middle'
+              className='flex items-center'
+              type='default'
+              icon={<Search size='14' />}
+            >
               Search
             </Button>
-            <Button size='middle' type='primary' icon={<ListChecks className='mt-1' size='14' />}>
-              Add task
+            <Button
+              type='primary'
+              onClick={() => setModal(SEARCH_PARAMS_VALUE.ADD_MEMBER)}
+              icon={<UserPlus size='14' />}
+            >
+              Share
             </Button>
+
             <Avatar.Group maxCount={2} className='flex items-center'>
               {project?.users.map((user) => (
                 <Tooltip title={user.name} placement='top' key={user.userId}>
@@ -154,9 +178,9 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
                     >
                       <img
                         src={`http://localhost:8888/api/image/${user.profileImagePath}`}
-                        className='object-cover rounded-full'
+                        className='rounded-full object-cover'
                         style={{ width: '28px', height: '28px' }}
-                      ></img>
+                      />
                       <Badge status='success' className='absolute -right-[2px] -top-1 z-[99999]' />
                     </div>
                   ) : (
@@ -172,13 +196,14 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
               open={visible}
               onOpenChange={handleOpenChange}
             >
-              <div className='px-1 transition-all rounded cursor-pointer hover:bg-primary-default hover:text-white'>
+              <div className='cursor-pointer rounded px-1 transition-all hover:bg-primary-default hover:text-white'>
                 <Ellipsis size='20' color='white' className='mt-1' />
               </div>
             </Popover>
           </div>
         </div>
       </section>
+      <ModifyMember />
     </>
   );
 };

@@ -1,5 +1,5 @@
 import Logo from '@/shared/components/logo';
-import { Button, Divider, MenuProps, Popover, Typography } from 'antd';
+import { Button, Divider, Empty, MenuProps, Popover, Typography } from 'antd';
 import {
   Activity,
   AlarmClock,
@@ -35,6 +35,11 @@ import { toast } from 'sonner';
 import { forceSignOut } from '@/store/auth';
 import { useNavigate } from 'react-router-dom';
 import Notepad from '../features/notepad/pages';
+import useGetProject from '../features/workspace/components/project/hooks/query/use-get-project';
+import useGetPath from '@/shared/hooks/use-get-path';
+import useGetTemplates from '../features/templates/hooks/use-get-templates';
+import useGetProfile from './hooks/use-profile';
+import { isEmpty } from 'lodash';
 
 const Header = () => {
   const [open, setOpen] = useCollapse<boolean>(false);
@@ -61,12 +66,64 @@ const Header = () => {
       return null;
     }
   };
+  const { path } = useGetPath();
+  const isProject = path.includes('project');
 
+  const { data: project } = useGetProject();
+  const { data: profile } = useGetProfile();
+  const { data: templates } = useGetTemplates();
   const userAuthenticated = useSelector((state) => state.user.data);
 
   const userProfileImage = userAuthenticated?.profileImagePath
     ? `http://localhost:8888/api/image/${userAuthenticated?.profileImagePath}`
     : user;
+
+  const workspaces: MenuProps['items'] = [
+    {
+      label: 'Current workspace',
+      key: '0',
+      style: { display: isProject ? 'flex' : 'none', fontSize: '12px' },
+    },
+    {
+      label: project?.workspace.name,
+      style: { display: isProject ? 'flex' : 'none' },
+      key: '1',
+      icon: <img src={template} className='h-10 w-10 rounded-lg' />,
+      className: 'gap-x-1',
+      onClick: () => navigate(`../../../tsm/workspace/${project?.workspace.id}`),
+    },
+    {
+      type: 'divider',
+      style: { display: isProject ? 'flex' : 'none' },
+    },
+    {
+      label: 'All workspace',
+      key: '2',
+      style: { fontSize: '12px', display: 'flex' },
+      className: 'gap-x-1',
+    },
+    ...(profile?.workspaces || []).map((workspace) => ({
+      label: workspace.name,
+      style: { display: 'flex' },
+      className: 'gap-x-1',
+      key: workspace.id,
+      icon: <img src={template as string} className='h-10 w-10 rounded-lg' />,
+      onClick: () => navigate(`../../../tsm/workspace/${workspace.id}`),
+    })),
+    {
+      label: profile?.personalWorkSpace.name,
+      key: '3',
+      icon: <img src={template} className='h-10 w-10 rounded-lg' />,
+      onClick: () => navigate(`../../../tsm/workspace/${profile?.personalWorkSpace.id}`),
+    },
+  ];
+
+  const samples: MenuProps['items'] =
+    templates?.map((template) => ({
+      label: template.name,
+      key: template.id,
+      icon: <img src={template.imageUrl} className='h-10 w-10 rounded-lg' />,
+    })) || [];
 
   return (
     <>
@@ -83,12 +140,34 @@ const Header = () => {
               <Dropdown
                 children={<div className='font-semibold text-white'>Samples</div>}
                 trigger='click'
-                items={samples}
+                items={
+                  isEmpty(samples) || !samples.length
+                    ? [
+                        {
+                          label: (
+                            <div className='p-2'>
+                              <Empty />
+                            </div>
+                          ),
+                          key: 'empty',
+                        },
+                      ]
+                    : samples
+                }
               />
               <Dropdown
                 children={<div className='font-semibold text-white'>Projects</div>}
                 trigger='click'
-                items={projects}
+                items={profile?.projects?.map((project) => ({
+                  label: project.name,
+                  key: project.id,
+                  icon: (
+                    <img
+                      src={project.backgroundUnsplash?.urls.full}
+                      className='h-10 w-10 rounded-lg'
+                    />
+                  ),
+                }))}
               />
             </div>
           </div>
@@ -166,7 +245,6 @@ const Header = () => {
                       <Typography.Text className='text-xs'> Online</Typography.Text>
                     </div>
                   </div>
-                  {/* <Divider className='my-1' /> */}
                   <p className='mt-4'>Tasksmart</p>
                   <Divider className='my-1' />
 
@@ -313,92 +391,26 @@ const Content = () => {
   );
 };
 
-const workspaces: MenuProps['items'] = [
-  {
-    label: 'Current workspace',
-    key: '0',
-    style: { fontSize: '12px' },
-  },
-  {
-    label: 'Graduate Project',
-    key: '1',
-    icon: <img src={template} className='h-10 w-10 rounded-lg' />,
-  },
-  {
-    type: 'divider',
-  },
-  {
-    label: 'All workspace',
-    key: '2',
-    style: { fontSize: '12px' },
-  },
-  {
-    label: 'Projec Huddle',
-    key: '3',
-    icon: <img src={template} className='h-10 w-10 rounded-lg' />,
-  },
+// const projects: MenuProps['items'] = [
+//   {
+//     label: 'DoubleD Thesis',
+//     key: '0',
+//     icon: <img src={template} className='w-10 h-10 rounded-lg' />,
+//   },
+//   {
+//     label: 'Design Table',
+//     key: '1',
+//     icon: <img src={template} className='w-10 h-10 rounded-lg' />,
+//   },
 
-  {
-    label: 'Project Management',
-    key: '4',
-    icon: <img src={template} className='h-10 w-10 rounded-lg' />,
-  },
-  {
-    label: 'Karban Template',
-    key: '5',
-    icon: <img src={template} className='h-10 w-10 rounded-lg' />,
-  },
-];
-
-const samples: MenuProps['items'] = [
-  {
-    label: 'Top templates',
-    key: '0',
-    style: { fontSize: '12px' },
-  },
-  {
-    label: 'Company Overview',
-    key: '1',
-    icon: <img src={template} className='h-10 w-10 rounded-lg' />,
-  },
-  {
-    label: 'Design Huddle',
-    key: '2',
-    icon: <img src={template} className='h-10 w-10 rounded-lg' />,
-  },
-
-  {
-    label: 'Karban Template',
-    key: '3',
-    icon: <img src={template} className='h-10 w-10 rounded-lg' />,
-  },
-  {
-    label: 'Project Management',
-    key: '4',
-    icon: <img src={template} className='h-10 w-10 rounded-lg' />,
-  },
-];
-
-const projects: MenuProps['items'] = [
-  {
-    label: 'DoubleD Thesis',
-    key: '0',
-    icon: <img src={template} className='h-10 w-10 rounded-lg' />,
-  },
-  {
-    label: 'Design Table',
-    key: '1',
-    icon: <img src={template} className='h-10 w-10 rounded-lg' />,
-  },
-
-  {
-    label: 'Karban Project',
-    key: '2',
-    icon: <img src={template} className='h-10 w-10 rounded-lg' />,
-  },
-  {
-    label: 'Leader Board',
-    key: '3',
-    icon: <img src={template} className='h-10 w-10 rounded-lg' />,
-  },
-];
+//   {
+//     label: 'Karban Project',
+//     key: '2',
+//     icon: <img src={template} className='w-10 h-10 rounded-lg' />,
+//   },
+//   {
+//     label: 'Leader Board',
+//     key: '3',
+//     icon: <img src={template} className='w-10 h-10 rounded-lg' />,
+//   },
+// ];

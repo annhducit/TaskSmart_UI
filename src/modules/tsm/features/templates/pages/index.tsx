@@ -2,10 +2,25 @@ import { Divider, Input, Spin, Typography } from 'antd';
 import { Search } from 'lucide-react';
 import TemplateItem from '../components/template-item';
 import TemplateDetailModal from '../components/template-detail';
-import useGetTemplates from '../../workspace/components/project/hooks/query/use-get-templates';
+import useGetTemplates from '../hooks/use-get-templates';
+import useSearchParam from '@/shared/hooks/use-search-param';
+import { useEffect } from 'react';
+import { SEARCH_PARAMS } from '@/shared/constant/search-param';
 
 const Template = () => {
-  const { data: templates, isLoading } = useGetTemplates();
+  const [, , categoryId] = useSearchParam(SEARCH_PARAMS.CATEOGORY, { replace: true });
+  const {
+    data: templates,
+    isLoading,
+    refetch,
+  } = useGetTemplates({
+    categoryId,
+  });
+
+  useEffect(() => {
+    refetch();
+  }, [categoryId]);
+
   return (
     <>
       <div className='flex flex-col gap-y-2 px-2'>

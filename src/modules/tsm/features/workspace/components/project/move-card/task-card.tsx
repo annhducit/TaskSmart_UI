@@ -98,7 +98,7 @@ function TaskCard({ card }: Props) {
           </div>
           <div className='flex items-center'>
             {card.implementers?.map((user) => (
-              <Avatar.Group maxCount={2} size='small'>
+              <Avatar.Group maxCount={2} size='small' key={user.userId}>
                 <Tooltip title={user.name} key={user.userId}>
                   <Popover trigger='click' placement='bottom'>
                     <Avatar
