@@ -6,7 +6,7 @@ import {
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Button, Menu, Typography } from 'antd';
-import { FolderKanban, LayoutTemplate, Rocket, SquarePlus } from 'lucide-react';
+import { FolderKanban, LayoutTemplate, Rocket, SquarePlus, SwatchBook } from 'lucide-react';
 
 import wspImg from '@/assets/images/karban.png';
 import Tooltip from './tooltip';
@@ -18,6 +18,7 @@ import useGetProfile from '@/modules/tsm/components/hooks/use-profile';
 import useGetProject from '@/modules/tsm/features/workspace/components/project/hooks/query/use-get-project';
 import useGetCategories from '@/modules/tsm/components/hooks/use-get-categories';
 import useGetPath from '../hooks/use-get-path';
+import { queryClient } from '@/configs/query-client';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -81,10 +82,10 @@ const Sidebar = ({
   const onClick: MenuProps['onClick'] = (e) => {
     switch (e.key) {
       case 'home':
-        navigate('tsm/home', { replace: true });
+        navigate('../../../tsm/home');
         break;
-      case 'workspace':
-        navigate('../../../tsm/workspace');
+      case 'workspaces':
+        navigate('../../../tsm/workspaces');
         break;
       case 'mail':
         navigate('../../../tsm/mail');
@@ -92,12 +93,7 @@ const Sidebar = ({
       case 'template':
         navigate('../../../tsm/template');
         break;
-      case 'sub6':
-        navigate('../../../tsm/workspace');
-        break;
-      case 'sub11':
-        navigate(`../../tsm/workspace/${e.key}`);
-        break;
+
       default:
         break;
     }
@@ -110,9 +106,9 @@ const Sidebar = ({
       icon: <HomeOutlined />,
     },
     {
-      key: 'workspace',
-      label: 'Workspace',
-      icon: <FolderKanban className='h-4 w-4' />,
+      key: 'workspaces',
+      label: 'General',
+      icon: <SwatchBook className='h-4 w-4' />,
     },
     {
       key: 'mail',

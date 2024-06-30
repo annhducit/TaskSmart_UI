@@ -9,10 +9,6 @@ const workspaceDetailRoutes = createRouters([
     path: '/',
     element: <WorkspaceDetail />,
   },
-  // {
-  //   path: 'project/:projectId',
-  //   element: <></>,
-  // },
 ]);
 
 export const WorkspaceDetailFeature = () => {

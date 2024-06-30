@@ -12,6 +12,7 @@ const useGetWorkspace = () => {
   return useQuery({
     queryKey: ['tsm/workspace/detail', workspaceId],
     queryFn: () => getWorkspace(workspaceId as string),
+    enabled: !!workspaceId,
   });
 };
 

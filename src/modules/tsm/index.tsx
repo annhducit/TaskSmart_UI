@@ -41,7 +41,11 @@ const tsmRoutes = createRouters([
     element: <TemplateFeature />,
   },
   {
-    path: 'workspace/*',
+    path: 'workspaces/*',
+    element: <WorkspaceFeature />,
+  },
+  {
+    path: 'workspaces/:workspaceId/*',
     element: <WorkspaceFeature />,
   },
   {

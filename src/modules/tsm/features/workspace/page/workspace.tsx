@@ -1,10 +1,11 @@
-import { Avatar, Divider, Menu, MenuProps, Tag, Typography } from 'antd';
+import { Divider, Empty, Menu, MenuProps, Spin, Tag, Typography } from 'antd';
 import ProjectItem from '../components/project-item';
-import projectImg from '@/assets/images/karban.png';
 
 import myBackgroundImage from '@/assets/images/karban.png';
-import { LockKeyhole } from 'lucide-react';
-import Tooltip from '@/shared/components/tooltip';
+import useGetWorkspaces from '../hooks/query/use-get-workspaces';
+import useGetProfile from '@/modules/tsm/components/hooks/use-profile';
+import useGetWorkspace from '../hooks/query/use-get-workspace';
+import { useNavigate } from 'react-router-dom';
 
 /**
  *
@@ -12,12 +13,7 @@ import Tooltip from '@/shared/components/tooltip';
  * @author Duc Nguyen
  */
 const Workspace = () => {
-  const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e);
-    /**
-     * @todo handle click event
-     */
-  };
+  const navigate = useNavigate();
 
   function getItem(
     label: React.ReactNode,
@@ -33,15 +29,27 @@ const Workspace = () => {
     } as MenuItem;
   }
 
-  const items: MenuItem[] =
-    workspaces?.map((item) => getItem(item.name, item.id.toString(), item.icon)) || [];
+  const { data: workspaces } = useGetWorkspaces();
+  const { data: workspace, isPending } = useGetWorkspace();
+  const { data: profile } = useGetProfile();
 
+  const items: MenuItem[] =
+    workspaces?.map((item) =>
+      getItem(
+        item.name,
+        item.id.toString(),
+        <img className='h-10 w-10 rounded' src={item.backgroundUnsplash || myBackgroundImage} />
+      )
+    ) || [];
+
+  const onClick: MenuProps['onClick'] = (e) => {
+    navigate(`../../../tsm/workspaces/${e.key}`);
+  };
   return (
     <div className='flex h-screen flex-col gap-y-2 overflow-y-scroll'>
       <Typography.Title level={3}>Recent viewed</Typography.Title>
       <div className='grid grid-cols-4 gap-6'>
-        {/* <ProjectItem />
-        <ProjectItem /> */}
+        {profile?.projects.slice(0, 2).map((item) => <ProjectItem key={item.id} project={item} />)}
       </div>
       <Divider className='my-[4px]' />
       <Typography.Title level={3}>Your workspace</Typography.Title>
@@ -50,55 +58,28 @@ const Workspace = () => {
           <Menu
             mode='inline'
             onClick={onClick}
+            activeKey='1'
             className='flex flex-col gap-y-1'
             style={{ width: 280 }}
             defaultSelectedKeys={['1']}
             items={items}
           />
         </div>
-        <div className='col-span-3 flex flex-col gap-y-4'>
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center gap-x-5'>
-              <div className='h-12 w-12 rounded'>
-                <img src={projectImg} alt='' className='h-full w-full rounded-lg' />
-              </div>
-              <div className='flex flex-col'>
-                <Typography.Title level={5}>TaskSmart Workspace</Typography.Title>
-
-                <div className='flex items-center gap-x-4'>
-                  <Tag color='gold'>Premium</Tag>
-                  <div className='flex items-center'>
-                    <LockKeyhole color='red' className='mr-1 h-4 w-4' />
-                    <Tag color='red'>Private</Tag>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className='flex items-center gap-x-2'>
-              <Typography.Text>Member: </Typography.Text>
-              <Avatar.Group maxCount={2} className='flex items-center'>
-                <Tooltip title='Anh Đức'>
-                  <Avatar size='default' style={{ backgroundColor: '#f56a00' }}>
-                    Đ
-                  </Avatar>
-                </Tooltip>
-                <Tooltip title='Đức Duy'>
-                  <Avatar size='default' style={{ backgroundColor: '#87d068' }}>
-                    D
-                  </Avatar>
-                </Tooltip>
-              </Avatar.Group>
+        {workspace?.projects ? (
+          <div className='col-span-3'>
+            {isPending && <Spin />}
+            <div className='grid grid-cols-2 gap-4 '>
+              {workspace?.projects.map((item) => <ProjectItem key={item.id} project={item} />)}
             </div>
           </div>
-          <Divider className='my-[1px]' />
-          <div className='grid grid-cols-2 gap-6'>
-            {/* <ProjectItem />
-            <ProjectItem />
-            <ProjectItem />
-            <ProjectItem /> */}
+        ) : (
+          <div className='col-span-3 '>
+            <Typography.Title level={4}>All projects</Typography.Title>
+            <div className='grid grid-cols-2 gap-4 '>
+              {profile?.projects.map((item) => <ProjectItem key={item.id} project={item} />)}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
@@ -107,49 +88,3 @@ const Workspace = () => {
 export default Workspace;
 
 type MenuItem = Required<MenuProps>['items'][number];
-
-const WorkspaceItem = () => {
-  return (
-    <div
-      style={{
-        backgroundImage: `url(${myBackgroundImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-      className='mr-6 flex h-6 w-6 rounded'
-    />
-  );
-};
-
-const workspaces = [
-  {
-    id: 1,
-    name: 'Workspace OOP',
-    icon: <WorkspaceItem />,
-  },
-  {
-    id: 2,
-    name: 'Workspace math',
-    icon: <WorkspaceItem />,
-  },
-  {
-    id: 3,
-    name: 'Team Space',
-    icon: <WorkspaceItem />,
-  },
-  {
-    id: 4,
-    name: 'Class space',
-    icon: <WorkspaceItem />,
-  },
-  {
-    id: 5,
-    name: 'Group space',
-    icon: <WorkspaceItem />,
-  },
-  {
-    id: 6,
-    name: 'Tasksmart space',
-    icon: <WorkspaceItem />,
-  },
-];

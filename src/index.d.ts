@@ -30,6 +30,7 @@ type Workspace = {
   users: User;
   projects: Project[];
   type: string;
+  backgroundUnsplash: string;
 };
 
 type Project = {
