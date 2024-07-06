@@ -7,6 +7,7 @@ import useDeleteCheckListGroup from '../hooks/action/use-delete-checklist-group'
 import useCreateChecklistItem from '../hooks/mutation/use-create-checklist-item';
 import useDeleteItemChecked from '../hooks/action/use-delete-item-checked';
 import useUpdateItemChecked from '../hooks/mutation/use-update-item-checked';
+import { getTextColor } from '@/utils/customText';
 
 const CheckList = ({
   list,
@@ -79,6 +80,8 @@ const CheckList = ({
     setCheckList(newList);
   };
 
+  const textColor = getTextColor(color);
+
   return (
     <div className='mt-5 flex flex-col gap-2'>
       <div className='flex items-center gap-x-2'>
@@ -128,6 +131,9 @@ const CheckList = ({
                     }}
                     placeholder='Enter name'
                     className='bg-white'
+                    onPressEnter={() => {
+                      createCheckListItem(item.id);
+                    }}
                   />
                   <ConfigProvider
                     theme={{
@@ -142,9 +148,11 @@ const CheckList = ({
                       onClick={() => {
                         createCheckListItem(item.id);
                       }}
-                      icon={<Plus className='mt-1 h-3 w-3' />}
-                      className='w-[90px]'
-                    ></Button>
+                      icon={<Plus className='h-3 w-3' />}
+                      className={`text-${textColor} flex w-[90px] items-center`}
+                    >
+                      Add
+                    </Button>
                   </ConfigProvider>
                 </div>
               </div>
@@ -162,8 +170,8 @@ const CheckList = ({
                 },
               }}
             >
-              <Button onClick={() => setVisible(true)} className='flex items-center'>
-                Create a check list group
+              <Button onClick={() => setVisible(true)} className={`text-${textColor}`}>
+                Add new list
               </Button>
             </ConfigProvider>
           </div>
@@ -247,16 +255,6 @@ const CheckListItem = ({
         </ConfigProvider>
 
         <span className='min-w-20 flex-1'>{title}</span>
-        {/* <ConfigProvider
-          theme={{
-            components: {
-              Input: {
-                activeBorderColor: color,
-                hoverBorderColor: color,
-              }
-            },
-          }}
-        ><Input defaultValue={title} disabled className='bg-white' /></ConfigProvider> */}
 
         <Button
           onClick={() => {

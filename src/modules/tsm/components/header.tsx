@@ -40,6 +40,7 @@ import useGetPath from '@/shared/hooks/use-get-path';
 import useGetTemplates from '../features/templates/hooks/use-get-templates';
 import useGetProfile from './hooks/use-profile';
 import { isEmpty } from 'lodash';
+import ChangeTheme from '../features/workspace/components/project/modify-card/popover/change-theme';
 
 const Header = () => {
   const [open, setOpen] = useCollapse<boolean>(false);
@@ -125,9 +126,16 @@ const Header = () => {
       icon: <img src={template.imageUrl} className='h-10 w-10 rounded-lg' />,
     })) || [];
 
+  const { btnColor, inpColor, color } = useSelector((state) => state.theme);
+
   return (
     <>
-      <header className='relative bg-[#263e50] px-6 py-1 shadow'>
+      <header
+        className='relative px-6 py-1 shadow'
+        style={{
+          backgroundColor: color,
+        }}
+      >
         <div className='flex items-center justify-between'>
           <div className='flex items-center gap-x-10'>
             <Logo type='SINGLE_LOGO' />
@@ -174,13 +182,20 @@ const Header = () => {
           <div className='flex items-center gap-x-4'>
             <Button
               icon={<SearchIcon className='h-4 w-4 ' />}
-              className='flex h-[28px] w-[390px]  items-center justify-center  border border-solid border-[#618096] bg-[#3c5262] text-sm font-normal text-white'
+              style={{
+                backgroundColor: inpColor,
+              }}
+              className='flex h-[28px] w-[390px]  items-center justify-center  border border-solid border-[#618096]  text-sm font-normal text-white'
             >
               Search...
             </Button>
             <Button
-              className='flex h-[28px] items-center border border-solid border-[#33607e] bg-[#306a91] text-sm font-semibold text-white'
-              icon={<Sparkles className='h-4 w-4 text-[#3db88b]' />}
+              style={{
+                backgroundColor: btnColor,
+                border: `1px solid ${btnColor}`,
+              }}
+              className='flex h-[28px] items-center border border-solid text-sm font-semibold text-white'
+              icon={<Sparkles className='h-4 w-4 text-white' />}
             >
               Ask AI
             </Button>
@@ -188,8 +203,12 @@ const Header = () => {
           <div className='flex items-center gap-x-4'>
             <Popover content={<Content />} trigger='click'>
               <Button
-                icon={<CirclePlus className='h-4 w-4 font-bold text-[#3db88b]' />}
-                className='flex h-[28px] items-center border border-solid border-[#33607e] bg-[#306a91] text-sm font-semibold text-white'
+                style={{
+                  backgroundColor: btnColor,
+                  border: `1px solid ${btnColor}`,
+                }}
+                icon={<CirclePlus className='h-4 w-4 font-bold text-white' />}
+                className='flex h-[28px] items-center rounded border border-solid border-[#33607e]  text-sm font-semibold text-white'
               >
                 Create new
               </Button>
@@ -250,7 +269,7 @@ const Header = () => {
 
                   <div className='flex flex-col gap-y-2'>
                     <Button
-                      icon={<User className='h-4 w-4' />}
+                      icon={<User className='h-4 w-4' color={btnColor} />}
                       type='text'
                       onClick={handleOpenFlyer}
                       className='flex w-full items-center text-left text-black'
@@ -258,21 +277,23 @@ const Header = () => {
                       Profile
                     </Button>
                     <Button
-                      icon={<Activity className='h-4 w-4' />}
+                      icon={<Activity className='h-4 w-4' color={btnColor} />}
                       type='text'
                       className='flex w-full items-center text-left text-black'
                     >
                       Activities
                     </Button>
+                    <Popover trigger='click' placement='bottomLeft' content={<ChangeTheme />}>
+                      <Button
+                        icon={<Palette className='h-4 w-4' color={btnColor} />}
+                        type='text'
+                        className='flex w-full items-center text-left text-black'
+                      >
+                        Theme
+                      </Button>
+                    </Popover>
                     <Button
-                      icon={<Palette className='h-4 w-4' />}
-                      type='text'
-                      className='flex w-full items-center text-left text-black'
-                    >
-                      Theme
-                    </Button>
-                    <Button
-                      icon={<Settings className='h-4 w-4' />}
+                      icon={<Settings className='h-4 w-4' color={btnColor} />}
                       type='text'
                       className='flex w-full items-center text-left text-black'
                     >
@@ -283,15 +304,18 @@ const Header = () => {
                   <Divider className='my-1' />
                   <div className='flex flex-col gap-y-2'>
                     <Button
-                      icon={<HelpCircle className='h-4 w-4' />}
+                      icon={<HelpCircle className='h-4 w-4' color={btnColor} />}
                       type='text'
                       className='relative flex w-full items-center text-left text-black'
                     >
                       Help
-                      <SquareArrowOutUpRightIcon className='absolute right-1 h-4 w-4' />
+                      <SquareArrowOutUpRightIcon
+                        className='absolute right-1 h-4 w-4'
+                        color={btnColor}
+                      />
                     </Button>
                     <Button
-                      icon={<MessageCircle className='h-4 w-4' />}
+                      icon={<MessageCircle className='h-4 w-4' color={btnColor} />}
                       type='text'
                       className='flex w-full items-center text-left text-black'
                     >
@@ -300,7 +324,7 @@ const Header = () => {
                   </div>
                   <Divider className='my-1' />
                   <Button
-                    icon={<LogOut className='h-4 w-4' />}
+                    icon={<LogOut className='h-4 w-4' color={btnColor} />}
                     type='text'
                     onClick={handleSignout}
                     className='flex w-full items-center text-left text-black'
@@ -390,27 +414,3 @@ const Content = () => {
     </div>
   );
 };
-
-// const projects: MenuProps['items'] = [
-//   {
-//     label: 'DoubleD Thesis',
-//     key: '0',
-//     icon: <img src={template} className='w-10 h-10 rounded-lg' />,
-//   },
-//   {
-//     label: 'Design Table',
-//     key: '1',
-//     icon: <img src={template} className='w-10 h-10 rounded-lg' />,
-//   },
-
-//   {
-//     label: 'Karban Project',
-//     key: '2',
-//     icon: <img src={template} className='w-10 h-10 rounded-lg' />,
-//   },
-//   {
-//     label: 'Leader Board',
-//     key: '3',
-//     icon: <img src={template} className='w-10 h-10 rounded-lg' />,
-//   },
-// ];

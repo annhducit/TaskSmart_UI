@@ -27,6 +27,7 @@ import Setting from '../tsm/features/workspace/components/project/modify-card/po
 import useCollapse from '@/shared/hooks/use-collapse';
 import useGetProject from '../tsm/features/workspace/components/project/hooks/query/use-get-project';
 import { ModifyMember } from '../tsm/features/workspace/components/project/modify-member';
+import { useSelector } from '@/store';
 
 const ProjectFeature = lazy(() => import('../tsm/features/workspace/components/project'));
 const TableFeature = lazy(() => import('../tsm/features/workspace/components//table'));
@@ -48,6 +49,8 @@ const DashboardLayout = () => {
 
   const isProject = path.includes('project');
 
+  const { btnColor, inpColor } = useSelector((state) => state.theme);
+
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
@@ -66,15 +69,14 @@ const DashboardLayout = () => {
         {/* Button to collapse sidebar */}
         <Button
           type='text'
+          style={{
+            backgroundColor: inpColor,
+          }}
           size='small'
           onClick={toggleCollapsed}
-          className={`absolute ${collapsed ? 'left-16 right-0' : 'hidden'} top-[15px] z-50 w-8`}
+          className={`absolute ${collapsed ? 'left-16 right-0 text-white' : 'hidden'} top-[15px] z-50 w-8`}
         >
-          {collapsed ? (
-            <MenuUnfoldOutlined className='text-primary-default' />
-          ) : (
-            <MenuFoldOutlined />
-          )}
+          {collapsed ? <MenuUnfoldOutlined color={btnColor} /> : <MenuFoldOutlined color='white' />}
         </Button>
         <div className={`flex-1`}>
           {!isProject && (
@@ -119,6 +121,8 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
     <Avatar size={28} style={{ backgroundColor: '#f56a00' }} icon={<User size='12' />} />
   );
 
+  const { btnColor } = useSelector((state) => state.theme);
+
   return (
     <>
       <section
@@ -154,16 +158,29 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
           <div className='absolute right-5 top-[10px] flex items-center gap-x-4'>
             <Button
               size='middle'
+              style={{
+                color: btnColor,
+              }}
               className='flex items-center'
               type='default'
-              icon={<Search size='14' />}
+              icon={
+                <Search
+                  size='14'
+                  style={{
+                    color: btnColor,
+                  }}
+                />
+              }
             >
               Search
             </Button>
             <Button
-              type='primary'
+              style={{
+                backgroundColor: btnColor,
+                color: 'white',
+              }}
               onClick={() => setModal(SEARCH_PARAMS_VALUE.ADD_MEMBER)}
-              icon={<UserPlus size='14' />}
+              icon={<UserPlus size='14' className='text-white' />}
             >
               Share
             </Button>

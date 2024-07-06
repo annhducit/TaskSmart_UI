@@ -33,6 +33,7 @@ import {
   List,
   EyeOff,
   Minus,
+  Flag,
 } from 'lucide-react';
 import Activity from './activity';
 import CommentCard from './comment';
@@ -47,6 +48,7 @@ import useGetCard from '../hooks/query/use-get-card';
 import useUpdateCard from '../hooks/mutation/use-update-card';
 import useUpdateCardImplementer from '../hooks/mutation/use-update-card-implementer';
 import dayjs from 'dayjs';
+import { getTextColor } from '@/utils/customText';
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
 const ModifyCard = ({ members }: { members: UserRelation[] }) => {
@@ -153,20 +155,24 @@ const ModifyCardModal = ({ members }: { members: UserRelation[] }) => {
       children: <ActivityTab />,
     },
   ];
+
+  const textColor = getTextColor(card?.color as string);
   return (
     <>
-      <Dialog.CloseButton onClose={handleClose} />
+      <Dialog.CloseButton onClose={handleClose} color={textColor} />
 
       <div className='w-[auto]'>
         <div
           style={{ backgroundColor: `#${card?.color || defaultCardColor}` }}
           className={`flex min-h-[100px] items-center justify-between overflow-hidden rounded-t-lg px-10`}
         >
-          <div className='flex items-start gap-x-2'>
-            <LayoutList className='mt-[2px] h-5 w-5 opacity-40' />
+          <div className='flex items-center gap-x-3'>
+            <LayoutList className={`text-${textColor} h-6 w-6`} />
             <div className={`flex flex-col`}>
-              <Typography.Text className='text-xl font-semibold'>{card?.name}</Typography.Text>
-              <Typography.Text className='text-xs underline'>
+              <Typography.Text className={`text-${textColor} text-xl font-semibold`}>
+                {card?.name}
+              </Typography.Text>
+              <Typography.Text className={`text-${textColor} text-xs underline`}>
                 in <b>Backlog</b> list
               </Typography.Text>
             </div>
@@ -249,11 +255,13 @@ const OverviewCardTab = ({
     },
   };
 
+  const textColor = getTextColor(color);
+
   return (
     <div className='flex min-h-[400px] w-full flex-col justify-between pb-5'>
       <div className='flex-col px-0 py-0'>
         <div className='flex items-center justify-evenly gap-x-6'>
-          <div className='flex flex-col mt-1 gap-y-1'>
+          <div className='mt-1 flex flex-col gap-y-1'>
             <Typography.Text className='text-xs font-semibold'>Status</Typography.Text>
             <Dropdown
               placement='bottom'
@@ -267,13 +275,13 @@ const OverviewCardTab = ({
               <Button className='w-[125px]'>
                 <Space>
                   {getLabel(card.status, EStatusArray)}
-                  <DownOutlined />
+                  <DownOutlined className='w-4 opacity-40' />
                 </Space>
               </Button>
             </Dropdown>
           </div>
 
-          <div className='flex flex-col mt-1 gap-y-1'>
+          <div className='mt-1 flex flex-col gap-y-1'>
             <Typography.Text className='text-xs font-semibold'>Priority</Typography.Text>
             <Dropdown
               placement='bottom'
@@ -293,7 +301,7 @@ const OverviewCardTab = ({
             </Dropdown>
           </div>
 
-          <div className='flex flex-col mt-1 gap-y-1'>
+          <div className='mt-1 flex flex-col gap-y-1'>
             <Typography.Text className='text-xs font-semibold'>Risk</Typography.Text>
             <Dropdown
               placement='bottom'
@@ -313,7 +321,7 @@ const OverviewCardTab = ({
             </Dropdown>
           </div>
 
-          <div className='flex flex-col mt-1 gap-y-1'>
+          <div className='mt-1 flex flex-col gap-y-1'>
             <Typography.Text className='text-xs font-semibold'>Effort</Typography.Text>
             <Dropdown
               placement='bottom'
@@ -333,7 +341,7 @@ const OverviewCardTab = ({
             </Dropdown>
           </div>
 
-          <div className='flex flex-col mt-1 gap-y-1'>
+          <div className='mt-1 flex flex-col gap-y-1'>
             <Typography.Text className='text-xs font-semibold'>Estimate</Typography.Text>
             <DatePicker
               format={{
@@ -366,7 +374,10 @@ const OverviewCardTab = ({
             <div className='flex justify-end'>
               <div className='flex gap-2'>
                 <ConfigProvider theme={btnTheme}>
-                  <Button onClick={handleSaveDescriptionClick} className='w-[90px]'>
+                  <Button
+                    onClick={handleSaveDescriptionClick}
+                    className={`text-${textColor} w-[90px]`}
+                  >
                     Save
                   </Button>
                 </ConfigProvider>
@@ -440,7 +451,7 @@ const AttachmentTab = (props: { card: Card; color: string }) => {
 
   return (
     <div className='flex min-h-[400px] w-full flex-col px-0 py-0'>
-      <div className='w-full mt-6'>
+      <div className='mt-6 w-full'>
         <div className='flex items-center justify-center'>
           {/* <Button
                     icon={<Upload className='w-3 h-3 mt-1' />}
@@ -467,10 +478,10 @@ const ActivityTab = () => {
       <div className='flex flex-col gap-y-4'>
         <div className='flex items-center justify-between'>
           <div className='flex items-center gap-x-4'>
-            <List className='w-5 h-5 mt-1 opacity-40' />
+            <List className='mt-1 h-5 w-5 opacity-40' />
             <Typography.Text className='text-base font-semibold'>Recent activities</Typography.Text>
           </div>
-          <Button icon={<EyeOff className='w-3 h-3 mt-1' />} className='w-[90px]' type='default'>
+          <Button icon={<EyeOff className='mt-1 h-3 w-3' />} className='w-[90px]' type='default'>
             Hide
           </Button>
         </div>
@@ -497,7 +508,7 @@ const AttachmentFile = ({ data }: { data: Attachment[] }) => {
           allowClear
           type='text'
           defaultValue={text}
-          className='w-full px-3 text-base font-bold transition-all border-none cursor-pointer h-7 rounded-xl'
+          className='h-7 w-full cursor-pointer rounded-xl border-none px-3 text-base font-bold transition-all'
         />
       ),
     },
@@ -510,7 +521,7 @@ const AttachmentFile = ({ data }: { data: Attachment[] }) => {
           allowClear
           type='text'
           defaultValue={text}
-          className='w-full px-3 text-sm font-bold transition-all border-none cursor-pointer h-7 rounded-xl'
+          className='h-7 w-full cursor-pointer rounded-xl border-none px-3 text-sm font-bold transition-all'
         />
       ),
     },
@@ -519,7 +530,7 @@ const AttachmentFile = ({ data }: { data: Attachment[] }) => {
       key: 'action',
       width: 100,
       render: (_, record) => (
-        <Space className='flex justify-end w-full'>
+        <Space className='flex w-full justify-end'>
           <Eye
             className={`${record.type !== 'image' ? 'invisible' : ''} h-3 w-3`}
             onClick={() =>
@@ -529,15 +540,15 @@ const AttachmentFile = ({ data }: { data: Attachment[] }) => {
               })
             }
           />
-          <Download className='w-3 h-3' />
-          <Trash className='w-3 h-3' />
+          <Download className='h-3 w-3' />
+          <Trash className='h-3 w-3' />
         </Space>
       ),
     },
   ];
 
   return (
-    <div className='flex w-full mt-2 gap-y-1'>
+    <div className='mt-2 flex w-full gap-y-1'>
       {/* Table of file */}
       <ConfigProvider
         theme={{
@@ -600,7 +611,7 @@ const ColorAndMembers = ({
   };
 
   return (
-    <div className='flex items-center justify-end py-1 gap-x-6'>
+    <div className='flex items-center justify-end gap-x-6 py-1'>
       <div className='flex gap-y-1'>
         <Typography.Text className='mr-1 text-sm font-semibold'>Color:</Typography.Text>
         <ColorPicker
@@ -672,7 +683,7 @@ const MemberInviteCard = ({
   }, [impls]);
 
   return (
-    <div className='flex flex-col p-0 rounded-none gap-y-1'>
+    <div className='flex flex-col gap-y-1 rounded-none p-0'>
       <span>Implementers:</span>
       {impls.map((member) => (
         <div
@@ -691,7 +702,7 @@ const MemberInviteCard = ({
               onClick={() => {
                 setImpls((prev) => prev.filter((impl) => impl.userId !== member.userId));
               }}
-              className='w-3 h-3 cursor-pointer hover:h-4 hover:w-4'
+              className='h-3 w-3 cursor-pointer hover:h-4 hover:w-4'
             ></Minus>
           </div>
         </div>
@@ -714,7 +725,7 @@ const MemberInviteCard = ({
               onClick={() => {
                 setImpls((prev) => [...prev, member]);
               }}
-              className='w-3 h-3 cursor-pointer hover:h-4 hover:w-4'
+              className='h-3 w-3 cursor-pointer hover:h-4 hover:w-4'
             ></Plus>
           </div>
         </div>
@@ -745,65 +756,152 @@ type Presets = Required<ColorPickerProps>['presets'][number];
 const genPresets = (presets = presetPalettes) =>
   Object.entries(presets).map<Presets>(([label, colors]) => ({ label, colors }));
 
-const EStatusArray: { key: EStatus; label: string }[] = [
-  { key: 'ToDo', label: 'To Do' },
-  { key: 'InProgress', label: 'In Progress' },
-  { key: 'Done', label: 'Done' },
-  { key: 'InReview', label: 'In Review' },
-  { key: 'Approved', label: 'Approved' },
-  { key: 'NotSure', label: 'Not Sure' },
-  { key: 'none', label: 'Not Set' },
+const FlagIcon = ({ color }: { color: string }) => {
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      fill={color}
+      viewBox='0 0 24 24'
+      stroke-width='1.5'
+      stroke='#ccc'
+      className='size-4'
+    >
+      <path
+        stroke-linecap='round'
+        stroke-linejoin='round'
+        d='M3 3v1.5M3 21v-6m0 0 2.77-.693a9 9 0 0 1 6.208.682l.108.054a9 9 0 0 0 6.086.71l3.114-.732a48.524 48.524 0 0 1-.005-10.499l-3.11.732a9 9 0 0 1-6.085-.711l-.108-.054a9 9 0 0 0-6.208-.682L3 4.5M3 15V4.5'
+      />
+    </svg>
+  );
+};
+const EStatusArray: { key: EStatus; label: React.ReactNode }[] = [
+  {
+    key: 'ToDo',
+    label: (
+      <div className='flex items-center gap-x-4'>
+        <FlagIcon color='#0089ED' />
+        <span>To do</span>
+      </div>
+    ),
+  },
+  {
+    key: 'InProgress',
+    label: (
+      <div className='flex items-center gap-x-4'>
+        <FlagIcon color='#FFA500' />
+        <span>In progress</span>
+      </div>
+    ),
+  },
+  {
+    key: 'Done',
+    label: (
+      <div className='flex items-center gap-x-4'>
+        <FlagIcon color='#008000' />
+        <span>Done</span>
+      </div>
+    ),
+  },
+  {
+    key: 'InReview',
+    label: (
+      <div className='flex items-center gap-x-4'>
+        <FlagIcon color='#800080' />
+        <span>In review</span>
+      </div>
+    ),
+  },
+  {
+    key: 'Approved',
+    label: (
+      <div className='flex items-center gap-x-4'>
+        <FlagIcon color='#90EE90' />
+        <span>Approved</span>
+      </div>
+    ),
+  },
+  {
+    key: 'NotSure',
+    label: (
+      <div className='flex items-center gap-x-4'>
+        <FlagIcon color='#D3D3D3' />
+        <span>Not sure</span>
+      </div>
+    ),
+  },
+  {
+    key: 'none',
+    label: (
+      <div className='flex items-center gap-x-4'>
+        <FlagIcon color='#D3D3D3' />
+        <span>To do</span>
+      </div>
+    ),
+  },
 ];
 
-const ELevelArray: { key: ELevel; label: string }[] = [
-  { key: 'Highest', label: 'Highest' },
-  { key: 'High', label: 'High' },
-  { key: 'Medium', label: 'Medium' },
-  { key: 'Low', label: 'Low' },
-  { key: 'Lowest', label: 'Lowest' },
-  { key: 'NotSure', label: 'Not Sure' },
-  { key: 'none', label: 'Not Set' },
+const ELevelArray: { key: ELevel; label: React.ReactNode }[] = [
+  {
+    key: 'Highest',
+    label: (
+      <div className='flex items-center gap-x-2'>
+        <FlagIcon color='#FF0000' />
+        <span>Highest</span>
+      </div>
+    ),
+  },
+  {
+    key: 'High',
+    label: (
+      <div className='flex items-center gap-x-2'>
+        <FlagIcon color='#FFA500' />
+        <span>High</span>
+      </div>
+    ),
+  },
+  {
+    key: 'Medium',
+    label: (
+      <div className='flex items-center gap-x-2'>
+        <FlagIcon color='#FFFF00' />
+        <span>Medium</span>
+      </div>
+    ),
+  },
+  {
+    key: 'Low',
+    label: (
+      <div className='flex items-center gap-x-2'>
+        <FlagIcon color='#90EE90' />
+        <span>Low</span>
+      </div>
+    ),
+  },
+  {
+    key: 'Lowest',
+    label: (
+      <div className='flex items-center gap-x-2'>
+        <FlagIcon color='#008000' />
+        <span>Lowest</span>
+      </div>
+    ),
+  },
+  {
+    key: 'NotSure',
+    label: (
+      <div className='flex items-center gap-x-2'>
+        <FlagIcon color='#808080' />
+        <span>Not sure</span>
+      </div>
+    ),
+  },
+  {
+    key: 'none',
+    label: (
+      <div className='flex items-center gap-x-2'>
+        <FlagIcon color='#D3D3D3' />
+        <span>Not set</span>
+      </div>
+    ),
+  },
 ];
-
-/**
- * Code comment
- */
-
-{
-  /* Left content */
-}
-{
-  /* <div className='col-span-2'>
-            <Typography.Text className='text-xs'>Action</Typography.Text>
-            <Button
-              icon={<Move className='w-3 h-3' />}
-              type='default'
-              className='flex items-center text-left bg-slate-100 text-slate-500'
-            >
-              Move
-            </Button>
-            <Button
-              icon={<Copy className='w-3 h-3' />}
-              type='default'
-              className='flex items-center text-left bg-slate-100 text-slate-500'
-            >
-              Copy
-            </Button>
-            <Divider className='my-[1px]' />
-            <Button
-              icon={<Archive className='w-3 h-3' />}
-              type='default'
-              className='flex items-center text-left bg-slate-100 text-slate-500'
-            >
-              Archive
-            </Button>
-            <Button
-              icon={<Share className='w-3 h-3' />}
-              type='default'
-              className='flex items-center text-left bg-slate-100 text-slate-500'
-            >
-              Share
-            </Button>
-          </div>
-        </div> */
-}

@@ -1,3 +1,4 @@
+import { useSelector } from '@/store';
 import { Button, Divider, Typography } from 'antd';
 import {
   ArchiveRestore,
@@ -13,6 +14,7 @@ import {
 } from 'lucide-react';
 
 const Setting = (props: { setVisible: (newOpen: boolean) => void }) => {
+  const { btnColor } = useSelector((state) => state.theme);
   return (
     <div className='flex w-[250px] flex-col gap-1'>
       <div className='flex items-center'>
@@ -27,7 +29,7 @@ const Setting = (props: { setVisible: (newOpen: boolean) => void }) => {
         </div>
       </div>
       <Button
-        icon={<Info className='h-4 w-4' />}
+        icon={<Info className='h-4 w-4' color={btnColor} />}
         type='text'
         size='large'
         className='flex w-full items-center gap-x-2 rounded text-left text-sm opacity-90'
@@ -35,7 +37,7 @@ const Setting = (props: { setVisible: (newOpen: boolean) => void }) => {
         About project
       </Button>
       <Button
-        icon={<SquareGanttChart className='h-4 w-4' />}
+        icon={<SquareGanttChart className='h-4 w-4' color={btnColor} />}
         type='text'
         size='large'
         className='flex w-full items-center gap-x-2 rounded text-left text-sm opacity-90'
@@ -43,7 +45,7 @@ const Setting = (props: { setVisible: (newOpen: boolean) => void }) => {
         Activity
       </Button>
       <Button
-        icon={<ArchiveRestore className='h-4 w-4' />}
+        icon={<ArchiveRestore className='h-4 w-4' color={btnColor} />}
         type='text'
         size='large'
         className='flex w-full items-center gap-x-2 rounded text-left text-sm opacity-90'
@@ -52,7 +54,7 @@ const Setting = (props: { setVisible: (newOpen: boolean) => void }) => {
       </Button>
       <Divider className='my-[1px]' />
       <Button
-        icon={<Settings className='h-4 w-4' />}
+        icon={<Settings className='h-4 w-4' color={btnColor} />}
         type='text'
         size='large'
         className='flex w-full items-center gap-x-2 rounded text-left text-sm opacity-90'
@@ -77,7 +79,7 @@ const Setting = (props: { setVisible: (newOpen: boolean) => void }) => {
         Change background
       </Button>
       <Button
-        icon={<TagIcon className='h-4 w-4' />}
+        icon={<TagIcon className='h-4 w-4' color={btnColor} />}
         type='text'
         size='large'
         className='flex w-full items-center gap-x-2 rounded text-left text-sm opacity-90'
@@ -85,7 +87,7 @@ const Setting = (props: { setVisible: (newOpen: boolean) => void }) => {
         Label
       </Button>
       <Button
-        icon={<PersonStanding className='h-4 w-4' />}
+        icon={<PersonStanding className='h-4 w-4' color={btnColor} />}
         type='text'
         size='large'
         className='flex w-full items-center gap-x-2 rounded text-left text-sm opacity-90'
@@ -94,7 +96,7 @@ const Setting = (props: { setVisible: (newOpen: boolean) => void }) => {
       </Button>
       <Divider className='my-[1px]' />
       <Button
-        icon={<Rss className='h-4 w-4' />}
+        icon={<Rss className='h-4 w-4' color={btnColor} />}
         type='text'
         size='large'
         className='flex w-full items-center gap-x-2 rounded text-left text-sm opacity-90'
@@ -102,7 +104,7 @@ const Setting = (props: { setVisible: (newOpen: boolean) => void }) => {
         Follow
       </Button>
       <Button
-        icon={<Copy className='h-4 w-4' />}
+        icon={<Copy className='h-4 w-4' color={btnColor} />}
         type='text'
         size='large'
         className='flex w-full items-center gap-x-2 rounded text-left text-sm opacity-90'
@@ -110,7 +112,7 @@ const Setting = (props: { setVisible: (newOpen: boolean) => void }) => {
         Copy project
       </Button>
       <Button
-        icon={<LogOut className='h-4 w-4' />}
+        icon={<LogOut className='h-4 w-4' color={btnColor} />}
         type='text'
         size='large'
         className='flex w-full items-center gap-x-2 rounded text-left text-sm opacity-90'

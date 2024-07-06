@@ -9,6 +9,7 @@ import Loading from '@/shared/components/loading';
 import useGetNotes from '../hooks/query/use-get-notes';
 import useCreateNote from '../hooks/mutation/use-create-note';
 import useSearchNote from '../hooks/query/use-search-note';
+import { useSelector } from '@/store';
 
 export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) => {
   const [note, setNote] = useState<string>('');
@@ -32,10 +33,17 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
     refetch();
   }, [isArchived, refetch]);
 
+  const { color } = useSelector((state) => state.theme);
+
   return (
     <div className='z-[99999] mt-2 flex flex-col gap-y-6 rounded-[12px]'>
       {/* Header note */}
-      <div className='relative flex items-center justify-between rounded-tl-lg rounded-tr-lg bg-[#263e50] p-3'>
+      <div
+        style={{
+          backgroundColor: color,
+        }}
+        className='relative flex items-center justify-between rounded-tl-md rounded-tr-md p-3'
+      >
         <>
           {view === 0 && (
             <div className='flex items-center gap-x-2'>

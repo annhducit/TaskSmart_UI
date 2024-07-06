@@ -1,12 +1,15 @@
-import {
-  MailOutlined,
-  HomeOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-} from '@ant-design/icons';
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Button, Menu, Typography } from 'antd';
-import { FolderKanban, LayoutTemplate, Rocket, SquarePlus, SwatchBook } from 'lucide-react';
+import {
+  FolderKanban,
+  Home,
+  LayoutTemplate,
+  Mail,
+  Rocket,
+  SquarePlus,
+  SwatchBook,
+} from 'lucide-react';
 
 import wspImg from '@/assets/images/karban.png';
 import Tooltip from './tooltip';
@@ -18,7 +21,7 @@ import useGetProfile from '@/modules/tsm/components/hooks/use-profile';
 import useGetProject from '@/modules/tsm/features/workspace/components/project/hooks/query/use-get-project';
 import useGetCategories from '@/modules/tsm/components/hooks/use-get-categories';
 import useGetPath from '../hooks/use-get-path';
-import { queryClient } from '@/configs/query-client';
+import { useSelector } from '@/store';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -79,6 +82,8 @@ const Sidebar = ({
     setDialog(SEARCH_PARAMS_VALUE.WORKSPACE);
   };
 
+  const { btnColor } = useSelector((state) => state.theme);
+
   const onClick: MenuProps['onClick'] = (e) => {
     switch (e.key) {
       case 'home':
@@ -103,17 +108,17 @@ const Sidebar = ({
     {
       key: 'home',
       label: 'Home',
-      icon: <HomeOutlined />,
+      icon: <Home className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
     },
     {
       key: 'workspaces',
       label: 'General',
-      icon: <SwatchBook className='h-4 w-4' />,
+      icon: <SwatchBook className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
     },
     {
       key: 'mail',
       label: 'Mail',
-      icon: <MailOutlined />,
+      icon: <Mail className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
     },
     {
       type: 'divider',
@@ -121,12 +126,12 @@ const Sidebar = ({
     {
       key: 'template',
       label: 'Templates',
-      icon: <LayoutTemplate className='h-4 w-4' />,
+      icon: <LayoutTemplate className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
       children: [
         {
           key: 'all',
           label: 'All templates',
-          icon: <LayoutTemplate className='h-4 w-4' />,
+          icon: <LayoutTemplate className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
           onClick: () => {
             navigate(`../../../tsm/template`);
           },
@@ -134,7 +139,7 @@ const Sidebar = ({
         ...(categories?.map((item) => ({
           key: item.id,
           label: item.name,
-          icon: <LayoutTemplate className='h-4 w-4' />,
+          icon: <LayoutTemplate className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
           onClick: () => {
             navigate(`../../../tsm/template`);
             setCategory(item.id);
@@ -161,18 +166,18 @@ const Sidebar = ({
       key: 'sub10',
       style: { display: type === 'private' ? 'none' : '' },
       label: data?.personalWorkSpace?.name || 'Personal Workspace',
-      icon: <Rocket className='h-4 w-4' />,
+      icon: <Rocket className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
 
       onClick: () => navigate(`../../../tsm/workspace/${data?.personalWorkSpace?.id}`),
     },
     {
       key: 'workspace',
       label: 'Team Workspace',
-      icon: <Rocket className='h-4 w-4' />,
+      icon: <Rocket className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
       children: data?.workspaces?.map((workspace) => ({
         key: workspace.id,
         label: workspace.name,
-        icon: <FolderKanban className='h-4 w-4' />,
+        icon: <FolderKanban className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
         onClick: () => navigate(`../../../tsm/workspace/${workspace.id}`),
       })),
     },
@@ -182,7 +187,7 @@ const Sidebar = ({
     {
       key: 'sub12',
       label: 'Create Workspace',
-      icon: <SquarePlus className='h-4 w-4' />,
+      icon: <SquarePlus className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
       onClick: handleOpenModal,
     },
     {
@@ -200,7 +205,7 @@ const Sidebar = ({
       children: data?.projects?.map((project) => ({
         key: project.id,
         label: project.name,
-        icon: <FolderKanban className='h-4 w-4' />,
+        icon: <FolderKanban className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
         onClick: () => navigate(`../../../tsm/project/${project.id}`),
       })),
     },

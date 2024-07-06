@@ -1,5 +1,5 @@
-import { DATE_FORMAT, DATE_TIME_FORMAT } from '@/shared/constant/date';
-import { Button, DatePicker, Select, Typography } from 'antd';
+import { DATE_TIME_FORMAT } from '@/shared/constant/date';
+import { Button, DatePicker, Typography } from 'antd';
 
 /**
  *
@@ -9,7 +9,7 @@ import { Button, DatePicker, Select, Typography } from 'antd';
 const SetTimeToCard = () => {
   return (
     <div className='flex flex-col gap-y-2'>
-      <Typography.Text className='text-base font-semibold text-center'>Set time</Typography.Text>
+      <Typography.Text className='text-center text-base font-semibold'>Set time</Typography.Text>
       <DatePicker
         format={{
           format: DATE_TIME_FORMAT,
@@ -21,7 +21,7 @@ const SetTimeToCard = () => {
           console.log('Formatted Selected Time: ', dateString);
         }}
       />
-      
+
       <Button type='primary' className='ml-auto w-[90px]'>
         Save
       </Button>

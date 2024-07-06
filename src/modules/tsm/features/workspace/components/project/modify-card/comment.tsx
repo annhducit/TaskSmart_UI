@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { Avatar, Button, ConfigProvider, Input, List, Typography } from 'antd';
 import { MessageCircle } from 'lucide-react';
-import { useSelector } from '@/store';
-import { useState } from 'react';
+import user from '@/assets/images/user.png';
+
 import convertDateFormat from '@/utils/dateFormat';
 import useCreateCardComment from '../hooks/mutation/use-create-card-comment';
+import useGetProfile from '@/modules/tsm/components/hooks/use-profile';
+import { getTextColor } from '@/utils/customText';
 
 const CommentCard = ({
   color,
@@ -14,7 +17,11 @@ const CommentCard = ({
   comments: CommentType[];
   setCard: (card: Card) => void;
 }) => {
-  const userAuthenticated = useSelector((state) => state.user.data);
+  const { data: profile } = useGetProfile();
+
+  const userProfileImage = profile?.profileImagePath
+    ? `http://localhost:8888/api/image/${profile?.profileImagePath}`
+    : user;
 
   const [commentCreation, setCommentCreation] = useState<string>('');
 
@@ -32,6 +39,8 @@ const CommentCard = ({
     setCard(data as Card);
   };
 
+  const textColor = getTextColor(color);
+
   return (
     <div className='flex flex-col gap-2 mt-5'>
       <div className='flex items-center gap-x-2'>
@@ -45,7 +54,7 @@ const CommentCard = ({
         renderItem={(item, _index) => (
           <List.Item>
             <List.Item.Meta
-              avatar={<Avatar src={`http://localhost:8888/api/image/${item.user.profileImagePath}`} />}
+              avatar={<Avatar src={user} />}
               title={
                 <div className='flex justify-between gap-x-2'>
                   <span>{item.user.name}</span>
@@ -60,17 +69,21 @@ const CommentCard = ({
         )}
       />
       <div className='flex items-center gap-x-2'>
-        <Avatar className='w-10' src={userAuthenticated.profileImagePath} />
+        <Avatar className='w-10' src={userProfileImage} />
         <Input
+          allowClear
           value={commentCreation}
           onChange={(e) => {
             setCommentCreation(e.target.value);
           }}
           placeholder='Add a comment...'
+          onPressEnter={createComment}
           className='bg-white'
         />
         <ConfigProvider theme={theme}>
-          <Button onClick={createComment}>Comment</Button>
+          <Button onClick={createComment} className={`text-${textColor}`}>
+            Comment
+          </Button>
         </ConfigProvider>
       </div>
     </div>

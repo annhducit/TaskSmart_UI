@@ -1,4 +1,3 @@
-import { tsmAxios } from '@/configs/axios';
 import { queryClient } from '@/configs/query-client';
 import { useQuery } from '@tanstack/react-query';
 

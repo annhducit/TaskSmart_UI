@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './auth';
 import userReducer from './user';
+import themeReducer from './theme';
 import {
   useDispatch as _useDispatch,
   useSelector as _useSelector,
@@ -12,6 +13,7 @@ export const store = configureStore({
   reducer: {
     auth: authReducer,
     user: userReducer,
+    theme: themeReducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({

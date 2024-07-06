@@ -124,14 +124,14 @@ const ProfileFlyer = ({ isVisible }: { isVisible: () => void }) => {
       >
         <div className='relative'>
           <div className='h-[4px] w-full bg-primary-default' />
-          <div className='flex w-full items-center gap-x-4 px-8 pt-6'>
+          <div className='flex items-center w-full px-8 pt-6 gap-x-4'>
             <div className='relative flex flex-col rounded-full'>
               {profileImage && (
                 <div className='h-[100px] w-[100px]'>
                   <img
                     src={profileImage}
                     alt='avatar'
-                    className='h-full w-full rounded-full object-cover'
+                    className='object-cover w-full h-full rounded-full'
                     style={{ width: '100%' }}
                   />
                 </div>
@@ -144,7 +144,7 @@ const ProfileFlyer = ({ isVisible }: { isVisible: () => void }) => {
                     isVisible();
                   }}
                   size={18}
-                  className='absolute -bottom-3 right-1 cursor-pointer text-primary-default transition-all hover:opacity-60'
+                  className='absolute transition-all cursor-pointer -bottom-3 right-1 text-primary-default hover:opacity-60'
                 />
               </Tooltip>
 
@@ -157,7 +157,7 @@ const ProfileFlyer = ({ isVisible }: { isVisible: () => void }) => {
                 <Button
                   type='primary'
                   className='rounded-full'
-                  icon={<UserCog className='h-3 w-3 ' />}
+                  icon={<UserCog className='w-3 h-3 ' />}
                   onClick={() => {
                     setDialog(SEARCH_PARAMS_VALUE.PROFILE);
                     isVisible();
@@ -170,14 +170,14 @@ const ProfileFlyer = ({ isVisible }: { isVisible: () => void }) => {
               <div className='flex items-center gap-x-3'>
                 <div className='flex flex-col gap-y-1'>
                   <Typography.Text className='font-semibold'> Position </Typography.Text>
-                  <Typography.Text className='w-32 truncate text-xs font-semibold opacity-60'>
+                  <Typography.Text className='w-32 text-xs font-semibold truncate opacity-60'>
                     {' '}
                     {data?.position || ''}{' '}
                   </Typography.Text>
                 </div>
                 <div className='flex flex-col gap-y-1'>
                   <Typography.Text className='font-semibold'> Organization </Typography.Text>
-                  <Typography.Text className='w-32 truncate text-xs font-semibold opacity-60'>
+                  <Typography.Text className='w-32 text-xs font-semibold truncate opacity-60'>
                     {' '}
                     {data?.organization || ''}{' '}
                   </Typography.Text>
@@ -191,23 +191,23 @@ const ProfileFlyer = ({ isVisible }: { isVisible: () => void }) => {
                         isVisible();
                       }}
                       size={14}
-                      className='cursor-pointer text-primary-default transition-all hover:opacity-60'
+                      className='transition-all cursor-pointer text-primary-default hover:opacity-60'
                     />
                   </div>
-                  <Typography.Text className='w-32 truncate text-xs font-semibold opacity-60'>
+                  <Typography.Text className='w-32 text-xs font-semibold truncate opacity-60'>
                     {data?.email || ''}
                   </Typography.Text>
                 </div>
                 <div className='flex flex-col gap-y-1'>
                   <Typography.Text className='font-semibold'> Local time </Typography.Text>
-                  <Typography.Text className='text-center text-xs font-semibold opacity-60'>
+                  <Typography.Text className='text-xs font-semibold text-center opacity-60'>
                     {data?.timeZone}
                   </Typography.Text>
                 </div>
               </div>
             </div>
           </div>
-          <div className='mt-6 px-6'>
+          <div className='px-6 mt-6'>
             <Tabs items={items} />
           </div>
           <div
@@ -252,14 +252,7 @@ const ModifyEmail = () => {
 };
 
 const ModifyProfileImage = () => {
-  const { mutate: uploadImage, isPending } = useUploadProfileImage();
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const handleUploadImage = () => {
-    if (fileList.length > 0) {
-      uploadImage({ image: fileList[0].originFileObj as File });
-      setFileList([]);
-    }
-  };
+ 
   return (
     <Dialog.Param
       paramKey={SEARCH_PARAMS.MODAL}
@@ -427,14 +420,14 @@ const ModalModifyEmail = () => {
               ]}
             >
               <Input
-                prefix={<Mail className='mr-2 flex h-3 w-3 items-center text-primary-default' />}
+                prefix={<Mail className='flex items-center w-3 h-3 mr-2 text-primary-default' />}
               />
             </Form.Item>
             <Form.Item>
               <Button
                 type='default'
                 size='small'
-                icon={<ShieldCheck className='h-3 w-3' />}
+                icon={<ShieldCheck className='w-3 h-3' />}
                 className='flex items-center text-xs font-semibold text-primary-default'
                 loading={loading}
                 onClick={() => {
@@ -470,17 +463,17 @@ const ModalModifyEmail = () => {
       </div>
       <Modal open={open} onOk={hideModal} cancelText='' okText='Ok'>
         <div className='flex flex-col gap-y-2'>
-          <div className='mx-auto h-32 w-32'>
-            <img src={opt} alt='opt' className='h-full w-full' />
+          <div className='w-32 h-32 mx-auto'>
+            <img src={opt} alt='opt' className='w-full h-full' />
           </div>
-          <Typography.Text className='text-center text-2xl font-semibold text-blue-600'>
+          <Typography.Text className='text-2xl font-semibold text-center text-blue-600'>
             Check your email
           </Typography.Text>
-          <Typography.Text className='text-center text-sm text-gray-500'>
+          <Typography.Text className='text-sm text-center text-gray-500'>
             We have sent a code to
             <p className='font-semibold'>{form.getFieldValue('email')}</p>
           </Typography.Text>
-          <Typography.Text className='text-center text-sm text-gray-500'>
+          <Typography.Text className='text-sm text-center text-gray-500'>
             Please check your email and enter the code below
           </Typography.Text>
         </div>
@@ -519,7 +512,7 @@ const UploadProfileImg = () => {
             <Upload
               name='avatar'
               listType='picture-circle'
-              className='avatar-uploader flex w-full items-center border-none border-transparent object-cover'
+              className='flex items-center object-cover w-full border-transparent border-none avatar-uploader'
               beforeUpload={() => false}
               showUploadList={true}
               onPreview={onPreview}
@@ -531,8 +524,8 @@ const UploadProfileImg = () => {
                 <Button
                   type='default'
                   size='small'
-                  className='flex w-20 items-center justify-center text-xs'
-                  icon={<UploadIcon className='flex h-4 w-4 items-center text-xs' />}
+                  className='flex items-center justify-center w-20 text-xs'
+                  icon={<UploadIcon className='flex items-center w-4 h-4 text-xs' />}
                 >
                   Upload
                 </Button>
@@ -544,7 +537,7 @@ const UploadProfileImg = () => {
           type='primary'
           onClick={handleUploadImage}
           disabled={fileList.length < 1}
-          className='mt-4 w-full'
+          className='w-full mt-4'
           loading={isPending}
         >
           Save

@@ -1,4 +1,5 @@
 import useGetPath from '@/shared/hooks/use-get-path';
+import { useSelector } from '@/store';
 import { HomeOutlined } from '@ant-design/icons';
 import { Breadcrumb, Divider } from 'antd';
 
@@ -13,6 +14,8 @@ import { Link } from 'react-router-dom';
 const SubHeader = () => {
   const { path } = useGetPath();
 
+  const { btnColor } = useSelector((state) => state.theme);
+
   return (
     <>
       <header className='flex items-center justify-between bg-transparent  px-4 py-[6px] pl-6 backdrop:fill-transparent'>
@@ -20,7 +23,11 @@ const SubHeader = () => {
           <Breadcrumb className='bg-transparent'>
             <Breadcrumb.Item>
               <Link to='/'>
-                <HomeOutlined />
+                <HomeOutlined
+                  style={{
+                    color: btnColor,
+                  }}
+                />
               </Link>
             </Breadcrumb.Item>
             {path?.slice(1).map((segment, index) => (
@@ -28,6 +35,7 @@ const SubHeader = () => {
                 <Link
                   to={`/${path.slice(0, index + 1).join('/')}`}
                   className='font-semibold capitalize'
+                  style={{ color: btnColor }}
                 >
                   {segment}
                 </Link>

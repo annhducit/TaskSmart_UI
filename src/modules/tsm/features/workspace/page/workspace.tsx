@@ -1,4 +1,4 @@
-import { Divider, Empty, Menu, MenuProps, Spin, Tag, Typography } from 'antd';
+import { Divider, Menu, MenuProps, Spin, Typography } from 'antd';
 import ProjectItem from '../components/project-item';
 
 import myBackgroundImage from '@/assets/images/karban.png';
