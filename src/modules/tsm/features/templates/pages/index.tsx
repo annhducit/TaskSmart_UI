@@ -1,14 +1,20 @@
-import { Divider, Input, Spin, Typography } from 'antd';
-import { Search } from 'lucide-react';
+import { Divider, Empty, Spin, Typography } from 'antd';
 import TemplateItem from '../components/template-item';
 import TemplateDetailModal from '../components/template-detail';
 import useGetTemplates from '../hooks/use-get-templates';
 import useSearchParam from '@/shared/hooks/use-search-param';
 import { useEffect } from 'react';
 import { SEARCH_PARAMS } from '@/shared/constant/search-param';
+import useGetCategory from '@/modules/tsm/components/hooks/use-get-category';
+import { useSelector } from '@/store';
+import useSearchTemplate from '../../admin/hooks/query/use-search-template';
+import SearchParam from '@/shared/components/search-param';
 
 const Template = () => {
-  const [, , categoryId] = useSearchParam(SEARCH_PARAMS.CATEOGORY, { replace: true });
+  const [, , categoryId] = useSearchParam(SEARCH_PARAMS.CATEGORY);
+  const [, , keyword] = useSearchParam(SEARCH_PARAMS.KEYWORD);
+
+  const { data: category } = useGetCategory(categoryId as string);
   const {
     data: templates,
     isLoading,
@@ -17,66 +23,99 @@ const Template = () => {
     categoryId,
   });
 
+  const { data: result, isPending: isLoadingSearch } = useSearchTemplate(keyword as string);
+
   useEffect(() => {
     refetch();
   }, [categoryId]);
 
+  const { btnColor } = useSelector((state) => state.theme);
   return (
     <>
-      <div className='flex flex-col gap-y-2 px-2'>
+      <div className='flex flex-col gap-y-2 px-2 pb-6'>
         <div className='flex items-center justify-between'>
-          <Typography.Title level={4}>Templates</Typography.Title>
+          <Typography.Title level={4}>
+            {categoryId ? `${category?.name} Templates` : 'All Templates'}
+          </Typography.Title>
           <div>
-            <Input prefix={<Search className='mr-2 h-4 w-4' />} placeholder='Search templates' />
+            <SearchParam.Keyword />
           </div>
         </div>
         <Divider className='my-[1px]' />
-        <div className='flex flex-col gap-y-2'>
-          <div className='flex items-center gap-x-2'>
-            <Typography.Text className='text-base'>Highlight</Typography.Text>
-            <div className='flex items-center rounded bg-yellow-400 p-[2px]'>
-              <HighlightIcon />
-            </div>
-          </div>
-          {isLoading ? (
-            <div className='flex items-center justify-center'>
-              <Spin />
-            </div>
-          ) : (
-            <div className='grid grid-cols-4 gap-4'>
-              {templates?.map((item, index) => <TemplateItem template={item} key={index} />)}
-            </div>
-          )}
-        </div>
-        <div className='flex flex-col gap-y-2'>
-          <div className='flex items-center gap-x-2'>
-            <Typography.Text className='text-base'>New</Typography.Text>
-            <div className='flex items-center rounded bg-primary-default p-[2px]'>
-              <NewIcon />
-            </div>
-          </div>{' '}
-          {isLoading ? (
-            <div className='flex items-center justify-center'>
-              <Spin />
-            </div>
-          ) : (
-            <div className='grid grid-cols-4 gap-4'>
-              {templates?.map((item, index) => <TemplateItem template={item} key={index} />)}
-            </div>
-          )}
-        </div>
-        <div className='flex flex-col gap-y-2'>
-          <Typography.Text className='text-base'>All template</Typography.Text>
-          {isLoading ? (
-            <div className='flex items-center justify-center'>
-              <Spin />
-            </div>
-          ) : (
-            <div className='grid grid-cols-4 gap-4'>
-              {templates?.map((item, index) => <TemplateItem template={item} key={index} />)}
-            </div>
-          )}
-        </div>
+        {!categoryId && (
+          <>
+            {keyword && result && result.length > 0 && (
+              <>
+                <div className='flex flex-col gap-y-8'>
+                  <TemplateSection title='Search Result' templates={result} />
+                </div>
+                {isLoadingSearch && <Spin />}
+              </>
+            )}
+            {!keyword && (
+              <div className='flex flex-col gap-y-8'>
+                <TemplateSection
+                  title={
+                    <div className='flex items-center gap-x-2'>
+                      <HighlightIcon color={btnColor} />
+                      <Typography.Text className='text-base'>Highlight</Typography.Text>
+                    </div>
+                  }
+                  templates={templates?.slice(0, 4) || []}
+                />
+                <TemplateSection
+                  title={
+                    <div className='flex items-center gap-x-2'>
+                      <NewIcon color={btnColor} />
+                      <Typography.Text className='text-base'>New</Typography.Text>
+                    </div>
+                  }
+                  templates={templates?.slice(4, 8) || []}
+                />
+                {templates && <TemplateSection title='All' templates={templates} />}
+              </div>
+            )}
+          </>
+        )}
+
+        {categoryId && (
+          <>
+            {keyword && result && result.length > 0 && (
+              <>
+                {result && result.length > 0 && (
+                  <>
+                    <div className='flex flex-col gap-y-8'>
+                      <TemplateSection title='Search Result' templates={result} />
+                    </div>
+                  </>
+                )}
+                {isLoadingSearch && <Spin />}
+              </>
+            )}
+            {!keyword && (
+              <div className='flex flex-col gap-y-8'>
+                <TemplateSection
+                  title={
+                    <div className='flex items-center gap-x-2'>
+                      <Typography.Text className='text-base'>{category?.name}</Typography.Text>
+                    </div>
+                  }
+                  templates={templates || []}
+                />
+              </div>
+            )}
+          </>
+        )}
+      </div>
+      <div className='flex justify-center'>
+        {isLoading && <Spin />}
+        {templates?.length === 0 && <Empty description='Data empty' />}
+        {keyword && (
+          <>
+            {result?.length === 0 && <Empty description='Not found' />}
+            {isLoadingSearch && <Spin />}
+          </>
+        )}
       </div>
       <TemplateDetailModal />
     </>
@@ -85,15 +124,32 @@ const Template = () => {
 
 export default Template;
 
-const HighlightIcon = () => {
+const TemplateSection = ({
+  title,
+  templates,
+}: {
+  title: React.ReactNode;
+  templates: TSMTemplate[];
+}) => {
+  return (
+    <div className='mb-2 flex flex-col gap-y-2'>
+      <Typography.Text className='text-base'>{title}</Typography.Text>
+      <div className='grid grid-cols-4 gap-4'>
+        {templates?.map((item, index) => <TemplateItem template={item} key={index} />)}
+      </div>
+    </div>
+  );
+};
+const HighlightIcon = ({ color }: { color: string }) => {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
       fill='none'
+      color={color}
       viewBox='0 0 24 24'
       stroke-width='1.5'
       stroke='currentColor'
-      className='size-5 text-white'
+      className='size-5 '
     >
       <path
         stroke-linecap='round'
@@ -109,15 +165,16 @@ const HighlightIcon = () => {
   );
 };
 
-const NewIcon = () => {
+const NewIcon = ({ color }: { color: string }) => {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
       fill='none'
+      color={color}
       viewBox='0 0 24 24'
       stroke-width='1.5'
       stroke='currentColor'
-      className='size-5 text-white'
+      className='size-5 '
     >
       <path
         stroke-linecap='round'

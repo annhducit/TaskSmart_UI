@@ -264,3 +264,20 @@ html *::-webkit-scrollbar:horizontal {
   color: white !important;
   background-color: #1890ff !important;
 }
+
+/*
+  Custom css for table antd
+*/
+
+.ant-table-thead .ant-table-cell {
+  background-color: #1890ff !important;
+  color: white !important;
+}
+
+.even-row {
+  background-color: #f9f9f9;
+}
+
+.odd-row {
+  background-color: #ffffff;
+}

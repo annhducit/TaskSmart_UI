@@ -1,8 +1,8 @@
 import { Outlet } from 'react-router-dom';
 import Header from '../tsm/components/header';
-import SidebarComponent from '@/shared/components/sidebar';
+import SidebarComponent from '@/modules/tsm/components/sidebar';
 import { Suspense, lazy, useState } from 'react';
-import { Avatar, Badge, Button, Popover, Tabs } from 'antd';
+import { Avatar, Badge, Button, Popover, Tabs, Typography } from 'antd';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import SubHeader from '../tsm/components/sub-header';
 import useGetPath from '@/shared/hooks/use-get-path';
@@ -11,14 +11,12 @@ import useSearchParam from '@/shared/hooks/use-search-param';
 import Loading from '@/shared/components/loading';
 import Tooltip from '@/shared/components/tooltip';
 import {
+  BrainCircuit,
   CalendarDays,
   Ellipsis,
   FolderKanban,
-  GanttChart,
-  Kanban,
   PanelsTopLeft,
   Search,
-  SquareKanban,
   User,
   UserPlus,
 } from 'lucide-react';
@@ -29,13 +27,11 @@ import useGetProject from '../tsm/features/workspace/components/project/hooks/qu
 import { ModifyMember } from '../tsm/features/workspace/components/project/modify-member';
 import { useSelector } from '@/store';
 
+const AIGenerator = lazy(() => import('../tsm/features/workspace/components/ai-generator'));
 const ProjectFeature = lazy(() => import('../tsm/features/workspace/components/project'));
-const TableFeature = lazy(() => import('../tsm/features/workspace/components//table'));
-const BoardFeature = lazy(() => import('../tsm/features/workspace/components//board'));
 const CalendarFeature = lazy(
   () => import('../tsm/features/workspace/components//calendar-timeline')
 );
-const KarbanFeature = lazy(() => import('../tsm/features/workspace/components//karban'));
 const OverviewFeature = lazy(() => import('../tsm/features/workspace/components//overview'));
 /**
  *
@@ -56,9 +52,9 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div className='flex h-screen flex-col overflow-hidden'>
+    <div className='flex flex-col h-screen overflow-hidden'>
       <Header />
-      <div className='relative flex flex-1 flex-row'>
+      <div className='relative flex flex-row flex-1'>
         <div className='block'>
           <SidebarComponent
             typeSidebar={isProject ? 'workspace' : 'home'}
@@ -126,7 +122,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
   return (
     <>
       <section
-        className='relative h-screen w-full bg-cover bg-center bg-no-repeat object-contain'
+        className='relative object-contain w-full h-screen bg-center bg-no-repeat bg-cover'
         style={{
           backgroundPosition: 'center',
           backgroundSize: 'cover',
@@ -195,7 +191,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
                     >
                       <img
                         src={`http://localhost:8888/api/image/${user.profileImagePath}`}
-                        className='rounded-full object-cover'
+                        className='object-cover rounded-full'
                         style={{ width: '28px', height: '28px' }}
                       />
                       <Badge status='success' className='absolute -right-[2px] -top-1 z-[99999]' />
@@ -213,7 +209,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
               open={visible}
               onOpenChange={handleOpenChange}
             >
-              <div className='cursor-pointer rounded px-1 transition-all hover:bg-primary-default hover:text-white'>
+              <div className='px-1 transition-all rounded cursor-pointer hover:bg-primary-default hover:text-white'>
                 <Ellipsis size='20' color='white' className='mt-1' />
               </div>
             </Popover>
@@ -239,27 +235,31 @@ const items: TabsProps['items'] = [
     children: <ProjectFeature />,
   },
   {
-    key: 'table',
-    label: 'Table',
-    icon: <GanttChart size='15' className='translate-x-[6px] translate-y-[2px]' />,
-    children: <TableFeature />,
-  },
-  {
-    key: 'board',
-    label: 'Board',
-    icon: <SquareKanban size='15' className='translate-x-[6px] translate-y-[2px]' />,
-    children: <BoardFeature />,
-  },
-  {
     key: 'calendar',
     label: 'Calendar',
     icon: <CalendarDays size='15' className='translate-x-[6px] translate-y-[2px]' />,
     children: <CalendarFeature />,
   },
   {
-    key: 'kanban',
-    label: 'Karban',
-    icon: <Kanban size='15' className='translate-x-[6px] translate-y-[2px]' />,
-    children: <KarbanFeature />,
+    key: 'ai-generator',
+    label: (
+      <Typography.Text className='text-transparent bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text'>
+        AI Generator
+      </Typography.Text>
+    ),
+    // label: (
+    //   <Typography.Text className='text-transparent bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text'>
+    //     AI Generator
+    //   </Typography.Text>
+    // ),
+
+    icon: <BrainCircuit size='15' className='translate-x-[6px] translate-y-[2px]' />,
+    children: <AIGenerator />,
   },
+  // {
+  //   key: 'sql',
+  //   label: 'SQL Generator',
+  //   icon: <FolderKanban size='15' className='translate-x-[6px] translate-y-[2px]' />,
+  //   children: <ProjectFeature />,
+  // },
 ];

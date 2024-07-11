@@ -1,5 +1,5 @@
 import { Divider, Menu, MenuProps, Spin, Typography } from 'antd';
-import ProjectItem from '../components/project-item';
+import ProjectItem from '../components/project/project-item';
 
 import myBackgroundImage from '@/assets/images/karban.png';
 import useGetWorkspaces from '../hooks/query/use-get-workspaces';

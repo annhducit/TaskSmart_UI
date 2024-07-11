@@ -2,7 +2,7 @@ import projectImg from '@/assets/images/karban.png';
 import { Button, Card, Divider, Form, Input, Select, Spin, Tag, Typography } from 'antd';
 import { LockKeyhole, PlusCircle } from 'lucide-react';
 import Search from 'antd/es/input/Search';
-import ProjectItem from '../components/project-item';
+import ProjectItem from '../components/project/project-item';
 import useSearchParam from '@/shared/hooks/use-search-param';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
 import Dialog from '@/shared/components/dialog';

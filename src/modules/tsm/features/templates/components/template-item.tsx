@@ -1,9 +1,13 @@
 import { Divider, Tag, Typography } from 'antd';
 import Logo from '@/shared/components/logo';
 import { useNavigate } from 'react-router-dom';
+import { Copy, Eye } from 'lucide-react';
+import { useSelector } from '@/store';
 
 const TemplateItem = ({ template }: { template: TSMTemplate }) => {
   const navigate = useNavigate();
+
+  const { btnColor } = useSelector((state) => state.theme);
 
   return (
     <div
@@ -18,14 +22,19 @@ const TemplateItem = ({ template }: { template: TSMTemplate }) => {
           src='https://images.unsplash.com/photo-1713970700051-556d05c59fce?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
           alt='template'
         />
-        <div className='absolute right-2 top-2 rounded border-[3px] border-solid border-primary-default bg-white p-2'>
+        <div
+          style={{
+            borderColor: btnColor,
+          }}
+          className={`absolute right-2 top-2 rounded border-[3px] border-solid bg-white p-2`}
+        >
           <Logo type='SINGLE_LOGO' size='w-6 h-6' />
         </div>
       </div>
       <div className='flex flex-col gap-y-1 p-3 py-4'>
         <div className='flex items-center justify-between'>
           <Typography.Text className='block text-lg font-semibold'>{template.name}</Typography.Text>
-          <Tag color='blue'>{template.category.name}</Tag>
+          <Tag color={btnColor}>{template.category.name}</Tag>
         </div>
         <Divider className='my-[1px]' />
         <Typography.Text className='block text-xs font-normal'>
@@ -34,6 +43,20 @@ const TemplateItem = ({ template }: { template: TSMTemplate }) => {
         <Typography.Text className='line-clamp-2 block truncate text-sm font-normal'>
           {template.description}
         </Typography.Text>
+        <div className='flex items-center justify-end gap-x-2 pt-1 opacity-65'>
+          <div className='flex items-center gap-x-[2px]'>
+            <Copy className='h-3 w-3' color={btnColor} />
+            <Typography.Text className='text-xs font-semibold text-[#455570]'>
+              {template.useCount}
+            </Typography.Text>
+          </div>
+          <div className='flex items-center gap-x-[2px]'>
+            <Eye className='h-3 w-3' color={btnColor} />
+            <Typography.Text className='text-xs font-semibold text-[#455570]'>
+              {template.viewCount}
+            </Typography.Text>
+          </div>
+        </div>
       </div>
     </div>
   );

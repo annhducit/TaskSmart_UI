@@ -20,6 +20,7 @@ type Id = string | number;
 type Category = {
   id: string;
   name: string;
+  active: boolean;
 };
 
 type Workspace = {
@@ -161,6 +162,7 @@ type TSMTemplate = {
   category: {
     id: Category['id'];
     name: Category['name'];
+    active: boolean;
   };
   createdDate: string;
 };
@@ -179,7 +181,8 @@ type TSMTemplateDetail = {
   project: {
     id: string;
     name: string;
-    background: string;
+    backgroundColor: string;
+    backgroundUnsplash: UnsplashResponse;
     description: string;
     listCards: ListCard[];
   };
@@ -196,4 +199,45 @@ type UnsplashResponse = {
     small: string;
     thumb: string;
   };
+};
+
+/**
+ * Create new template
+ */
+type CheckListRequest = {
+  name: CheckList['name'];
+  checked: CheckList['checked'];
+};
+
+type CheckListGroupRequest = {
+  name: CheckListGroup['name'];
+  checkList: CheckListRequest[];
+};
+
+type CardRequest = {
+  id: Card['id'];
+  name: Card['name'];
+  description: Card['description'];
+  listCardId: Card['listCardId'];
+  checkLists: CheckListGroupRequest[];
+};
+
+type ListCardRequest = {
+  id: ListCard['id'];
+  name: ListCard['name'];
+  cards: CardRequest[];
+};
+
+type TSMTemplateRequest = {
+  name: string;
+  description: string;
+  // imageUrl: null | string;
+  categoryId: string;
+  project: {
+    name: string;
+    background: string;
+    description: string;
+    listCards: ListCardRequest[];
+  };
+  createdDate: string;
 };

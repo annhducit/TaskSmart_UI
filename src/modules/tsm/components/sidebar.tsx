@@ -12,16 +12,18 @@ import {
 } from 'lucide-react';
 
 import wspImg from '@/assets/images/karban.png';
-import Tooltip from './tooltip';
+import Tooltip from '../../../shared/components/tooltip';
 import { useNavigate } from 'react-router-dom';
-import useSearchParam from '../hooks/use-search-param';
-import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '../constant/search-param';
+import useSearchParam from '../../../shared/hooks/use-search-param';
+import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '../../../shared/constant/search-param';
 
 import useGetProfile from '@/modules/tsm/components/hooks/use-profile';
 import useGetProject from '@/modules/tsm/features/workspace/components/project/hooks/query/use-get-project';
 import useGetCategories from '@/modules/tsm/components/hooks/use-get-categories';
-import useGetPath from '../hooks/use-get-path';
+import useGetPath from '../../../shared/hooks/use-get-path';
 import { useSelector } from '@/store';
+import { replace, set, template } from 'lodash';
+import useLocalStorage from '@/shared/hooks/use-local-storage';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -76,8 +78,7 @@ const Sidebar = ({
   const isProject = path.includes('project');
 
   const [, setDialog] = useSearchParam(SEARCH_PARAMS.DIALOG);
-  const [, setCategory] = useSearchParam(SEARCH_PARAMS.CATEOGORY);
-
+  const [, setCategory] = useSearchParam(SEARCH_PARAMS.CATEGORY);
   const handleOpenModal = () => {
     setDialog(SEARCH_PARAMS_VALUE.WORKSPACE);
   };
@@ -98,7 +99,6 @@ const Sidebar = ({
       case 'template':
         navigate('../../../tsm/template');
         break;
-
       default:
         break;
     }
@@ -108,17 +108,17 @@ const Sidebar = ({
     {
       key: 'home',
       label: 'Home',
-      icon: <Home className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+      icon: <Home className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
     },
     {
       key: 'workspaces',
       label: 'General',
-      icon: <SwatchBook className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+      icon: <SwatchBook className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
     },
     {
       key: 'mail',
       label: 'Mail',
-      icon: <Mail className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+      icon: <Mail className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
     },
     {
       type: 'divider',
@@ -126,23 +126,19 @@ const Sidebar = ({
     {
       key: 'template',
       label: 'Templates',
-      icon: <LayoutTemplate className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+      icon: <LayoutTemplate className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
       children: [
         {
-          key: 'all',
-          label: 'All templates',
-          icon: <LayoutTemplate className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
-          onClick: () => {
-            navigate(`../../../tsm/template`);
-          },
+          key: 'template',
+          label: 'All Categories',
+          icon: <LayoutTemplate className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
         },
         ...(categories?.map((item) => ({
           key: item.id,
           label: item.name,
-          icon: <LayoutTemplate className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+          icon: <LayoutTemplate className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
           onClick: () => {
-            navigate(`../../../tsm/template`);
-            setCategory(item.id);
+            navigate(`../../../tsm/template?category=${item.id}`);
           },
         })) || []),
       ],
@@ -166,18 +162,18 @@ const Sidebar = ({
       key: 'sub10',
       style: { display: type === 'private' ? 'none' : '' },
       label: data?.personalWorkSpace?.name || 'Personal Workspace',
-      icon: <Rocket className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+      icon: <Rocket className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
 
       onClick: () => navigate(`../../../tsm/workspace/${data?.personalWorkSpace?.id}`),
     },
     {
       key: 'workspace',
       label: 'Team Workspace',
-      icon: <Rocket className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+      icon: <Rocket className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
       children: data?.workspaces?.map((workspace) => ({
         key: workspace.id,
         label: workspace.name,
-        icon: <FolderKanban className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+        icon: <FolderKanban className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
         onClick: () => navigate(`../../../tsm/workspace/${workspace.id}`),
       })),
     },
@@ -187,7 +183,7 @@ const Sidebar = ({
     {
       key: 'sub12',
       label: 'Create Workspace',
-      icon: <SquarePlus className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+      icon: <SquarePlus className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
       onClick: handleOpenModal,
     },
     {
@@ -205,7 +201,7 @@ const Sidebar = ({
       children: data?.projects?.map((project) => ({
         key: project.id,
         label: project.name,
-        icon: <FolderKanban className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+        icon: <FolderKanban className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
         onClick: () => navigate(`../../../tsm/project/${project.id}`),
       })),
     },
@@ -231,7 +227,7 @@ const Sidebar = ({
             className={`flex items-center gap-x-2  p-2 pt-3 shadow-lg ${isProject && 'bg-black/50 bg-gray-900 bg-opacity-50 backdrop-blur-lg backdrop-filter'}`}
           >
             <div className={`${isCollapse ? 'ml-4 h-8 w-8' : 'h-10 w-10'} rounded-lg `}>
-              <img src={wspImg} alt='' className='w-full rounded-lg object-contain' />
+              <img src={wspImg} alt='' className='object-contain w-full rounded-lg' />
             </div>
             <div
               className='flex flex-col gap-y-1'

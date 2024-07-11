@@ -23,10 +23,10 @@ import useGetProject from './hooks/query/use-get-project';
 import useCreateListCard from './hooks/mutation/use-create-listcard';
 import useCreateCard from './hooks/mutation/use-create-card';
 import useUpdateListCard from './hooks/mutation/use-update-listcard';
-import useDeleteListCard from './hooks/action/use-delete-listcard';
 import useSetColumnMove from './hooks/action/use-set-column-move';
 import useSetCardMove from './hooks/action/use-set-card-move';
 import Loading from '@/shared/components/loading';
+import useRemoveListCardConfirm from './hooks/action/use-delete-listcard-confirm';
 
 const Project = () => {
   const [visible, setVisible] = useCollapse<boolean>(false);
@@ -47,10 +47,11 @@ const Project = () => {
 
   const { mutate: createListCardMutate } = useCreateListCard();
   const { mutate: updateListCardMutate } = useUpdateListCard();
-  const { mutate: deleteListCardMutate } = useDeleteListCard();
   const { mutate: createCardMutate } = useCreateCard();
   const { mutate: moveColumn } = useSetColumnMove();
   const { mutate: moveCard } = useSetCardMove();
+
+  const onDelete = useRemoveListCardConfirm();
 
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
 
@@ -85,7 +86,7 @@ const Project = () => {
   };
 
   const deleteListCard = (listCardId: String) => {
-    deleteListCardMutate(listCardId);
+    onDelete(listCardId as string);
   };
 
   const createCard = (columnId: string, card: Card) => {
@@ -140,22 +141,28 @@ const Project = () => {
                       placeholder='Enter list title'
                       allowClear
                       size='large'
-                      className='rounded text-sm font-semibold '
+                      className='text-sm font-semibold rounded '
                       value={listCardCreationName}
                       onChange={(e) => setListCardCreationName(e.target.value)}
-                      onPressEnter={createListCard}
+                      onPressEnter={() => {
+                        createListCard();
+                        setListCardCreationName('');
+                      }}
                     />
-                    <div className='ml-auto flex items-center gap-x-2'>
+                    <div className='flex items-center ml-auto gap-x-2'>
                       <Button
-                        onClick={createListCard}
+                        onClick={() => {
+                          createListCard();
+                          setListCardCreationName('');
+                        }}
                         type='primary'
-                        className='w-20 rounded text-xs font-semibold'
+                        className='text-xs font-semibold rounded '
                       >
                         Add list
                       </Button>
                       <Button
                         type='default'
-                        className='w-16 rounded text-xs font-semibold'
+                        className='w-16 text-xs font-semibold rounded'
                         onClick={() => handleOpenChange(false)}
                       >
                         Cancel
@@ -165,7 +172,7 @@ const Project = () => {
                 }
               >
                 <Button
-                  icon={<Plus className='h-4 w-4 opacity-65' />}
+                  icon={<Plus className='w-4 h-4 opacity-65' />}
                   size='large'
                   className='flex w-[275px] items-center rounded-xl border-none bg-[#ffffff3d] text-sm font-semibold text-white'
                 >
@@ -192,7 +199,6 @@ const Project = () => {
       {project?.users && <ModifyCard members={project?.users} />}
     </div>
   );
-
   function onDragStart(event: DragStartEvent) {
     if (event.active.data.current?.type === 'Column') {
       setActiveColumn(event.active.data.current.column);

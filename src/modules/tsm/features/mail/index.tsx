@@ -13,6 +13,11 @@ const MailRoutes = createRouters([
    */
 ]);
 
+/**
+ *
+ *
+ */
+
 export default function MailModule() {
   return useRoutes(MailRoutes);
 }

@@ -9,6 +9,7 @@ import AuthNavigate from '@/shared/components/auth/auth-navigate';
 import DashboardLayout from './_layouts/DashboardLayout';
 import UserInformation from '@/shared/components/auth/user-information';
 import SignInNavigate from '@/shared/components/auth/signin-navigate';
+import AdminLayout from './_layouts/AdminLayout';
 
 const SignInFeature = lazy(() => import('@/modules/sign-in'));
 const SignUpFeature = lazy(() => import('@/modules/sign-up'));
@@ -16,7 +17,7 @@ const LandingFeature = lazy(() => import('@/modules/_landing'));
 const NotFoundFeature = lazy(() => import('@/modules/not-found'));
 
 const PrivateRouter = lazy(() => import('@/modules/private'));
-
+const AdminRouter = lazy(() => import('@/modules/tsm/features/admin'));
 const routers = createRouters([
   {
     path: '/',
@@ -77,6 +78,22 @@ const routers = createRouters([
       },
     ],
   },
+  // {
+  //   path: '/tsm/*',
+  //   element: <AdminLayout />,
+  //   children: [
+  //     {
+  //       path: '*',
+  //       element: (
+  //         <Authenticated fallback={<AuthNavigate />}>
+  //           <UserInformation>
+  //             <AdminRouter />
+  //           </UserInformation>
+  //         </Authenticated>
+  //       ),
+  //     },
+  //   ],
+  // },
 ]);
 
 const AppRouter = () => {

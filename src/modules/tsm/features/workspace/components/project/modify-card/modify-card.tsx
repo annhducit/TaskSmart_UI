@@ -33,7 +33,6 @@ import {
   List,
   EyeOff,
   Minus,
-  Flag,
 } from 'lucide-react';
 import Activity from './activity';
 import CommentCard from './comment';
@@ -261,7 +260,7 @@ const OverviewCardTab = ({
     <div className='flex min-h-[400px] w-full flex-col justify-between pb-5'>
       <div className='flex-col px-0 py-0'>
         <div className='flex items-center justify-evenly gap-x-6'>
-          <div className='mt-1 flex flex-col gap-y-1'>
+          <div className='flex flex-col mt-1 gap-y-1'>
             <Typography.Text className='text-xs font-semibold'>Status</Typography.Text>
             <Dropdown
               placement='bottom'
@@ -281,7 +280,7 @@ const OverviewCardTab = ({
             </Dropdown>
           </div>
 
-          <div className='mt-1 flex flex-col gap-y-1'>
+          <div className='flex flex-col mt-1 gap-y-1'>
             <Typography.Text className='text-xs font-semibold'>Priority</Typography.Text>
             <Dropdown
               placement='bottom'
@@ -301,7 +300,7 @@ const OverviewCardTab = ({
             </Dropdown>
           </div>
 
-          <div className='mt-1 flex flex-col gap-y-1'>
+          <div className='flex flex-col mt-1 gap-y-1'>
             <Typography.Text className='text-xs font-semibold'>Risk</Typography.Text>
             <Dropdown
               placement='bottom'
@@ -321,7 +320,7 @@ const OverviewCardTab = ({
             </Dropdown>
           </div>
 
-          <div className='mt-1 flex flex-col gap-y-1'>
+          <div className='flex flex-col mt-1 gap-y-1'>
             <Typography.Text className='text-xs font-semibold'>Effort</Typography.Text>
             <Dropdown
               placement='bottom'
@@ -341,7 +340,7 @@ const OverviewCardTab = ({
             </Dropdown>
           </div>
 
-          <div className='mt-1 flex flex-col gap-y-1'>
+          <div className='flex flex-col mt-1 gap-y-1'>
             <Typography.Text className='text-xs font-semibold'>Estimate</Typography.Text>
             <DatePicker
               format={{
@@ -451,7 +450,7 @@ const AttachmentTab = (props: { card: Card; color: string }) => {
 
   return (
     <div className='flex min-h-[400px] w-full flex-col px-0 py-0'>
-      <div className='mt-6 w-full'>
+      <div className='w-full mt-6'>
         <div className='flex items-center justify-center'>
           {/* <Button
                     icon={<Upload className='w-3 h-3 mt-1' />}
@@ -478,10 +477,10 @@ const ActivityTab = () => {
       <div className='flex flex-col gap-y-4'>
         <div className='flex items-center justify-between'>
           <div className='flex items-center gap-x-4'>
-            <List className='mt-1 h-5 w-5 opacity-40' />
+            <List className='w-5 h-5 mt-1 opacity-40' />
             <Typography.Text className='text-base font-semibold'>Recent activities</Typography.Text>
           </div>
-          <Button icon={<EyeOff className='mt-1 h-3 w-3' />} className='w-[90px]' type='default'>
+          <Button icon={<EyeOff className='w-3 h-3 mt-1' />} className='w-[90px]' type='default'>
             Hide
           </Button>
         </div>
@@ -508,7 +507,7 @@ const AttachmentFile = ({ data }: { data: Attachment[] }) => {
           allowClear
           type='text'
           defaultValue={text}
-          className='h-7 w-full cursor-pointer rounded-xl border-none px-3 text-base font-bold transition-all'
+          className='w-full px-3 text-base font-bold transition-all border-none cursor-pointer h-7 rounded-xl'
         />
       ),
     },
@@ -521,7 +520,7 @@ const AttachmentFile = ({ data }: { data: Attachment[] }) => {
           allowClear
           type='text'
           defaultValue={text}
-          className='h-7 w-full cursor-pointer rounded-xl border-none px-3 text-sm font-bold transition-all'
+          className='w-full px-3 text-sm font-bold transition-all border-none cursor-pointer h-7 rounded-xl'
         />
       ),
     },
@@ -530,7 +529,7 @@ const AttachmentFile = ({ data }: { data: Attachment[] }) => {
       key: 'action',
       width: 100,
       render: (_, record) => (
-        <Space className='flex w-full justify-end'>
+        <Space className='flex justify-end w-full'>
           <Eye
             className={`${record.type !== 'image' ? 'invisible' : ''} h-3 w-3`}
             onClick={() =>
@@ -540,15 +539,15 @@ const AttachmentFile = ({ data }: { data: Attachment[] }) => {
               })
             }
           />
-          <Download className='h-3 w-3' />
-          <Trash className='h-3 w-3' />
+          <Download className='w-3 h-3' />
+          <Trash className='w-3 h-3' />
         </Space>
       ),
     },
   ];
 
   return (
-    <div className='mt-2 flex w-full gap-y-1'>
+    <div className='flex w-full mt-2 gap-y-1'>
       {/* Table of file */}
       <ConfigProvider
         theme={{
@@ -611,7 +610,7 @@ const ColorAndMembers = ({
   };
 
   return (
-    <div className='flex items-center justify-end gap-x-6 py-1'>
+    <div className='flex items-center justify-end py-1 gap-x-6'>
       <div className='flex gap-y-1'>
         <Typography.Text className='mr-1 text-sm font-semibold'>Color:</Typography.Text>
         <ColorPicker
@@ -683,7 +682,7 @@ const MemberInviteCard = ({
   }, [impls]);
 
   return (
-    <div className='flex flex-col gap-y-1 rounded-none p-0'>
+    <div className='flex flex-col p-0 rounded-none gap-y-1'>
       <span>Implementers:</span>
       {impls.map((member) => (
         <div
@@ -702,7 +701,7 @@ const MemberInviteCard = ({
               onClick={() => {
                 setImpls((prev) => prev.filter((impl) => impl.userId !== member.userId));
               }}
-              className='h-3 w-3 cursor-pointer hover:h-4 hover:w-4'
+              className='w-3 h-3 cursor-pointer hover:h-4 hover:w-4'
             ></Minus>
           </div>
         </div>
@@ -725,7 +724,7 @@ const MemberInviteCard = ({
               onClick={() => {
                 setImpls((prev) => [...prev, member]);
               }}
-              className='h-3 w-3 cursor-pointer hover:h-4 hover:w-4'
+              className='w-3 h-3 cursor-pointer hover:h-4 hover:w-4'
             ></Plus>
           </div>
         </div>

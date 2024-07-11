@@ -14,6 +14,7 @@ const WorkspaceFeature = lazy(() => import('./features/workspace/page/workspace'
 const ProfileMember = lazy(() => import('./features/member-profile'));
 const TemplateFeature = lazy(() => import('./features/templates'));
 const InviteFeature = lazy(() => import('./features/invite'));
+
 const tsmRoutes = createRouters([
   {
     index: true,
@@ -56,10 +57,6 @@ const tsmRoutes = createRouters([
     path: 'project/:projectId/*',
     element: <></>,
   },
-
-  /**
-   * Add more routes here
-   */
 ]);
 
 export default function TSMModule() {

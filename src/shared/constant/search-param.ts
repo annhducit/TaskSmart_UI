@@ -34,7 +34,7 @@ export enum SEARCH_PARAMS {
   TAB = 'tab',
   ACTIVE_TAB = 'active-tab',
   TYPE = 'type',
-  CATEOGORY = 'category',
+  CATEGORY = 'category',
 
   STATE = 'state',
 }
@@ -47,6 +47,7 @@ export enum SEARCH_PARAMS_VALUE {
   UPDATE_EMAIL = 'update-email',
   ADD_MEMBER = 'add-member',
   PROFILE_IMAGE = 'profile-image',
+  MODIFY_CATEGORY = 'modify-category',
 
   PROFILE = 'profile',
   CARD = 'card',

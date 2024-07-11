@@ -6,10 +6,31 @@ import TemplateItem from '../../components/template-item';
 import useGetTemplates from '../../hooks/use-get-templates';
 import useGetTemplate from '../../hooks/use-get-template';
 
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverEvent,
+  DragOverlay,
+  DragStartEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import Loading from '@/shared/components/loading';
+import { useEffect, useMemo, useState } from 'react';
+import { arrayMove, SortableContext } from '@dnd-kit/sortable';
+import ColumnContainer from '../../../workspace/components/project/move-card/column-container';
+import PopoverX from '@/shared/components/popover';
+import useCollapse from '@/shared/hooks/use-collapse';
+import { createPortal } from 'react-dom';
+import { TaskCard } from '../../../workspace/components/project/move-card';
+import ModifyCard from '../../../workspace/components/project/modify-card/modify-card';
+import { useSelector } from '@/store';
 const TemplateDetail = () => {
   const { data: template, isLoading: isLoadingDT } = useGetTemplate();
   const { data: templates, isLoading } = useGetTemplates();
 
+  const { btnColor } = useSelector((state) => state.theme);
   return (
     <div className='flex flex-col gap-y-4 px-8 pb-20'>
       <div className='flex items-center justify-between'>
@@ -36,6 +57,10 @@ const TemplateDetail = () => {
             </div>
             <Popover trigger='click' placement='leftBottom' content={<CreateProjectBySample />}>
               <Button
+                style={{
+                  backgroundColor: btnColor,
+                  color: 'white',
+                }}
                 size='large'
                 type='primary'
                 icon={<AudioWaveform className='flex items-center' size='14' />}
@@ -68,7 +93,7 @@ const TemplateDetail = () => {
         className='relative mx-auto h-[600px] w-[calc(100vw-400px)]  rounded-lg bg-cover bg-center bg-no-repeat'
         style={{
           backgroundPosition: 'center',
-          backgroundImage: `url(https://images.unsplash.com/photo-1620121478247-ec786b9be2fa?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)`,
+          backgroundImage: `url(${template?.project.backgroundUnsplash?.urls?.full})`,
         }}
       >
         <div className='absolute inset-0 rounded-lg bg-black bg-opacity-40' />
@@ -79,14 +104,9 @@ const TemplateDetail = () => {
               className={`custom-tabs-template mb-0 w-[calc(100vw-400px)] text-white`}
               items={[
                 {
-                  key: 'overview',
-                  label: 'Overview',
-                  children: <ProjectContent />,
-                },
-                {
                   key: 'project',
                   label: 'Project',
-                  children: <div className='px-6'>Overview</div>,
+                  children: <ProjectContent />,
                 },
                 {
                   key: 'Kaban',
@@ -104,7 +124,7 @@ const TemplateDetail = () => {
                         <p className='mr-4 max-w-48 truncate text-[18px] font-bold'>
                           {template?.name}
                         </p>
-                        <Tag color='cyan'>Sample</Tag>
+                        <Tag color={btnColor}>Template</Tag>
                       </>
                     )}
                   </div>
@@ -114,10 +134,33 @@ const TemplateDetail = () => {
           </div>
 
           <div className='absolute right-6 top-[10px] flex items-center gap-x-4 rounded-lg'>
-            <Button size='middle' type='default' icon={<Search className='mt-1' size='14' />}>
+            <Button
+              size='middle'
+              style={{
+                color: btnColor,
+              }}
+              className='flex items-center'
+              type='default'
+              icon={
+                <Search
+                  size='14'
+                  style={{
+                    color: btnColor,
+                  }}
+                />
+              }
+            >
               Search
             </Button>
-            <Button size='middle' type='primary' icon={<ListChecks className='mt-1' size='14' />}>
+            <Button
+              style={{
+                backgroundColor: btnColor,
+                color: 'white',
+              }}
+              size='middle'
+              className='flex items-center gap-x-2'
+              icon={<ListChecks size='14' />}
+            >
               Add task
             </Button>
             <Avatar.Group maxCount={2} className='flex items-center'>
@@ -153,39 +196,187 @@ const TemplateDetail = () => {
 export default TemplateDetail;
 
 const ProjectContent = () => {
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    })
+  );
+
+  const [visible, setVisible] = useCollapse<boolean>(false);
+  const handleOpenChange = (open: boolean) => {
+    setVisible(open);
+  };
+
+  const [columns, setColumns] = useState<ListCard[]>([]);
+  const [tasks, setTasks] = useState<Card[]>([]);
+  const [activeColumn, setActiveColumn] = useState<ListCard | null>(null);
+  const [activeTask, setActiveTask] = useState<Card | null>(null);
+
+  const { data: template, isLoading } = useGetTemplate();
+
+  const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
+
+  useEffect(() => {
+    const listCardIterator: Card[] = [];
+    template?.project.listCards.forEach((listCard) => {
+      listCard.cards.forEach((card) => {
+        listCardIterator.push({ ...card, listCardId: listCard.id });
+      });
+    });
+    template?.project.listCards && setColumns(template?.project.listCards);
+    setTasks(listCardIterator);
+  }, [template]);
+
+  const setCardsMoved = (cards: Card[]) => {
+    setTasks(cards);
+  };
+  const setColumnsMoved = (columns: ListCard[]) => {
+    setColumns(columns);
+  };
+
   return (
-    <div className='inline-block min-h-screen px-6 '>
-      <div className='flex items-start gap-x-3'>
-        <Popover
-          placement='bottom'
-          content={
-            <div className='flex w-[250px] flex-col gap-4'>
-              <Input
-                placeholder='Enter list title'
-                allowClear
-                size='large'
-                className='rounded text-sm font-semibold '
-              />
-              <div className='ml-auto flex items-center gap-x-2'>
-                <Button type='primary' className='w-20 rounded text-xs font-semibold'>
-                  Add list
+    <div>
+      <DndContext
+        sensors={sensors}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+        onDragOver={onDragOver}
+      >
+        {isLoading ? (
+          <Loading.Page size='full' />
+        ) : (
+          <div className='inline-block min-h-screen px-6 '>
+            <div className='flex items-start gap-x-3'>
+              <SortableContext items={columnsId}>
+                {columns.map((col) => (
+                  <ColumnContainer
+                    key={col.id}
+                    column={col}
+                    cards={tasks.filter((task) => task.listCardId === col.id)}
+                  />
+                ))}
+              </SortableContext>
+
+              <PopoverX
+                visible={visible}
+                onOpenChange={handleOpenChange}
+                content={
+                  <div className='flex w-[250px] flex-col gap-4'>
+                    <Input
+                      placeholder='Enter list title'
+                      allowClear
+                      size='large'
+                      className='rounded text-sm font-semibold '
+                    />
+                    <div className='ml-auto flex items-center gap-x-2'>
+                      <Button type='primary' className='rounded text-xs font-semibold '>
+                        Add list
+                      </Button>
+                      <Button type='default' className='w-16 rounded text-xs font-semibold'>
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                }
+              >
+                <Button
+                  icon={<Plus className='h-4 w-4 opacity-65' />}
+                  size='large'
+                  className='flex w-[275px] items-center rounded-xl border-none bg-[#ffffff3d] text-sm font-semibold text-white'
+                >
+                  Add new list
                 </Button>
-                <Button type='default' className='w-16 rounded text-xs font-semibold'>
-                  Cancel
-                </Button>
-              </div>
+              </PopoverX>
             </div>
-          }
-        >
-          <Button
-            icon={<Plus className='h-4 w-4 opacity-65' />}
-            size='large'
-            className='flex w-[275px] items-center rounded-xl border-none bg-[#ffffff3d] text-sm font-semibold text-white'
-          >
-            Add new list
-          </Button>
-        </Popover>
-      </div>
+          </div>
+        )}
+
+        {createPortal(
+          <DragOverlay>
+            {activeColumn && (
+              <ColumnContainer
+                column={activeColumn}
+                cards={tasks.filter((task) => task.listCardId === activeColumn.id)}
+              />
+            )}
+            {activeTask && <TaskCard card={activeTask} />}
+          </DragOverlay>,
+          document.body
+        )}
+      </DndContext>
+      <ModifyCard members={[]} />
     </div>
   );
+
+  function onDragStart(event: DragStartEvent) {
+    if (event.active.data.current?.type === 'Column') {
+      setActiveColumn(event.active.data.current.column);
+      return;
+    }
+
+    if (event.active.data.current?.type === 'Task') {
+      setActiveTask(event.active.data.current.task);
+      return;
+    }
+  }
+
+  function onDragEnd(event: DragEndEvent) {
+    setActiveColumn(null);
+    setActiveTask(null);
+
+    const { active, over } = event;
+    if (!over) return;
+
+    const activeId = active.id;
+    const overId = over.id;
+
+    if (activeId === overId) return;
+
+    const isActiveAColumn = active.data.current?.type === 'Column';
+    if (!isActiveAColumn) return;
+
+    const activeColumnIndex = columns.findIndex((col) => col.id === activeId);
+    const overColumnIndex = columns.findIndex((col) => col.id === overId);
+    const movedColumns = arrayMove(columns, activeColumnIndex, overColumnIndex);
+
+    setColumnsMoved(movedColumns);
+  }
+
+  function onDragOver(event: DragOverEvent) {
+    const { active, over } = event;
+    if (!over) return;
+
+    const activeId = active.id;
+    const overId = over.id;
+
+    if (activeId === overId) return;
+
+    const isActiveATask = active.data.current?.type === 'Task';
+    const isOverATask = over.data.current?.type === 'Task';
+
+    if (!isActiveATask) return;
+
+    if (isActiveATask && isOverATask) {
+      const activeIndex = tasks.findIndex((t) => t.id === activeId);
+      const overIndex = tasks.findIndex((t) => t.id === overId);
+
+      if (tasks[activeIndex].listCardId != tasks[overIndex].listCardId) {
+        tasks[activeIndex].listCardId = tasks[overIndex].listCardId;
+        setCardsMoved(arrayMove(tasks, activeIndex, overIndex - 1));
+      }
+
+      setCardsMoved(arrayMove(tasks, activeIndex, overIndex));
+    }
+
+    const isOverAColumn = over.data.current?.type === 'Column';
+
+    if (isActiveATask && isOverAColumn) {
+      const activeIndex = tasks.findIndex((t) => t.id === activeId);
+
+      tasks[activeIndex].listCardId = overId.toString();
+      setCardsMoved(arrayMove(tasks, activeIndex, activeIndex));
+    }
+  }
 };
