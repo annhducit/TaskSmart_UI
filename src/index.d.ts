@@ -231,11 +231,11 @@ type ListCardRequest = {
 type TSMTemplateRequest = {
   name: string;
   description: string;
-  // imageUrl: null | string;
   categoryId: string;
   project: {
     name: string;
-    background: string;
+    backgroundColor?: string;
+    backgroundUnsplash?: UnsplashResponse;
     description: string;
     listCards: ListCardRequest[];
   };

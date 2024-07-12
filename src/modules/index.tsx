@@ -78,22 +78,22 @@ const routers = createRouters([
       },
     ],
   },
-  // {
-  //   path: '/tsm/*',
-  //   element: <AdminLayout />,
-  //   children: [
-  //     {
-  //       path: '*',
-  //       element: (
-  //         <Authenticated fallback={<AuthNavigate />}>
-  //           <UserInformation>
-  //             <AdminRouter />
-  //           </UserInformation>
-  //         </Authenticated>
-  //       ),
-  //     },
-  //   ],
-  // },
+  {
+    path: '/tsm/*',
+    element: <AdminLayout />,
+    children: [
+      {
+        path: '*',
+        element: (
+          <Authenticated fallback={<AuthNavigate />}>
+            <UserInformation>
+              <AdminRouter />
+            </UserInformation>
+          </Authenticated>
+        ),
+      },
+    ],
+  },
 ]);
 
 const AppRouter = () => {
