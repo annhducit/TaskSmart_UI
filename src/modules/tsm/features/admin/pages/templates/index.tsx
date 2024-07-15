@@ -176,7 +176,7 @@ const Template = () => {
             />
           </div>
           <Button
-            onClick={() => navigate('../../admin/create/template')}
+            onClick={() => navigate('../create/template')}
             type='primary'
             size='middle'
             icon={<Plus className='h-3 w-3' />}

@@ -65,6 +65,7 @@ type UserRelation = {
   profileImagePath: string;
 };
 
+type Role = 'ADMIN' | 'USER';
 type UserData = {
   id: string;
   name: string;
@@ -79,6 +80,7 @@ type UserData = {
     id: Workspace['id'];
     name: Workspace['name'];
   };
+  role: Role[];
   workspaces: WorkSpace[];
   projects: Project[];
 };
@@ -158,7 +160,7 @@ type TSMTemplate = {
   description: string;
   viewCount: number;
   useCount: number;
-  imageUrl: string;
+  image: UnsplashResponse;
   category: {
     id: Category['id'];
     name: Category['name'];
@@ -173,7 +175,7 @@ type TSMTemplateDetail = {
   description: string;
   viewCount: number;
   useCount: number;
-  imageUrl: null | string;
+  image: UnsplashResponse;
   category: {
     id: Category['id'];
     name: Category['name'];
@@ -229,15 +231,15 @@ type ListCardRequest = {
 };
 
 type TSMTemplateRequest = {
-  name: string;
-  description: string;
-  categoryId: string;
+  name: TSMTemplate['name'];
+  description: TSMTemplate['description'];
+  categoryId: TSMTemplate['category']['id'];
+  imageUnsplashId: string;
   project: {
-    name: string;
-    backgroundColor?: string;
-    backgroundUnsplash?: UnsplashResponse;
-    description: string;
+    name: TSMTemplate['name'];
+    background: string;
+    description: TSMTemplate['description'];
     listCards: ListCardRequest[];
   };
-  createdDate: string;
+  createdDate: TSMTemplate['createdDate'];
 };

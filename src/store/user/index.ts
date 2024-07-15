@@ -17,6 +17,7 @@ export interface AuthState {
   isSignedIn: boolean;
   isLoaded: boolean;
 }
+
 const initialState: AuthState = {
   loadingState: 'idle',
   isSignedIn: false,
@@ -29,6 +30,7 @@ const initialState: AuthState = {
     gender: '',
     position: '',
     organization: '',
+    role: [],
     timeZone: 0,
     profileImagePath: '',
     personalWorkSpace: {} as WorkSpaceType,

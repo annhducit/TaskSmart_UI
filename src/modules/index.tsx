@@ -10,6 +10,7 @@ import DashboardLayout from './_layouts/DashboardLayout';
 import UserInformation from '@/shared/components/auth/user-information';
 import SignInNavigate from '@/shared/components/auth/signin-navigate';
 import AdminLayout from './_layouts/AdminLayout';
+import CheckRole from '@/shared/components/auth/check-role';
 
 const SignInFeature = lazy(() => import('@/modules/sign-in'));
 const SignUpFeature = lazy(() => import('@/modules/sign-up'));
@@ -18,6 +19,7 @@ const NotFoundFeature = lazy(() => import('@/modules/not-found'));
 
 const PrivateRouter = lazy(() => import('@/modules/private'));
 const AdminRouter = lazy(() => import('@/modules/tsm/features/admin'));
+
 const routers = createRouters([
   {
     path: '/',
@@ -38,7 +40,25 @@ const routers = createRouters([
         element: (
           <Authenticated fallback={<AuthNavigate />}>
             <UserInformation>
-              <PrivateRouter />
+              <CheckRole>
+                <PrivateRouter />
+              </CheckRole>
+            </UserInformation>
+          </Authenticated>
+        ),
+      },
+    ],
+  },
+  {
+    path: '/admin/*',
+    element: <AdminLayout />,
+    children: [
+      {
+        path: '*',
+        element: (
+          <Authenticated fallback={<AuthNavigate />}>
+            <UserInformation>
+              <AdminRouter />
             </UserInformation>
           </Authenticated>
         ),
@@ -75,22 +95,6 @@ const routers = createRouters([
       {
         index: true,
         element: <NotFoundFeature />,
-      },
-    ],
-  },
-  {
-    path: '/tsm/*',
-    element: <AdminLayout />,
-    children: [
-      {
-        path: '*',
-        element: (
-          <Authenticated fallback={<AuthNavigate />}>
-            <UserInformation>
-              <AdminRouter />
-            </UserInformation>
-          </Authenticated>
-        ),
       },
     ],
   },

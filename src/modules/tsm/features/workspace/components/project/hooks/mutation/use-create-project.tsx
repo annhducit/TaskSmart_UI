@@ -3,6 +3,7 @@ import { queryClient } from '@/configs/query-client';
 import { useDialogContext } from '@/shared/components/dialog/provider';
 import { isStatusCodeValid } from '@/shared/components/status';
 import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 const createProject = async (value: TSMProjectRequest) => {
@@ -12,6 +13,7 @@ const createProject = async (value: TSMProjectRequest) => {
 
 const useCreateProject = () => {
   const { onClose } = useDialogContext();
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: (value: TSMProjectRequest) => createProject(value),
     onSuccess(data) {
@@ -23,6 +25,10 @@ const useCreateProject = () => {
         });
         onClose();
         toast.success('Project created successfully');
+        navigate(`tsm/project/${data?.data?.id}?view=project`, {
+          replace: true,
+        });
+        console.log(data.data.id);
       }
     },
   });

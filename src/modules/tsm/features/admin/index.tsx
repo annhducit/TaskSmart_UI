@@ -11,27 +11,27 @@ const CategoryFeature = lazy(() => import('./pages/categories'));
 
 const adminRoutes = createRouters([
   {
-    path: 'admin',
+    path: '/dashboard',
     element: <DashboardFeature />,
   },
   {
-    path: 'admin/template/*',
+    path: '/template/*',
     element: <TemplateFeature />,
   },
   {
-    path: 'admin/create/template',
+    path: '/create/template',
     element: <CreateTemplateFeature />,
   },
   {
-    path: 'admin/template-detail/:templateId',
+    path: '/template-detail/:templateId',
     element: <TemplateDetailFeature />,
   },
   {
-    path: 'admin/account/*',
+    path: '/account/*',
     element: <AccountFeature />,
   },
   {
-    path: 'admin/category/*',
+    path: '/category/*',
     element: <CategoryFeature />,
   },
 ]);

@@ -93,7 +93,7 @@ const TemplateDetail = () => {
         className='relative mx-auto h-[600px] w-[calc(100vw-400px)]  rounded-lg bg-cover bg-center bg-no-repeat'
         style={{
           backgroundPosition: 'center',
-          backgroundImage: `url(${template?.project.backgroundUnsplash?.urls?.full})`,
+          backgroundImage: `url(${template?.image.urls?.full})`,
         }}
       >
         <div className='absolute inset-0 rounded-lg bg-black bg-opacity-40' />

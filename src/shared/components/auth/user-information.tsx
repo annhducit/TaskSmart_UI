@@ -18,7 +18,6 @@ const UserInformation = (props: PropsWithChildren) => {
   const accessToken = useSelector((store) => store.auth.data.accessToken);
   const userId = useSelector((store) => store.user.data.id);
   const userIsLoaded = useSelector((store) => store.user.isLoaded);
-
   /**
    * Effect xử lý gắn accessToken cho axios
    */

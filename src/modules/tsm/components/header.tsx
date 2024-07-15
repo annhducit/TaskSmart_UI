@@ -89,7 +89,7 @@ const Header = () => {
       label: project?.workspace.name,
       style: { display: isProject ? 'flex' : 'none' },
       key: '1',
-      icon: <img src={template} className='w-10 h-10 rounded-lg' />,
+      icon: <img src={template} className='h-10 w-10 rounded-lg' />,
       className: 'gap-x-1',
       onClick: () => navigate(`../../../tsm/workspace/${project?.workspace.id}`),
     },
@@ -108,13 +108,13 @@ const Header = () => {
       style: { display: 'flex' },
       className: 'gap-x-1',
       key: workspace.id,
-      icon: <img src={template as string} className='w-10 h-10 rounded-lg' />,
+      icon: <img src={template as string} className='h-10 w-10 rounded-lg' />,
       onClick: () => navigate(`../../../tsm/workspace/${workspace.id}`),
     })),
     {
       label: profile?.personalWorkSpace.name,
       key: '3',
-      icon: <img src={template} className='w-10 h-10 rounded-lg' />,
+      icon: <img src={template} className='h-10 w-10 rounded-lg' />,
       onClick: () => navigate(`../../../tsm/workspace/${profile?.personalWorkSpace.id}`),
     },
   ];
@@ -123,7 +123,7 @@ const Header = () => {
     templates?.map((template) => ({
       label: template.name,
       key: template.id,
-      icon: <img src={template.imageUrl} className='w-10 h-10 rounded-lg' />,
+      icon: <img src={template.imageUrl} className='h-10 w-10 rounded-lg' />,
     })) || [];
 
   const { btnColor, inpColor, color } = useSelector((state) => state.theme);
@@ -172,7 +172,7 @@ const Header = () => {
                   icon: (
                     <img
                       src={project.backgroundUnsplash?.urls.full}
-                      className='w-10 h-10 rounded-lg'
+                      className='h-10 w-10 rounded-lg'
                     />
                   ),
                 }))}
@@ -181,7 +181,7 @@ const Header = () => {
           </div>
           <div className='flex items-center gap-x-4'>
             <Button
-              icon={<SearchIcon className='w-4 h-4 ' />}
+              icon={<SearchIcon className='h-4 w-4 ' />}
               style={{
                 backgroundColor: inpColor,
               }}
@@ -195,10 +195,10 @@ const Header = () => {
                 border: `1px solid ${btnColor}`,
               }}
               className='flex h-[28px] items-center border border-solid text-sm font-semibold text-white'
-              icon={<Sparkles className='w-4 h-4 text-white' />}
+              icon={<Sparkles className='h-4 w-4 text-white' />}
             >
-              <Typography.Text className='text-transparent bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text'>
-                SQL Generator
+              <Typography.Text className='bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text text-transparent'>
+                Ask AI
               </Typography.Text>
             </Button>
           </div>
@@ -209,7 +209,7 @@ const Header = () => {
                   backgroundColor: btnColor,
                   border: `1px solid ${btnColor}`,
                 }}
-                icon={<CirclePlus className='w-4 h-4 font-bold text-white' />}
+                icon={<CirclePlus className='h-4 w-4 font-bold text-white' />}
                 className='flex h-[28px] items-center rounded border border-solid border-[#33607e]  text-sm font-semibold text-white'
               >
                 Create new
@@ -230,23 +230,23 @@ const Header = () => {
                   onClick={() => handleOpenPopover(!open)}
                   className='cursor-pointer rounded px-1 transition-all hover:bg-[#434b65]'
                 >
-                  <NotepadText className='w-4 h-4 mt-1 text-white' />
+                  <NotepadText className='mt-1 h-4 w-4 text-white' />
                 </div>
               </Popover>
             </Tooltip>
             <Tooltip title='Reminder'>
               <div className='cursor-pointer rounded px-1 transition-all hover:bg-[#434b65]'>
-                <AlarmClock className='w-4 h-4 mt-1 text-white' />
+                <AlarmClock className='mt-1 h-4 w-4 text-white' />
               </div>
             </Tooltip>
             <Tooltip title='Meeting'>
               <div className='cursor-pointer rounded px-1 transition-all hover:bg-[#434b65]'>
-                <Video className='w-4 h-4 mt-1 text-white' />
+                <Video className='mt-1 h-4 w-4 text-white' />
               </div>
             </Tooltip>
             <Tooltip title='Notification'>
               <div className='cursor-pointer rounded p-1 transition-all hover:bg-[#434b65]'>
-                <Bell className='w-4 h-4 mt-1 text-white' />
+                <Bell className='mt-1 h-4 w-4 text-white' />
               </div>
             </Tooltip>
             <Popover
@@ -255,8 +255,8 @@ const Header = () => {
               content={
                 <>
                   <div className='flex items-center gap-x-3'>
-                    <div className='relative rounded-full h-9 w-9'>
-                      <img src={userProfileImage} alt='' className='w-full h-full rounded-full' />
+                    <div className='relative h-9 w-9 rounded-full'>
+                      <img src={userProfileImage} alt='' className='h-full w-full rounded-full' />
                       <span className='absolute bottom-1 right-0 rounded-full bg-[#1ad67b] p-1' />
                     </div>
                     <div className='flex flex-col opacity-75'>
@@ -271,33 +271,33 @@ const Header = () => {
 
                   <div className='flex flex-col gap-y-2'>
                     <Button
-                      icon={<User className='w-4 h-4' color={btnColor} />}
+                      icon={<User className='h-4 w-4' color={btnColor} />}
                       type='text'
                       onClick={handleOpenFlyer}
-                      className='flex items-center w-full text-left text-black'
+                      className='flex w-full items-center text-left text-black'
                     >
                       Profile
                     </Button>
                     <Button
-                      icon={<Activity className='w-4 h-4' color={btnColor} />}
+                      icon={<Activity className='h-4 w-4' color={btnColor} />}
                       type='text'
-                      className='flex items-center w-full text-left text-black'
+                      className='flex w-full items-center text-left text-black'
                     >
                       Activities
                     </Button>
                     <Popover trigger='click' placement='bottomLeft' content={<ChangeTheme />}>
                       <Button
-                        icon={<Palette className='w-4 h-4' color={btnColor} />}
+                        icon={<Palette className='h-4 w-4' color={btnColor} />}
                         type='text'
-                        className='flex items-center w-full text-left text-black'
+                        className='flex w-full items-center text-left text-black'
                       >
                         Theme
                       </Button>
                     </Popover>
                     <Button
-                      icon={<Settings className='w-4 h-4' color={btnColor} />}
+                      icon={<Settings className='h-4 w-4' color={btnColor} />}
                       type='text'
-                      className='flex items-center w-full text-left text-black'
+                      className='flex w-full items-center text-left text-black'
                     >
                       Setting
                     </Button>
@@ -306,30 +306,30 @@ const Header = () => {
                   <Divider className='my-1' />
                   <div className='flex flex-col gap-y-2'>
                     <Button
-                      icon={<HelpCircle className='w-4 h-4' color={btnColor} />}
+                      icon={<HelpCircle className='h-4 w-4' color={btnColor} />}
                       type='text'
-                      className='relative flex items-center w-full text-left text-black'
+                      className='relative flex w-full items-center text-left text-black'
                     >
                       Help
                       <SquareArrowOutUpRightIcon
-                        className='absolute w-4 h-4 right-1'
+                        className='absolute right-1 h-4 w-4'
                         color={btnColor}
                       />
                     </Button>
                     <Button
-                      icon={<MessageCircle className='w-4 h-4' color={btnColor} />}
+                      icon={<MessageCircle className='h-4 w-4' color={btnColor} />}
                       type='text'
-                      className='flex items-center w-full text-left text-black'
+                      className='flex w-full items-center text-left text-black'
                     >
                       Feedback
                     </Button>
                   </div>
                   <Divider className='my-1' />
                   <Button
-                    icon={<LogOut className='w-4 h-4' color={btnColor} />}
+                    icon={<LogOut className='h-4 w-4' color={btnColor} />}
                     type='text'
                     onClick={handleSignout}
-                    className='flex items-center w-full text-left text-black'
+                    className='flex w-full items-center text-left text-black'
                   >
                     Logout
                   </Button>
@@ -338,8 +338,8 @@ const Header = () => {
               trigger='click'
             >
               <div className='relative'>
-                <div className='w-6 h-6 rounded-full'>
-                  <img src={userProfileImage} className='w-full h-full rounded-full' />
+                <div className='h-6 w-6 rounded-full'>
+                  <img src={userProfileImage} className='h-full w-full rounded-full' />
                 </div>
                 <span className='absolute right-0 top-0 rounded-full bg-[#3db88b] p-1' />
               </div>
@@ -381,7 +381,7 @@ const Content = () => {
         className='flex w-[270px] cursor-pointer flex-col p-2 transition-all hover:bg-slate-100'
       >
         <div className='flex items-center gap-x-2'>
-          <FolderKanban className='w-4 h-4' />
+          <FolderKanban className='h-4 w-4' />
           <Typography.Text className='font-semibold'>Create project</Typography.Text>
         </div>
         <Typography.Text className='text-xs'>
@@ -395,7 +395,7 @@ const Content = () => {
         className='flex w-[270px] cursor-pointer flex-col p-2 transition-all hover:bg-slate-100'
       >
         <div className='flex items-center gap-x-2'>
-          <Users className='w-4 h-4' />
+          <Users className='h-4 w-4' />
           <Typography.Text className='font-semibold'>Create workspace</Typography.Text>
         </div>
         <Typography.Text className='text-xs'>
@@ -406,7 +406,7 @@ const Content = () => {
       <Divider className='my-1' />
       <div className='flex w-[270px] cursor-pointer flex-col p-2 transition-all hover:bg-slate-100'>
         <div className='flex items-center gap-x-2'>
-          <SwatchBook className='w-4 h-4' />
+          <SwatchBook className='h-4 w-4' />
           <Typography.Text className='font-semibold'>Start with sample</Typography.Text>
         </div>
         <Typography.Text className='text-xs'>

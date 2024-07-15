@@ -1,6 +1,5 @@
 import { Divider, Empty, Spin, Typography } from 'antd';
 import TemplateItem from '../components/template-item';
-import TemplateDetailModal from '../components/template-detail';
 import useGetTemplates from '../hooks/use-get-templates';
 import useSearchParam from '@/shared/hooks/use-search-param';
 import { useEffect } from 'react';
@@ -117,7 +116,6 @@ const Template = () => {
           </>
         )}
       </div>
-      <TemplateDetailModal />
     </>
   );
 };

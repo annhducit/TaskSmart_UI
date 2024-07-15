@@ -8,16 +8,16 @@ const Overview = () => {
   const { data: project, isLoading } = useGetProject();
   return (
     <div className='max-w-[1440px]'>
-      <div className='flex flex-col gap-y-4 px-6'>
+      <div className='flex flex-col px-6 gap-y-4'>
         <div className='flex items-center gap-x-5'>
-          <div className='h-20 w-20 rounded'>
+          <div className='w-20 h-20 rounded'>
             {isLoading ? (
               <Spin size='small' />
             ) : (
               <img
-                src={project?.backgroundUnsplash.urls.small}
+                src={project?.backgroundUnsplash?.urls.small}
                 alt=''
-                className='h-full w-full rounded-lg object-cover'
+                className='object-cover w-full h-full rounded-lg'
               />
             )}
           </div>
@@ -31,7 +31,7 @@ const Overview = () => {
               <Tag color='yellow'>Premium</Tag>
               <div className='flex items-center'>
                 <Tag
-                  icon={<LockKeyhole className='mr-1 h-3 w-3' />}
+                  icon={<LockKeyhole className='w-3 h-3 mr-1' />}
                   color='red-inverse'
                   className='flex items-center text-white'
                 >
@@ -43,7 +43,7 @@ const Overview = () => {
         </div>
 
         <div>
-          <Typography.Text className='mb-2 block text-lg text-white'>
+          <Typography.Text className='block mb-2 text-lg text-white'>
             Recent activities
           </Typography.Text>
           <div className='grid grid-cols-3 gap-4'>
@@ -64,7 +64,7 @@ const Overview = () => {
               <p>Card content</p>
             </Card>
           </div>
-          <Typography.Text className='my-2 block text-lg text-white'>
+          <Typography.Text className='block my-2 text-lg text-white'>
             Recent activities
           </Typography.Text>
           <div className='grid grid-cols-3 gap-4'>

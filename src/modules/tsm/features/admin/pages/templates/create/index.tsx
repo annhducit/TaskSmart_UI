@@ -1,8 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Avatar, Button, Form, Input, Select, Steps, Tabs, Typography, Divider, List } from 'antd';
-import { toast } from 'sonner';
+import React, { useMemo, useState } from 'react';
+import { Avatar, Button, Form, Input, Select, Steps, Tabs, Typography } from 'antd';
+
 import { v4 as uuid } from 'uuid';
-import type { SearchProps } from 'antd/es/input';
 import {
   DndContext,
   DragEndEvent,
@@ -15,17 +14,18 @@ import {
 } from '@dnd-kit/core';
 import TaskCard from '../../../components/card';
 import useGetCategories from '@/modules/tsm/components/hooks/use-get-categories';
-import { Check, ListChecks, Plus, Search, User } from 'lucide-react';
+import { ListChecks, Plus, Search, User } from 'lucide-react';
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
 import useCollapse from '@/shared/hooks/use-collapse';
 import PopoverX from '@/shared/components/popover';
-import { tsmAxios } from '@/configs/axios';
 
 import { createPortal } from 'react-dom';
 
 import ColumnContainer from '../../../components/column';
-import { set } from 'lodash';
-import useGetBackground from '@/modules/tsm/features/workspace/hooks/query/use-get-background';
+import useCreateTemplate from '../../../hooks/mutation/use-create-template';
+import dayjs from 'dayjs';
+import { DATE_TIME_FORMAT } from '@/shared/constant/date';
+import BackgroundProject from './components/background-project';
 
 const CreateTemplate: React.FC = () => {
   const [current, setCurrent] = useState(0);
@@ -36,24 +36,14 @@ const CreateTemplate: React.FC = () => {
     name: '',
     description: '',
     categoryId: '',
+    imageUnsplashId: '',
     project: {
       name: '',
-      backgroundColor: '',
-      backgroundUnsplash: {
-        id: '',
-        color: '',
-        urls: {
-          raw: '',
-          full: '',
-          regular: '',
-          small: '',
-          thumb: '',
-        },
-      },
+      background: '',
       description: '',
       listCards: [] as ListCardRequest[],
     },
-    createdDate: '',
+    createdDate: dayjs().format(DATE_TIME_FORMAT),
   });
 
   const next = () => {
@@ -78,31 +68,36 @@ const CreateTemplate: React.FC = () => {
     {
       title: 'Overview',
       content: (
-        <Form
-          layout='vertical'
-          className='p-10 my-4 rounded bg-slate-100'
-          form={form1}
-          onFinish={onSubmitStep1}
-        >
-          <Form.Item label='Name' name='name'>
-            <Input placeholder='Name' />
-          </Form.Item>
-          <Form.Item label='Description' name='description'>
-            <Input.TextArea rows={4} placeholder='Name' />
-          </Form.Item>
-          <Form.Item name='categoryId' label='Category'>
-            <Select
-              className='w-[150px]'
-              placeholder='Select category'
-              options={[
-                ...(categories?.map((category) => ({
-                  label: category.name,
-                  value: category.id,
-                })) || []),
-              ]}
-            />
-          </Form.Item>
-        </Form>
+        <>
+          <div>
+            <BackgroundProject context='FIRST_STEP' setTemplate={setTemplate} />
+          </div>
+          <Form
+            layout='vertical'
+            className='p-10 my-4 rounded bg-slate-100'
+            form={form1}
+            onFinish={onSubmitStep1}
+          >
+            <Form.Item label='Name' name='name'>
+              <Input placeholder='Name' />
+            </Form.Item>
+            <Form.Item label='Description' name='description'>
+              <Input.TextArea rows={4} placeholder='Name' />
+            </Form.Item>
+            <Form.Item name='categoryId' label='Category'>
+              <Select
+                className='w-[150px]'
+                placeholder='Select category'
+                options={[
+                  ...(categories?.map((category) => ({
+                    label: category.name,
+                    value: category.id,
+                  })) || []),
+                ]}
+              />
+            </Form.Item>
+          </Form>
+        </>
       ),
     },
     {
@@ -110,17 +105,13 @@ const CreateTemplate: React.FC = () => {
       content: (
         <div>
           <div>
-            <SubBackground
-              color={template.project.backgroundColor || ''}
-              setTemplate={setTemplate}
-            ></SubBackground>
+            <BackgroundProject context='SECOND_STEP' setTemplate={setTemplate} />
           </div>
           <section
             className='relative mx-auto my-4 h-[600px]  w-[calc(100vw-400px)] rounded-lg bg-cover bg-center bg-no-repeat'
             style={{
               backgroundPosition: 'center',
-              backgroundColor: template.project.backgroundColor,
-              backgroundImage: `url(${template.project.backgroundUnsplash?.urls.raw})`,
+              // backgroundImage: `url(${template.project.background?.urls.regular as string})`,
             }}
           >
             <div className='absolute inset-0 bg-black rounded-lg bg-opacity-40' />
@@ -183,12 +174,81 @@ const CreateTemplate: React.FC = () => {
     },
     {
       title: 'Preview',
-      content: <Button onClick={() => console.log(template)}>Complete</Button>,
+      content: (
+        <section
+          className='relative mx-auto my-4 h-[600px]  w-[calc(100vw-400px)] rounded-lg bg-cover bg-center bg-no-repeat'
+          style={{
+            backgroundPosition: 'center',
+            // backgroundImage: `url(${template.project.background?.urls.regular})`,
+          }}
+        >
+          <div className='absolute inset-0 bg-black rounded-lg bg-opacity-40' />
+          <div className='flex items-start gap-x-2'>
+            <div>
+              <Tabs
+                tabBarGutter={20}
+                className={`custom-tabs-template mb-0 w-[calc(100vw-400px)] text-white`}
+                items={[
+                  {
+                    key: 'project',
+                    label: 'Project',
+                    disabled: true,
+                    children: <CreateContent template={template} setTemplate={setTemplate} />,
+                  },
+                  {
+                    key: 'Kaban',
+                    label: 'Kaban',
+                    children: <div className='px-6'>Overview</div>,
+                  },
+                ]}
+                tabBarExtraContent={{
+                  left: (
+                    <div className='flex items-center mr-8'>
+                      <p className='mr-4 max-w-48 truncate text-[18px] font-bold'>
+                        {template?.name}
+                      </p>
+                    </div>
+                  ),
+                }}
+              />
+            </div>
+
+            <div className='absolute right-6 top-[10px] flex items-center gap-x-4 rounded-lg'>
+              <Button
+                size='middle'
+                className='flex items-center'
+                type='default'
+                icon={<Search size='14' />}
+              >
+                Search
+              </Button>
+              <Button
+                type='primary'
+                size='middle'
+                className='flex items-center gap-x-2'
+                icon={<ListChecks size='14' />}
+              >
+                Add task
+              </Button>
+              <Avatar.Group maxCount={2} className='flex items-center'>
+                <Avatar style={{ backgroundColor: '#f56a00' }} icon={<User size='12' />} />
+                <Avatar style={{ backgroundColor: '#7265e6' }} icon={<User size='12' />} />
+                <Avatar style={{ backgroundColor: '#ffbf00' }} icon={<User size='12' />} />
+              </Avatar.Group>
+            </div>
+          </div>
+        </section>
+      ),
     },
   ];
 
   const items = steps.map((item) => ({ key: item.title, title: item.title }));
 
+  const { mutate: createTemplate, isPending: isLoading } = useCreateTemplate();
+
+  const handleCreateTemplate = () => {
+    createTemplate(template);
+  };
   return (
     <>
       <Typography.Title level={3}>Create Template</Typography.Title>
@@ -203,7 +263,7 @@ const CreateTemplate: React.FC = () => {
             </Button>
           )}
           {current === steps.length - 1 && (
-            <Button type='primary' onClick={() => toast.success('Processing complete!')}>
+            <Button loading={isLoading} type='primary' onClick={handleCreateTemplate}>
               Done
             </Button>
           )}
@@ -245,7 +305,9 @@ const CreateContent = ({
   const [columns, setColumns] = useState<ListCardRequest[]>(template.project.listCards);
 
   const columnsId = useMemo(() => columns.map((col) => col?.id), [columns]);
-  const [cards, setCards] = useState<CardRequest[]>(template.project.listCards.flatMap((col) => col.cards));
+  const [cards, setCards] = useState<CardRequest[]>(
+    template.project.listCards.flatMap((col) => col.cards)
+  );
 
   const [listCard, setListCard] = useState<ListCardRequest>({
     id: '',
@@ -446,245 +508,3 @@ const CreateContent = ({
     }
   }
 };
-
-const SubBackground = ({
-  color,
-  setTemplate,
-}: {
-  color: string;
-  setTemplate: (value: React.SetStateAction<TSMTemplateRequest>) => void;
-}) => {
-  const [listBackground, setListBackground] = useState<UnsplashResponse[]>([]);
-  const [backgroundSearch, setBackgroundSearch] = useState<string>('');
-  const [page, setPage] = useState<number>(1);
-
-  useEffect(() => {
-    const fetchBackground = async () => {
-      try {
-        const { data } = await tsmAxios.get<UnsplashResponse[]>(
-          'unsplash/photos?page=1&per_page=4'
-        );
-        setListBackground(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchBackground();
-  }, []);
-
-  const fetchBackgroundWithoutQuery = async () => {
-    try {
-      const response = await tsmAxios.get<UnsplashResponse[]>('unsplash/photos?page=1&per_page=4');
-      setListBackground((res) => [...res, ...response.data]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const fetchBackground = async (query: string) => {
-    try {
-      const response = await tsmAxios.get<UnsplashResponse[]>(
-        `unsplash/photos?query=${query}&page=${page}&per_page=4`
-      );
-      if (page === 1) setListBackground(response.data);
-      else setListBackground((res) => [...res, ...response.data]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const onLoadMore = () => {
-    if (backgroundSearch) {
-      fetchBackground(backgroundSearch);
-      setPage((pre) => pre + 1);
-    } else {
-      fetchBackgroundWithoutQuery();
-    }
-  };
-
-  const loadMore = (
-    <div
-      style={{
-        textAlign: 'center',
-        marginTop: 12,
-        height: 32,
-        lineHeight: '32px',
-      }}
-    >
-      <Button onClick={onLoadMore}>Load more</Button>
-    </div>
-  );
-
-  const onSearch: SearchProps['onSearch'] = (value, _e, _info) => {
-    if (value) {
-      fetchBackground(value);
-      setPage(2);
-    }
-  };
-
-  const setBackground = (backgoundUns: UnsplashResponse) => {
-    setTemplate((prev) => ({
-      ...prev,
-      project: {
-        ...prev.project,
-        backgroundUnsplash: backgoundUns,
-      },
-    }));
-  };
-
-  const setBackgroundColor = (color: string) => {
-    setTemplate((prev) => ({
-      ...prev,
-      project: {
-        ...prev.project,
-        backgroundColor: color,
-      },
-    }));
-  };
-
-  return (
-    <div className='w-full'>
-      <div className='w-full mx-auto mb-2 transition-transform'>
-        <Typography.Text className='text-base font-semibold'>Temlate background</Typography.Text>
-      </div>
-
-      <div className='w-full'>
-        <Typography.Text className='text-sm'>Wallpaper</Typography.Text>
-        <div>
-          <Input.Search
-            value={backgroundSearch}
-            onChange={(e) => {
-              setBackgroundSearch(e.target.value);
-            }}
-            placeholder='Search image ...'
-            onSearch={onSearch}
-          ></Input.Search>
-        </div>
-        <div className='items-center w-full gap-2 mt-1 mb-2'>
-          <List
-            grid={{ column: 4 }}
-            loadMore={loadMore}
-            dataSource={listBackground}
-            renderItem={(item) => (
-              <div
-                className='ml-[auto] mr-[auto] mt-2 h-[100px] w-[200px] cursor-pointer rounded transition-all hover:brightness-125'
-                onClick={() => setBackground(item)}
-              >
-                <img
-                  src={item.urls.small}
-                  alt='background'
-                  className='object-cover w-full h-full rounded'
-                />
-              </div>
-            )}
-          ></List>
-        </div>
-        <Divider className='my-1' />
-        <Typography.Text className='text-sm'>Color</Typography.Text>
-        <div className='flex flex-wrap items-center w-full gap-2 mt-1 justify-evenly'>
-          {listColor.map((item) => (
-            <div
-              onClick={() => setBackgroundColor(item.color)}
-              style={{
-                backgroundColor: item.color,
-              }}
-              className={`relative h-[32px] w-[50px] cursor-pointer rounded transition-all hover:brightness-125`}
-            >
-              {item.color === color && (
-                <Check className='absolute w-4 h-4 text-white right-4 top-2' />
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const listColor = [
-  {
-    id: 1,
-    name: 'Color 1',
-    color: '#0079bf',
-  },
-  {
-    id: 2,
-    name: 'Color 2',
-    color: '#d29034',
-  },
-  {
-    id: 3,
-    name: 'Color 3',
-    color: '#519839',
-  },
-  {
-    id: 4,
-    name: 'Color 4',
-    color: '#b04632',
-  },
-  {
-    id: 5,
-    name: 'Color 5',
-    color: '#89609e',
-  },
-  {
-    id: 6,
-    name: 'Color 6',
-    color: '#cd5a91',
-  },
-  {
-    id: 7,
-    name: 'Color 7',
-    color: '#4bbf6b',
-  },
-  {
-    id: 8,
-    name: 'Color 8',
-    color: '#00aecc',
-  },
-  {
-    id: 9,
-    name: 'Color 9',
-    color: '#838c91',
-  },
-  {
-    id: 10,
-    name: 'Color 10',
-    color: '#7f77f1',
-  },
-  {
-    id: 11,
-    name: 'Color 11',
-    color: '#6985ff',
-  },
-  {
-    id: 12,
-    name: 'Color 12',
-    color: '#1090e0',
-  },
-  {
-    id: 13,
-    name: 'Color 13',
-    color: '#0f9d9f',
-  },
-  {
-    id: 14,
-    name: 'Color 14',
-    color: '#3db88b',
-  },
-  {
-    id: 15,
-    name: 'Color 15',
-    color: '#e16b16',
-  },
-  {
-    id: 16,
-    name: 'Color 16',
-    color: '#ee5e99',
-  },
-  {
-    id: 17,
-    name: 'Color 17',
-    color: '#b660e0',
-  },
-];

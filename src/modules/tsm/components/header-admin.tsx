@@ -1,10 +1,27 @@
 import { Button, Divider, Input, Popover, Typography } from 'antd';
 import { Bell, LogOut, Mail, Settings, User } from 'lucide-react';
 import admin from '@/assets/images/user.png';
+import { useDispatch, useSelector } from '@/store';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
+import { forceSignOut } from '@/store/auth';
 
 const HeaderAdmin = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const isSignedIn = useSelector((state) => state.auth.isSignedIn);
+  const isLoaded = useSelector((state) => state.auth.isLoaded);
+  const handleSignout = () => {
+    dispatch(forceSignOut());
+    toast.success('You have been signed out successfully');
+    navigate('/auth/sign-in');
+    if (!isSignedIn || !isLoaded) {
+      return null;
+    }
+  };
   return (
-    <header className='relative px-6 py-3 bg-white border border-solid border-b-slate-200 border-l-transparent border-r-transparent border-t-transparent'>
+    <header className='relative border border-solid border-b-slate-200 border-l-transparent border-r-transparent border-t-transparent bg-white px-6 py-3'>
       <div className='flex items-center justify-between'>
         <div>
           <Typography.Text className='text-xl font-semibold'>Header Admin</Typography.Text>
@@ -27,25 +44,26 @@ const HeaderAdmin = () => {
                   <div className='flex flex-col gap-y-3'>
                     <div className='flex flex-col gap-y-2'>
                       <Button
-                        icon={<User className='w-4 h-4' />}
+                        icon={<User className='h-4 w-4' />}
                         type='text'
                         onClick={() => {}}
-                        className='flex items-center w-full text-left text-black'
+                        className='flex w-full items-center text-left text-black'
                       >
                         Profile
                       </Button>
                       <Button
-                        icon={<Settings className='w-4 h-4' />}
+                        icon={<Settings className='h-4 w-4' />}
                         type='text'
-                        className='flex items-center w-full text-left text-black'
+                        className='flex w-full items-center text-left text-black'
                       >
                         Setting
                       </Button>
                       <Divider className='my-[1px]' />
                       <Button
-                        icon={<LogOut className='w-4 h-4' />}
+                        icon={<LogOut className='h-4 w-4' />}
                         type='text'
-                        className='flex items-center w-full text-left text-black'
+                        onClick={handleSignout}
+                        className='flex w-full items-center text-left text-black'
                       >
                         Logout
                       </Button>
@@ -54,8 +72,8 @@ const HeaderAdmin = () => {
                 }
                 trigger='hover'
               >
-                <div className='rounded-full h-9 w-9'>
-                  <img src={admin} className='w-full h-full rounded-full' />
+                <div className='h-9 w-9 rounded-full'>
+                  <img src={admin} className='h-full w-full rounded-full' />
                 </div>
               </Popover>
             </div>
