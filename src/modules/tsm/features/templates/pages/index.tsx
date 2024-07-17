@@ -31,7 +31,7 @@ const Template = () => {
   const { btnColor } = useSelector((state) => state.theme);
   return (
     <>
-      <div className='flex flex-col gap-y-2 px-2 pb-6'>
+      <div className='flex flex-col px-2 pb-6 gap-y-2'>
         <div className='flex items-center justify-between'>
           <Typography.Title level={4}>
             {categoryId ? `${category?.name} Templates` : 'All Templates'}
@@ -130,7 +130,7 @@ const TemplateSection = ({
   templates: TSMTemplate[];
 }) => {
   return (
-    <div className='mb-2 flex flex-col gap-y-2'>
+    <div className='flex flex-col mb-2 gap-y-2'>
       <Typography.Text className='text-base'>{title}</Typography.Text>
       <div className='grid grid-cols-4 gap-4'>
         {templates?.map((item, index) => <TemplateItem template={item} key={index} />)}

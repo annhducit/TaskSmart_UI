@@ -40,9 +40,9 @@ const routers = createRouters([
         element: (
           <Authenticated fallback={<AuthNavigate />}>
             <UserInformation>
-              <CheckRole>
-                <PrivateRouter />
-              </CheckRole>
+              {/* <CheckRole> */}
+              <PrivateRouter />
+              {/* </CheckRole> */}
             </UserInformation>
           </Authenticated>
         ),

@@ -2,7 +2,6 @@ import { Input } from 'antd';
 import { debounce } from 'lodash';
 import { SearchIcon } from 'lucide-react';
 import useSearchParam from '../hooks/use-search-param';
-import FormItem from 'antd/lib/form/FormItem';
 import { SEARCH_PARAMS } from '../constant/search-param';
 
 const SearchParam = {
@@ -12,7 +11,7 @@ const SearchParam = {
     return (
       <div>
         <Input
-          suffix={<SearchIcon className='w-4 h-4 text-gray-400' />}
+          suffix={<SearchIcon className='h-4 w-4 text-gray-400' />}
           size='middle'
           placeholder='Something...'
           defaultValue={keyword}

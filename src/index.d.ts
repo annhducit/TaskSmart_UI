@@ -243,3 +243,32 @@ type TSMTemplateRequest = {
   };
   createdDate: TSMTemplate['createdDate'];
 };
+
+type TSMProjectSearch = {
+  id: string;
+  name: string;
+  backgroundColor: string;
+  backgroundUnsplash: UnsplashResponse;
+  workspace: Partial<Workspace>;
+};
+
+type TSMListCardSearch = {
+  id: string;
+  name: string;
+  project: TSMProjectSearch;
+};
+
+type TSMCardSearch = {
+  id: string;
+  name: string;
+  project: TSMProjectSearch;
+};
+
+type TSMSearchEverything = {
+  workspaces: Partial<Workspace>[];
+  projects: TSMProjectSearch[];
+  listCards: TSMListCardSearch[];
+  cards: TSMCardSearch[];
+  templates: TSMTemplate[];
+  notes: TSMNote[];
+};

@@ -6,10 +6,10 @@ const CheckRole = (props: PropsWithChildren) => {
   const { children } = props;
 
   const navigate = useNavigate();
-  const role = useSelector((store) => store.user?.data?.role).toString();
+  const role = useSelector((store) => store.user?.data?.role)?.toString();
 
   useEffect(() => {
-    if (role === 'ADMIN') {
+    if (role.includes('ADMIN')) {
       navigate('/admin/dashboard');
       return;
     }

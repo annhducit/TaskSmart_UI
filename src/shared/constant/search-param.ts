@@ -49,6 +49,7 @@ export enum SEARCH_PARAMS_VALUE {
   PROFILE_IMAGE = 'profile-image',
   MODIFY_CATEGORY = 'modify-category',
   BACKGROUND = 'background',
+  SEARCH_ALL = 'search-all',
 
   PROFILE = 'profile',
   CARD = 'card',

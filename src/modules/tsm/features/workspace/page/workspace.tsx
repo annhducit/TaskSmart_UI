@@ -1,11 +1,11 @@
 import { Divider, Menu, MenuProps, Spin, Typography } from 'antd';
 import ProjectItem from '../components/project/project-item';
 
-import myBackgroundImage from '@/assets/images/karban.png';
 import useGetWorkspaces from '../hooks/query/use-get-workspaces';
 import useGetProfile from '@/modules/tsm/components/hooks/use-profile';
 import useGetWorkspace from '../hooks/query/use-get-workspace';
 import { useNavigate } from 'react-router-dom';
+import { listColor } from '@/shared/data';
 
 /**
  *
@@ -33,20 +33,41 @@ const Workspace = () => {
   const { data: workspace, isPending } = useGetWorkspace();
   const { data: profile } = useGetProfile();
 
-  const items: MenuItem[] =
-    workspaces?.map((item) =>
-      getItem(
+  const items: MenuItem[] = [
+    {
+      key: 'all',
+      label: 'All workspace',
+      icon: (
+        <div className='flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl text-lg font-bold text-white'>
+          All
+        </div>
+      ),
+    },
+
+    ...(workspaces?.map((item) => {
+      const colorRandom = listColor[Math.floor(Math.random() * listColor.length)].color;
+      return getItem(
         item.name,
         item.id.toString(),
-        <img className='h-10 w-10 rounded' src={item.backgroundUnsplash || myBackgroundImage} />
-      )
-    ) || [];
+        <div
+          style={{
+            backgroundColor: colorRandom,
+            color: 'white',
+          }}
+          className='flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl text-lg font-bold text-white'
+        >
+          {item?.name.charAt(0).toUpperCase()}
+        </div>
+      );
+    }) || []),
+  ];
 
   const onClick: MenuProps['onClick'] = (e) => {
+    if (e.key === 'all') return;
     navigate(`../../../tsm/workspaces/${e.key}`);
   };
   return (
-    <div className='flex h-screen flex-col gap-y-2 overflow-y-scroll'>
+    <div className='mb-10 flex h-screen flex-col gap-y-2 overflow-y-scroll'>
       <Typography.Title level={3}>Recent viewed</Typography.Title>
       <div className='grid grid-cols-4 gap-6'>
         {profile?.projects.slice(0, 2).map((item) => <ProjectItem key={item.id} project={item} />)}
@@ -61,7 +82,7 @@ const Workspace = () => {
             activeKey='1'
             className='flex flex-col gap-y-1'
             style={{ width: 280 }}
-            defaultSelectedKeys={['1']}
+            defaultSelectedKeys={['all']}
             items={items}
           />
         </div>

@@ -51,77 +51,83 @@ const AIFeature = () => {
   ];
 
   return (
-    <section className='flex h-screen flex-col gap-y-6 overflow-y-scroll'>
-      <div className='flex items-center justify-center'>
-        <div
-          style={{
-            borderColor: btnColor,
-          }}
-          className='flex w-[90%] flex-col gap-y-4 rounded border-2 border-solid  bg-white p-4'
-        >
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center gap-x-2'>
-              <FileUp size={22} color={btnColor} className='opacity-100 ' />
-              <Typography.Text className='font-bold'>Upload files</Typography.Text>
-            </div>
-            <Button
-              icon={<Trash className='flex h-3 w-3 items-center gap-x-2 text-red-500' />}
-              className='flex items-center'
+    <section className=''>
+      <div className='grid grid-cols-7'>
+        <div className='col-span-2'>
+          <div className='flex items-center justify-center'>
+            <div
+              style={{
+                borderColor: btnColor,
+              }}
+              className='flex w-[90%] flex-col gap-y-4  rounded-xl border-2 border-solid  bg-white p-4'
             >
-              Remove all
-            </Button>
-          </div>
-          <Dragger
-            {...props}
-            height={180}
-            style={{
-              backgroundColor: '#eff4f8',
-            }}
-          >
-            <div className='ant-upload-drag-icon mx-auto'>
-              <div
+              <div className='flex items-center justify-between'>
+                <div className='flex items-center gap-x-2'>
+                  <FileUp size={22} color={btnColor} className='opacity-100 ' />
+                  <Typography.Text className='font-bold'>Upload files</Typography.Text>
+                </div>
+                <Button
+                  icon={<Trash className='flex h-3 w-3 items-center gap-x-2 text-red-500' />}
+                  className='flex items-center'
+                >
+                  Remove all
+                </Button>
+              </div>
+              <Dragger
+                {...props}
                 style={{
-                  borderColor: btnColor,
+                  backgroundColor: '#eff4f8',
                 }}
-                className='mx-auto flex h-14 w-14 items-center justify-center rounded-lg border-2 border-dashed bg-transparent'
+                className='h-[calc(100vh-260px)]'
               >
-                <UploadCloud
-                  size={24}
-                  className=''
-                  style={{
-                    color: btnColor,
-                  }}
-                />
+                <div className='ant-upload-drag-icon mx-auto'>
+                  <div
+                    style={{
+                      borderColor: btnColor,
+                    }}
+                    className='mx-auto flex h-20 w-20 items-center justify-center rounded-lg border-2 border-dashed bg-transparent'
+                  >
+                    <UploadCloud
+                      size={24}
+                      className=''
+                      style={{
+                        color: btnColor,
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className='flex flex-col gap-y-4 py-4'>
+                  <Typography.Text
+                    className='block font-semibold '
+                    style={{
+                      color: btnColor,
+                    }}
+                  >
+                    Select files on your computer
+                  </Typography.Text>
+                  <Typography.Text className='block text-slate-400'>
+                    Or transfer files by dragging and dropping them into the area
+                  </Typography.Text>
+                </div>
+              </Dragger>
+              <div className='ml-auto flex items-center gap-x-2'>
+                <Button danger>Cancel</Button>
+                <Button type='primary'>Upload</Button>
               </div>
             </div>
-            <div className='py-4'>
-              <Typography.Text
-                className='block font-semibold '
-                style={{
-                  color: btnColor,
-                }}
-              >
-                Select files on your computer
-              </Typography.Text>
-              <Typography.Text className='block text-slate-400'>
-                Or transfer files by dragging and dropping them into the area
-              </Typography.Text>
-            </div>
-          </Dragger>
-          <div className='ml-auto flex items-center gap-x-2'>
-            <Button danger>Cancel</Button>
-            <Button type='primary'>Upload</Button>
           </div>
         </div>
-      </div>
 
-      <Tabs
-        onChange={onChangeTab}
-        tabBarGutter={12}
-        className={`custom-tabs-ai mb-0 text-white`}
-        type='card'
-        items={items}
-      />
+        <div className='col-span-5 mr-2'>
+          <Tabs
+            onChange={onChangeTab}
+            tabBarGutter={12}
+            className={`custom-tabs-ai mb-0 text-white`}
+            type='card'
+            items={items}
+          />
+        </div>
+      </div>
     </section>
   );
 };

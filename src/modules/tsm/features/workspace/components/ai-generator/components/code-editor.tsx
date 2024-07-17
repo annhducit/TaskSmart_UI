@@ -15,6 +15,7 @@ import 'prismjs/themes/prism-solarizedlight.css'; // Solarized Light theme
 import 'prismjs/themes/prism-coy.css'; // Coy theme
 import 'prismjs/themes/prism-twilight.css'; // Twilight theme
 import 'prismjs/themes/prism-dark.css'; // Dark theme
+import 'prismjs/themes/prism-funky.css'; // Funky theme
 
 const SqlEditor = ({ code, onChange }: { code: string; onChange: (code: string) => void }) => {
   const [theme, setTheme] = useState<string>('prism');
@@ -24,24 +25,27 @@ const SqlEditor = ({ code, onChange }: { code: string; onChange: (code: string) 
   };
 
   return (
-    <div className='flex flex-col gap-y-1'>
-      <div className='flex items-center justify-end gap-x-2'>
-        <Typography.Text className='block'>Theme</Typography.Text>
-        <Select onChange={handleThemeChange} className='w-[200px]' defaultValue='prism'>
-          <Select.Option value='prism'>Default</Select.Option>
-          <Select.Option value='prism-tomorrow'>Tomorrow</Select.Option>
-          <Select.Option value='prism-okaidia'>Okaidia</Select.Option>
-          <Select.Option value='prism-solarizedlight'>Solarized Light</Select.Option>
-          <Select.Option value='prism-coy'>Coy</Select.Option>
-          <Select.Option value='prism-twilight'>Twilight</Select.Option>
-          <Select.Option value='prism-dark'>Dark</Select.Option>
-        </Select>
+    <div className='mb-60 flex flex-col gap-y-1'>
+      <div className='flex items-center justify-between'>
+        <Typography.Text className='block'>Your AI-generated SQL query:</Typography.Text>{' '}
+        <div className='flex items-center justify-end gap-x-2'>
+          <Typography.Text className='block'>Theme</Typography.Text>
+          <Select onChange={handleThemeChange} className='w-[200px]' defaultValue='prism'>
+            <Select.Option value='prism'>Default</Select.Option>
+            <Select.Option value='prism-tomorrow'>Tomorrow</Select.Option>
+            <Select.Option value='prism-okaidia'>Okaidia</Select.Option>
+            <Select.Option value='prism-solarizedlight'>Solarized Light</Select.Option>
+            <Select.Option value='prism-coy'>Coy</Select.Option>
+            <Select.Option value='prism-twilight'>Twilight</Select.Option>
+            <Select.Option value='prism-dark'>Dark</Select.Option>
+          </Select>
+        </div>
       </div>
       <div className={`${theme}`}>
         <Editor
           value={code}
           onValueChange={onChange}
-          className='p-4 rounded-lg card-ai'
+          className='card-ai rounded-lg p-4'
           highlight={(code) => highlight(code, languages.sql, 'sql')}
           padding={10}
           style={{

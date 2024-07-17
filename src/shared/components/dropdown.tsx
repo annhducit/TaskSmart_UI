@@ -7,6 +7,7 @@ export interface DropdownProps {
   onClick?: MouseEventHandler<HTMLAnchorElement>;
   icon?: React.ReactNode;
   items?: MenuProps['items'];
+  className?: string;
   trigger?: 'click' | 'hover';
 }
 

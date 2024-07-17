@@ -7,6 +7,7 @@ import { DATE_TIME_FORMAT } from '@/shared/constant/date';
 import useRemoveNote from '../hooks/action/use-remove-note';
 import useEditNote from '../hooks/mutation/use-edit-note';
 import { useEffect, useRef, useState } from 'react';
+import TextEditor from '@/shared/components/text-editor';
 
 type NoteListProps = {
   data: TSMNote[];
@@ -57,7 +58,7 @@ const NoteList = ({ data, setView, setNoteTitle }: NoteListProps) => {
   return (
     <>
       {data?.map((item) => (
-        <div key={item.id} className='group flex flex-col px-4 transition-all'>
+        <div key={item.id} className='flex flex-col px-4 transition-all group'>
           <div className='flex items-center justify-between'>
             <div
               className='flex w-[230px] cursor-pointer flex-col gap-y-1'
@@ -68,7 +69,7 @@ const NoteList = ({ data, setView, setNoteTitle }: NoteListProps) => {
               }}
             >
               <div className='flex items-center gap-x-2'>
-                {item.archived && <ArchiveIcon className='h-3 w-3 opacity-40' />}
+                {item.archived && <ArchiveIcon className='w-3 h-3 opacity-40' />}
                 {isEdit && editNoteId === item.id ? (
                   <Input
                     ref={inpRef}
@@ -81,19 +82,28 @@ const NoteList = ({ data, setView, setNoteTitle }: NoteListProps) => {
                   <Typography.Text className='text-sm font-semibold'>{item.title}</Typography.Text>
                 )}
               </div>
-              <div className='flex items-center gap-x-2 opacity-40'>
-                <Typography.Text className='text-xs'>
+
+              <TextEditor
+                className='w-64 text-xs truncate'
+                style={{
+                  fontSize: '8px',
+                }}
+                initialContent={item.content as string}
+              />
+
+              <div className='flex items-center float-right gap-x-2 opacity-40 '>
+                <Typography.Text className='text-xs italic'>
                   {dayjs(item.createdAt).format(DATE_TIME_FORMAT)}
                 </Typography.Text>
-                <CalendarClock className='h-3 w-3' />
+                <CalendarClock className='w-3 h-3' />
               </div>
             </div>
-            <div className='hidden items-center gap-x-3 group-hover:flex'>
+            <div className='items-center hidden gap-x-3 group-hover:flex'>
               {isEdit && editNoteId === item.id ? (
                 <Tooltip title='Save' color='black'>
                   <div
                     onClick={() => handleEditNote(item)}
-                    className='cursor-pointer rounded px-1 hover:bg-slate-200'
+                    className='px-1 rounded cursor-pointer hover:bg-slate-200'
                   >
                     <Save className='h-[14px] w-[14px]' />
                   </div>
@@ -102,7 +112,7 @@ const NoteList = ({ data, setView, setNoteTitle }: NoteListProps) => {
                 <Tooltip title='Rename' color='black'>
                   <div
                     onClick={() => handleEditNote(item)}
-                    className='cursor-pointer rounded px-1 hover:bg-slate-200'
+                    className='px-1 rounded cursor-pointer hover:bg-slate-200'
                   >
                     <Pen className='h-[14px] w-[14px]' />
                   </div>
@@ -116,7 +126,7 @@ const NoteList = ({ data, setView, setNoteTitle }: NoteListProps) => {
                       archived: !item.archived,
                     })
                   }
-                  className='cursor-pointer rounded px-1 hover:bg-slate-200'
+                  className='px-1 rounded cursor-pointer hover:bg-slate-200'
                 >
                   <Archive className='h-[14px] w-[14px]' />
                 </div>
@@ -124,7 +134,7 @@ const NoteList = ({ data, setView, setNoteTitle }: NoteListProps) => {
               <Tooltip title='Delete' color='black'>
                 <div
                   onClick={() => removeNote(item.id)}
-                  className='cursor-pointer rounded px-1 hover:bg-slate-200'
+                  className='px-1 rounded cursor-pointer hover:bg-slate-200'
                 >
                   <Trash className='h-[14px] w-[14px] text-red-500' />
                 </div>

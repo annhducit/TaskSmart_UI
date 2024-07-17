@@ -213,13 +213,19 @@ html *::-webkit-scrollbar:horizontal {
   @apply text-sm;
   @apply font-semibold;
   @apply mt-2 !important;
-  /* @apply text-xs !important; */
+  @apply rounded-t-lg !important;
+  @apply text-xs !important;
 }
 
 .custom-tabs-ai .ant-tabs-nav {
   @apply bg-gray-600 bg-opacity-50 backdrop-blur-sm;
   @apply backdrop-filter;
   @apply bg-black/50 shadow-lg;
+  @apply rounded-t-xl !important;
+}
+
+.custom-tabs-ai .ant-tabs-content {
+  /* @apply rounded-xl !important; */
 }
 
 .card-ai {

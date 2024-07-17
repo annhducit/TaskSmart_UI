@@ -42,7 +42,7 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
         style={{
           backgroundColor: color,
         }}
-        className='relative flex items-center justify-between rounded-tl-md rounded-tr-md p-3'
+        className='relative flex items-center justify-between p-3 rounded-tl-md rounded-tr-md'
       >
         <>
           {view === 0 && (
@@ -52,7 +52,7 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
                   className='rounded px-[6px] hover:bg-[#33607e]'
                   onClick={() => setSearch(true)}
                 >
-                  <Search className='mt-1 h-5 w-5 text-white' />
+                  <Search className='w-5 h-5 mt-1 text-white' />
                 </div>
               ) : (
                 <div
@@ -63,7 +63,7 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
                     refetch();
                   }}
                 >
-                  <X className='mt-1 h-5 w-5 text-white' />
+                  <X className='w-5 h-5 mt-1 text-white' />
                 </div>
               )}
               <>
@@ -88,11 +88,11 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
                     setNoteTitle('Notepad');
                   }}
                 >
-                  <ChevronLeft className='mt-1 h-5 w-5 text-white' />
+                  <ChevronLeft className='w-5 h-5 mt-1 text-white' />
                 </div>
               )}
               <div>
-                <Typography.Text className='text-md font-semibold text-white'>
+                <Typography.Text className='font-semibold text-white text-md'>
                   {view === 0 ? 'Notepad' : noteTitle}
                 </Typography.Text>
               </div>
@@ -107,13 +107,13 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
                             key: '1',
                             label: `${isArchived ? 'Hide archived' : 'Show archived'}`,
                             onClick: () => setIsArchived((prev) => !prev),
-                            icon: <Archive className='h-3 w-3 text-blue-500' />,
+                            icon: <Archive className='w-3 h-3 text-blue-500' />,
                           },
                         ],
                       }}
                     >
                       <div className='flex items-center rounded px-[6px] py-1 transition-all hover:bg-[#33607e]'>
-                        <Ellipsis className='h-5 w-5 text-white' />
+                        <Ellipsis className='w-5 h-5 text-white' />
                       </div>
                     </Dropdown>
                   )}
@@ -125,23 +125,23 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
                           {
                             key: '1',
                             label: 'Rename',
-                            icon: <Pen className='h-3 w-3 text-blue-500' />,
+                            icon: <Pen className='w-3 h-3 text-blue-500' />,
                           },
                           {
                             key: '2',
                             label: ` ${isArchived ? 'Unarchive' : 'Archive'}`,
-                            icon: <Archive className='h-3 w-3 text-blue-500' />,
+                            icon: <Archive className='w-3 h-3 text-blue-500' />,
                           },
                           {
                             key: '3',
                             label: 'Delete',
-                            icon: <Trash className='h-3 w-3 text-red-500' />,
+                            icon: <Trash className='w-3 h-3 text-red-500' />,
                           },
                         ],
                       }}
                     >
                       <div className='flex items-center rounded px-[6px] py-1 transition-all hover:bg-[#33607e]'>
-                        <Ellipsis className='h-5 w-5 text-white' />
+                        <Ellipsis className='w-5 h-5 text-white' />
                       </div>
                     </Dropdown>
                   )}
@@ -150,7 +150,7 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
                     className='flex items-center rounded px-[6px] py-1 transition-all hover:bg-[#33607e]'
                     onClick={() => visible(false)}
                   >
-                    <X className='h-5 w-5 text-white' />
+                    <X className='w-5 h-5 text-white' />
                   </div>
                 </div>
               </div>
@@ -166,7 +166,7 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
           {view === 0 && (
             <div className='h-[310px] overflow-y-scroll'>
               {isLoading ? (
-                <div className='flex h-full items-center justify-center'>
+                <div className='flex items-center justify-center h-full'>
                   <Loading.Spinner />
                 </div>
               ) : (
@@ -198,7 +198,7 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
           value={note}
           onChange={(e) => setNote(e.target.value)}
           onPressEnter={handleCreateNote}
-          className='border-none py-2 pl-6 outline-none focus-within:border-none focus:border-none focus:outline-none focus:ring-0'
+          className='py-2 pl-6 border-none outline-none focus-within:border-none focus:border-none focus:outline-none focus:ring-0'
         />
 
         {note.length > 0 && (
@@ -219,14 +219,20 @@ export const Notepad = ({ visible }: { visible: (newOpen: boolean) => void }) =>
 export default Notepad;
 
 const SearchNote = ({ onChange }: { onChange: (value: string) => void }) => {
+  const { btnColor } = useSelector((state) => state.theme);
   return (
     <div className='w-[290px] items-center gap-x-6 '>
       <Input
         size='middle'
         placeholder='Search note...'
+        style={{
+          backgroundColor: btnColor,
+        }}
         onChange={(e) => onChange(e.target.value)}
-        allowClear
-        className='rounded-lg border-none bg-[#33607e] pl-6 text-[14px] font-semibold  text-black outline-none focus-within:border-none focus:border-none focus:outline-none focus:ring-0'
+        allowClear={{
+          clearIcon: <X className='w-3 h-3 font-semibold text-white' />,
+        }}
+        className='rounded-xl border-none pl-6 text-[14px] font-semibold  text-white outline-none focus-within:border-none focus:border-none focus:outline-none focus:ring-0'
       />
     </div>
   );
