@@ -1,6 +1,6 @@
 import { useSelector } from '@/store';
 import { App, Button, Tabs, TabsProps, Typography, Upload, UploadProps } from 'antd';
-import { FileUp, Trash, UploadCloud } from 'lucide-react';
+import { FileUp, Trash, UploadCloud, UploadIcon } from 'lucide-react';
 import TaskGenerate from './components/task-generate';
 import { dataGenerate } from './components/file';
 import SQLGenerate from './components/sql-generate';
@@ -112,7 +112,17 @@ const AIFeature = () => {
               </Dragger>
               <div className='ml-auto flex items-center gap-x-2'>
                 <Button danger>Cancel</Button>
-                <Button type='primary'>Upload</Button>
+                <Button
+                  icon={<UploadIcon size={14} />}
+                  type='text'
+                  className='flex items-center'
+                  style={{
+                    backgroundColor: btnColor,
+                    color: '#fff',
+                  }}
+                >
+                  Upload
+                </Button>
               </div>
             </div>
           </div>

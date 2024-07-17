@@ -1,8 +1,7 @@
-import { Button, Popover, Select, Space, Table as TableContent, Tag } from 'antd';
+import { Button, Popover, Select, Space, Table as TableContent, Tag, Typography } from 'antd';
 import type { TableProps } from 'antd';
 import { Eye, FileDigit, Hand, Image, PawPrint, Pen, Plus, Text, Trash } from 'lucide-react';
 import useGetTemplates from '../../../templates/hooks/use-get-templates';
-import backgroundPJ from '@/assets/images/karban.png';
 import useRemoveTemplateConfirm from '../../hooks/action/use-remove-template.-confirm';
 import SearchParam from '@/shared/components/search-param';
 import useGetCategories from '@/modules/tsm/components/hooks/use-get-categories';
@@ -10,7 +9,7 @@ import { useEffect, useState } from 'react';
 import useSearchParam from '@/shared/hooks/use-search-param';
 import { SEARCH_PARAMS } from '@/shared/constant/search-param';
 import useSearchTemplate from '../../hooks/query/use-search-template';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Tooltip from '@/shared/components/tooltip';
 const Template = () => {
   const columns: TableProps<TSMTemplate>['columns'] = [
@@ -30,9 +29,9 @@ const Template = () => {
       ),
       key: 'imageUrl',
       width: 180,
-      render: (_imageUrl) => (
+      render: (_imageUrl, record) => (
         <div className='flex items-center justify-center'>
-          <img className='h-10 w-10 rounded' src={backgroundPJ} />
+          <img className='h-10 w-10 rounded' src={record.image?.urls?.small} />
         </div>
       ),
     },
@@ -47,7 +46,9 @@ const Template = () => {
       key: 'name',
       render: (text, record) => (
         <Tooltip color='black' title='Click to view detail'>
-          <Link to={`../../admin/template-detail/${record.id}`}>{text}</Link>
+          <Typography.Text onClick={() => navigate(`../template-detail/${record.id}`)}>
+            {text}
+          </Typography.Text>
         </Tooltip>
       ),
     },

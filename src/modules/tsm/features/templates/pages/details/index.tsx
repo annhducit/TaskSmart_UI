@@ -26,7 +26,8 @@ import { createPortal } from 'react-dom';
 import { TaskCard } from '../../../workspace/components/project/move-card';
 import ModifyCard from '../../../workspace/components/project/modify-card/modify-card';
 import { useSelector } from '@/store';
-const TemplateDetail = () => {
+type Context = 'ADMIN' | 'USER';
+const TemplateDetail = ({ context = 'USER' }: { context: Context }) => {
   const { data: template, isLoading: isLoadingDT } = useGetTemplate();
   const { data: templates, isLoading } = useGetTemplates();
 
@@ -55,19 +56,21 @@ const TemplateDetail = () => {
                 </Typography.Text>
               </div>{' '}
             </div>
-            <Popover trigger='click' placement='leftBottom' content={<CreateProjectBySample />}>
-              <Button
-                style={{
-                  backgroundColor: btnColor,
-                  color: 'white',
-                }}
-                size='large'
-                type='primary'
-                icon={<AudioWaveform className='flex items-center' size='14' />}
-              >
-                Use template
-              </Button>
-            </Popover>
+            {context === 'USER' && (
+              <Popover trigger='click' placement='leftBottom' content={<CreateProjectBySample />}>
+                <Button
+                  style={{
+                    backgroundColor: btnColor,
+                    color: 'white',
+                  }}
+                  size='large'
+                  type='primary'
+                  icon={<AudioWaveform className='flex items-center' size='14' />}
+                >
+                  Use template
+                </Button>
+              </Popover>
+            )}
           </>
         )}
       </div>

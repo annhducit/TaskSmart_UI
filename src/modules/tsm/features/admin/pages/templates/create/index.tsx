@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Avatar, Button, Form, Input, Select, Steps, Tabs, Typography } from 'antd';
+import { Avatar, Button, Form, Input, Select, Steps, Tabs, Tooltip, Typography } from 'antd';
 
 import { v4 as uuid } from 'uuid';
 import {
@@ -14,7 +14,7 @@ import {
 } from '@dnd-kit/core';
 import TaskCard from '../../../components/card';
 import useGetCategories from '@/modules/tsm/components/hooks/use-get-categories';
-import { ListChecks, Plus, Search, User } from 'lucide-react';
+import { ListChecks, Pen, Plus, Search, User } from 'lucide-react';
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
 import useCollapse from '@/shared/hooks/use-collapse';
 import PopoverX from '@/shared/components/popover';
@@ -30,7 +30,7 @@ import BackgroundProject from './components/background-project';
 const CreateTemplate: React.FC = () => {
   const [current, setCurrent] = useState(0);
 
-  const [form1] = Form.useForm();
+  const [form] = Form.useForm();
 
   const [template, setTemplate] = useState<TSMTemplateRequest>({
     name: '',
@@ -38,13 +38,15 @@ const CreateTemplate: React.FC = () => {
     categoryId: '',
     imageUnsplashId: '',
     project: {
-      name: '',
+      name: 'Project sample',
       background: '',
       description: '',
       listCards: [] as ListCardRequest[],
     },
     createdDate: dayjs().format(DATE_TIME_FORMAT),
   });
+
+  const [background, setBackground] = useState<string>('');
 
   const next = () => {
     setCurrent(current + 1);
@@ -57,11 +59,37 @@ const CreateTemplate: React.FC = () => {
   const { data: categories } = useGetCategories();
 
   const onSubmitStep1 = () => {
-    form1.validateFields().then((values) => {
-      setTemplate((prev) => ({ ...prev, ...values }));
+    if (current === 0) {
+      form.validateFields().then((values) => {
+        if (values.name && values.description && values.categoryId) {
+          setTemplate((prev) => ({ ...prev, ...values }));
 
+          next();
+        } else {
+          form.setFields([
+            {
+              name: 'name',
+              errors: ['Name is required'],
+            },
+            {
+              name: 'description',
+              errors: ['Description is required'],
+            },
+            {
+              name: 'categoryId',
+              errors: ['Category is required'],
+            },
+          ]);
+        }
+      });
+    } else {
       next();
-    });
+    }
+    // form.validateFields().then((values) => {
+    //   setTemplate((prev) => ({ ...prev, ...values }));
+
+    //   next();
+    // });
   };
 
   const steps = [
@@ -69,23 +97,21 @@ const CreateTemplate: React.FC = () => {
       title: 'Overview',
       content: (
         <>
-          <div>
-            <BackgroundProject context='FIRST_STEP' setTemplate={setTemplate} />
-          </div>
           <Form
             layout='vertical'
-            className='p-10 my-4 rounded bg-slate-100'
-            form={form1}
+            className='my-4 rounded bg-slate-100 p-10'
+            form={form}
             onFinish={onSubmitStep1}
           >
             <Form.Item label='Name' name='name'>
-              <Input placeholder='Name' />
+              <Input placeholder='Name' allowClear />
             </Form.Item>
             <Form.Item label='Description' name='description'>
-              <Input.TextArea rows={4} placeholder='Name' />
+              <Input.TextArea rows={4} placeholder='Name' allowClear />
             </Form.Item>
             <Form.Item name='categoryId' label='Category'>
               <Select
+                allowClear
                 className='w-[150px]'
                 placeholder='Select category'
                 options={[
@@ -105,16 +131,16 @@ const CreateTemplate: React.FC = () => {
       content: (
         <div>
           <div>
-            <BackgroundProject context='SECOND_STEP' setTemplate={setTemplate} />
+            <BackgroundProject setTemplate={setTemplate} setBackgroundImage={setBackground} />
           </div>
           <section
             className='relative mx-auto my-4 h-[600px]  w-[calc(100vw-400px)] rounded-lg bg-cover bg-center bg-no-repeat'
             style={{
               backgroundPosition: 'center',
-              // backgroundImage: `url(${template.project.background?.urls.regular as string})`,
+              backgroundImage: `url(${background})`,
             }}
           >
-            <div className='absolute inset-0 bg-black rounded-lg bg-opacity-40' />
+            <div className='absolute inset-0 rounded-lg bg-black bg-opacity-40' />
             <div className='flex items-start gap-x-2'>
               <div>
                 <Tabs
@@ -134,10 +160,38 @@ const CreateTemplate: React.FC = () => {
                   ]}
                   tabBarExtraContent={{
                     left: (
-                      <div className='flex items-center mr-8'>
-                        <p className='mr-4 max-w-48 truncate text-[18px] font-bold'>
-                          {template?.name}
-                        </p>
+                      <div className='mr-8 flex items-center'>
+                        <div className='flex max-w-[180px] items-center gap-x-2 truncate'>
+                          <Tooltip title='Edit name'>
+                            <div
+                              className='cursor-pointer p-1 hover:brightness-200'
+                              onClick={() => {
+                                const input = document.querySelector(
+                                  '#input-name'
+                                ) as HTMLInputElement;
+                                if (input) {
+                                  input.focus();
+                                }
+                              }}
+                            >
+                              <Pen size='16' color='#fff' className='text-white ' />
+                            </div>
+                          </Tooltip>
+                          <input
+                            id='input-name'
+                            value={template.project?.name}
+                            onChange={(e) =>
+                              setTemplate((prev) => ({
+                                ...prev,
+                                project: {
+                                  ...prev.project,
+                                  name: e.target.value,
+                                },
+                              }))
+                            }
+                            className='border-none bg-transparent p-2 text-lg font-semibold text-white outline-none'
+                          />
+                        </div>
                       </div>
                     ),
                   }}
@@ -179,10 +233,10 @@ const CreateTemplate: React.FC = () => {
           className='relative mx-auto my-4 h-[600px]  w-[calc(100vw-400px)] rounded-lg bg-cover bg-center bg-no-repeat'
           style={{
             backgroundPosition: 'center',
-            // backgroundImage: `url(${template.project.background?.urls.regular})`,
+            backgroundImage: `url(${background})`,
           }}
         >
-          <div className='absolute inset-0 bg-black rounded-lg bg-opacity-40' />
+          <div className='absolute inset-0 rounded-lg bg-black bg-opacity-40' />
           <div className='flex items-start gap-x-2'>
             <div>
               <Tabs
@@ -203,9 +257,9 @@ const CreateTemplate: React.FC = () => {
                 ]}
                 tabBarExtraContent={{
                   left: (
-                    <div className='flex items-center mr-8'>
+                    <div className='mr-8 flex items-center'>
                       <p className='mr-4 max-w-48 truncate text-[18px] font-bold'>
-                        {template?.name}
+                        {template?.project.name}
                       </p>
                     </div>
                   ),
@@ -392,21 +446,21 @@ const CreateContent = ({
                   placeholder='Enter list title'
                   allowClear
                   size='large'
-                  className='text-sm font-semibold rounded '
+                  className='rounded text-sm font-semibold '
                   value={listCard.name}
                   onChange={(e) => {
                     setListCard((prev) => ({ ...prev, id: uuid(), name: e.target.value }));
                   }}
                 />
-                <div className='flex items-center ml-auto gap-x-2'>
+                <div className='ml-auto flex items-center gap-x-2'>
                   <Button
                     onClick={handleAddListCard}
                     type='primary'
-                    className='text-xs font-semibold rounded '
+                    className='rounded text-xs font-semibold '
                   >
                     Add list
                   </Button>
-                  <Button type='default' className='w-16 text-xs font-semibold rounded'>
+                  <Button type='default' className='w-16 rounded text-xs font-semibold'>
                     Cancel
                   </Button>
                 </div>
@@ -414,7 +468,7 @@ const CreateContent = ({
             }
           >
             <Button
-              icon={<Plus className='w-4 h-4 opacity-65' />}
+              icon={<Plus className='h-4 w-4 opacity-65' />}
               size='large'
               className='flex w-[275px] items-center rounded-xl border-none bg-[#ffffff3d] text-sm font-semibold text-white'
             >

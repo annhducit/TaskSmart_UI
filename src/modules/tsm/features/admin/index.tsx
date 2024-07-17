@@ -24,7 +24,7 @@ const adminRoutes = createRouters([
   },
   {
     path: '/template-detail/:templateId',
-    element: <TemplateDetailFeature />,
+    element: <TemplateDetailFeature context='ADMIN' />,
   },
   {
     path: '/account/*',

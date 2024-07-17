@@ -3,7 +3,7 @@ import { highlight, languages } from 'prismjs';
 import 'prismjs/components/prism-sql';
 import './index.css';
 import { useState } from 'react';
-import { Select, Typography } from 'antd';
+import { Button, Select, Space, Typography } from 'antd';
 
 /**
  * Import the theme css
@@ -16,6 +16,10 @@ import 'prismjs/themes/prism-coy.css'; // Coy theme
 import 'prismjs/themes/prism-twilight.css'; // Twilight theme
 import 'prismjs/themes/prism-dark.css'; // Dark theme
 import 'prismjs/themes/prism-funky.css'; // Funky theme
+import { CheckIcon, FileCode2, Trash } from 'lucide-react';
+import Tooltip from '@/shared/components/tooltip';
+import { cn } from '@/shared/router/cn';
+import { useSelector } from '@/store';
 
 const SqlEditor = ({ code, onChange }: { code: string; onChange: (code: string) => void }) => {
   const [theme, setTheme] = useState<string>('prism');
@@ -25,7 +29,7 @@ const SqlEditor = ({ code, onChange }: { code: string; onChange: (code: string) 
   };
 
   return (
-    <div className='mb-60 flex flex-col gap-y-1'>
+    <div className='mb-4 flex flex-col gap-y-2'>
       <div className='flex items-center justify-between'>
         <Typography.Text className='block'>Your AI-generated SQL query:</Typography.Text>{' '}
         <div className='flex items-center justify-end gap-x-2'>
@@ -82,8 +86,65 @@ const SqlEditor = ({ code, onChange }: { code: string; onChange: (code: string) 
           }}
         />
       </div>
+      <Space className='flex justify-end'>
+        <CopyUrlButton link={code} />
+        <Button
+          type='default'
+          danger
+          icon={<Trash size={12} />}
+          onClick={() => {
+            onChange('');
+          }}
+        >
+          Clear
+        </Button>
+      </Space>
     </div>
   );
 };
 
 export default SqlEditor;
+
+type Props = {
+  className?: string;
+  link: string;
+};
+
+function CopyUrlButton(props: Props) {
+  const { className, link } = props;
+
+  const [isCopied, setIsCopied] = useState(false);
+
+  const { btnColor } = useSelector((state) => state.theme);
+
+  const handleClick = () => {
+    navigator.clipboard.writeText(link);
+    setIsCopied(true);
+
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 3000);
+  };
+
+  const Icon = isCopied ? CheckIcon : FileCode2;
+
+  return (
+    <Tooltip title={isCopied ? 'Copied' : 'Copy'}>
+      <Button
+        htmlType='button'
+        type='text'
+        onClick={handleClick}
+        disabled={isCopied}
+        icon={<Icon className={cn('size-4', { 'text-green-500': isCopied })} />}
+        className={cn('z-10 flex items-center justify-center', className)}
+      >
+        <Typography.Text
+          className='font-semibold'
+          style={isCopied ? { color: '#52c41a' } : { color: btnColor }}
+        >
+          {isCopied ? 'Copied SQL to clipboard' : 'Copy SQL to clipboard'}
+        </Typography.Text>
+      </Button>
+    </Tooltip>
+  );
+}

@@ -4,13 +4,12 @@ import { SearchProps } from 'antd/es/input';
 import { Input } from 'antd/lib';
 import { useEffect, useState } from 'react';
 
-type Context = 'FIRST_STEP' | 'SECOND_STEP';
 const BackgroundProject = ({
   setTemplate,
-  context,
+  setBackgroundImage,
 }: {
   setTemplate: (value: React.SetStateAction<TSMTemplateRequest>) => void;
-  context: Context;
+  setBackgroundImage: (backgroundUnsplash: React.SetStateAction<string>) => void;
 }) => {
   const [listBackground, setListBackground] = useState<UnsplashResponse[]>([]);
   const [backgroundSearch, setBackgroundSearch] = useState<string>('');
@@ -81,29 +80,22 @@ const BackgroundProject = ({
   };
 
   const setBackground = (backgroundUnsplash: UnsplashResponse) => {
-    if (context === 'FIRST_STEP') {
-      setTemplate((prev) => ({
-        ...prev,
-        imageUnsplashId: backgroundUnsplash.id,
-      }));
-    } else {
-      setTemplate((prev) => ({
-        ...prev,
-        project: {
-          ...prev.project,
-          background: backgroundUnsplash.id,
-        },
-      }));
-    }
+    setBackgroundImage(backgroundUnsplash.urls.regular);
+    setTemplate((prev) => ({
+      ...prev,
+      imageUnsplashId: 'wrsa2XI8OhM',
+      project: {
+        ...prev.project,
+        background: backgroundUnsplash.id,
+      },
+    }));
   };
 
   return (
-    <div className='w-full my-4'>
-      <div className='w-full mx-auto mb-2 transition-transform'>
+    <div className='my-4 w-full'>
+      <div className='mx-auto mb-2 w-full transition-transform'>
         <Typography.Text className='text-base font-semibold'>
-          {context === 'FIRST_STEP'
-            ? 'Choose a background for your template'
-            : 'Choose a background for your project'}
+          Choose a background for your project
         </Typography.Text>
       </div>
 
@@ -133,13 +125,13 @@ const BackgroundProject = ({
           dataSource={listBackground}
           renderItem={(item) => (
             <div
-              className='relative w-full cursor-pointer h-52 hover:brightness-125'
+              className='relative h-52 w-full cursor-pointer hover:brightness-125'
               onClick={() => setBackground(item)}
             >
               <img
                 src={item.urls.small}
                 alt='background'
-                className='object-cover w-full h-full rounded'
+                className='h-full w-full rounded object-cover'
               />
             </div>
           )}

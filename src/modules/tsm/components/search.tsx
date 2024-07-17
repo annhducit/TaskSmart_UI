@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import TextEditor from '@/shared/components/text-editor';
 import dayjs from 'dayjs';
 import { DATE_TIME_FORMAT } from '@/shared/constant/date';
+import useEditNote from '../features/notepad/hooks/mutation/use-edit-note';
 
 const ModalSearch = () => {
   return (
@@ -282,24 +283,34 @@ const CardSection = ({ cards }: { cards: TSMCardSearch[] }) => {
 };
 
 const NoteSection = ({ notes }: { notes: TSMNote[] }) => {
+  const { mutate: editNote } = useEditNote();
+
+  const handleEditNote = (content: string, noteId: string) => {
+    editNote({
+      id: noteId,
+      content: content,
+    });
+  };
   return (
     <>
       {notes.length > 0 && (
         <Typography.Text className='text-xs font-semibold opacity-40'>Notes</Typography.Text>
       )}
       {notes.map((note) => (
-        <div className='flex flex-col gap-y-2'>
-          <Typography.Text className='text-xs font-semibold opacity-40'>
-            {note.title}
-          </Typography.Text>
+        <div key={note.id} className='flex flex-col gap-y-2'>
+          <Typography.Text className='text-xs font-bold'>{note.title}</Typography.Text>
           <TextEditor
             className='w-64 truncate text-xs'
+            aria-disabled
             style={{
               fontSize: '8px',
             }}
             initialContent={note.content as string}
+            onChange={(value) => {
+              handleEditNote(value as string, note.id as string);
+            }}
           />
-          <div className='float-right flex items-center gap-x-2 opacity-40 '>
+          <div className='float-right mr-4 flex items-center justify-end gap-x-2 opacity-40'>
             <Typography.Text className='text-xs italic'>
               {dayjs(note.createdAt).format(DATE_TIME_FORMAT)}
             </Typography.Text>

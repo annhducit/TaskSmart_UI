@@ -3,7 +3,7 @@ import { isStatusCodeValid } from '@/shared/components/status';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { useInvalidateTemplates } from '../../../templates/hooks/use-get-templates';
-import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const createTemplate = async (value: TSMTemplateRequest) => {
   const data = await tsmAxios.post('/templates', value);
@@ -12,6 +12,7 @@ const createTemplate = async (value: TSMTemplateRequest) => {
 
 const useCreateTemplate = () => {
   const invalidateTemplates = useInvalidateTemplates();
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: createTemplate,
 
@@ -19,7 +20,7 @@ const useCreateTemplate = () => {
       if (isStatusCodeValid(data.status)) {
         toast.success('Template created successfully');
         invalidateTemplates();
-        redirect('/admin/templates');
+        navigate('/admin/template', { replace: true });
       } else {
         toast.error('Failed to create template');
       }
