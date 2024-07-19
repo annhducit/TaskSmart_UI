@@ -6,8 +6,9 @@ import Logo from '@/shared/components/logo';
 const NotFound = () => {
   const navigate = useNavigate();
   const handleClickToGoBack = () => {
-    navigate('..');
+    navigate('../');
   };
+
   return (
     <div className='my-auto grid place-content-center'>
       <div className='mx-auto mt-28 h-[300px] w-[400px] rounded shadow-xl'>

@@ -47,11 +47,11 @@ import { Tag, Typography } from 'antd';
 import { Check, Info, X } from 'lucide-react';
 import { useState } from 'react';
 
-const ChangeTheme = () => {
+const ChangeTheme = ({ handleClose }: { handleClose: () => void }) => {
   const [selectedTheme, setSelectedTheme] = useState<string>('');
 
   const dispatch = useDispatch();
-  const handlSelectTheme = (color: string, btnColor: string, inpColor: string) => {
+  const handleSelectTheme = (color: string, btnColor: string, inpColor: string) => {
     setSelectedTheme(color);
     dispatch(setTheme({ color, btnColor, inpColor }));
   };
@@ -61,7 +61,10 @@ const ChangeTheme = () => {
         <Typography.Text className='text-center text-base font-semibold'>
           Change theme
         </Typography.Text>
-        <div className='ml-auto flex items-center rounded px-[6px] py-1 transition-all hover:bg-primary-default hover:text-white'>
+        <div
+          onClick={handleClose}
+          className='ml-auto flex items-center rounded px-[6px] py-1 transition-all hover:bg-primary-default hover:text-white'
+        >
           <X className='h-5 w-5' />
         </div>
       </div>
@@ -75,7 +78,7 @@ const ChangeTheme = () => {
         {themeColor.map((item, index) => (
           <ThemeItem
             selectedTheme={selectedTheme}
-            onSelect={handlSelectTheme}
+            onSelect={handleSelectTheme}
             key={index}
             color={item.inpColor}
             bgColor={item.bgColor}

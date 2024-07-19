@@ -27,7 +27,11 @@ const routers = createRouters([
     children: [
       {
         index: true,
-        element: <LandingFeature />,
+        element: (
+          <UserInformation>
+            <LandingFeature />
+          </UserInformation>
+        ),
       },
     ],
   },
@@ -94,7 +98,11 @@ const routers = createRouters([
     children: [
       {
         index: true,
-        element: <NotFoundFeature />,
+        element: (
+          <UserInformation>
+            <NotFoundFeature />
+          </UserInformation>
+        ),
       },
     ],
   },

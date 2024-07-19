@@ -1,6 +1,5 @@
 import { Button, Card, Divider, Form, Input, Select, Spin, Tag, Typography } from 'antd';
 import { LockKeyhole, PlusCircle } from 'lucide-react';
-import Search from 'antd/es/input/Search';
 import ProjectItem from '../components/project/project-item';
 import useSearchParam from '@/shared/hooks/use-search-param';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
@@ -13,9 +12,14 @@ import useGetWorkspace from '../hooks/query/use-get-workspace';
 import useCreateWorkspace from '../hooks/mutation/use-create-workspace';
 import useGetCategories from '@/modules/tsm/components/hooks/use-get-categories';
 import { listColor } from '@/shared/data';
+import SearchParam from '@/shared/components/search-param';
+import useSearchProject from '../components/project/hooks/query/use-search-project';
 
 const WorkspaceDetail = () => {
   const { data: workspace, isPending } = useGetWorkspace();
+  const [, , keyword] = useSearchParam(SEARCH_PARAMS.KEYWORD);
+
+  const { data: result, isPending: isLoading } = useSearchProject(keyword as string);
 
   const [, setDialog] = useSearchParam(SEARCH_PARAMS.DIALOG);
 
@@ -24,8 +28,6 @@ const WorkspaceDetail = () => {
   };
 
   const handleChange = (value: { value: string; label: string }) => console.log(value);
-
-  const onSearch = (value: string) => console.log(value);
 
   const colorRadom = listColor[Math.floor(Math.random() * listColor.length)].color;
   return (
@@ -36,7 +38,7 @@ const WorkspaceDetail = () => {
             style={{
               backgroundColor: colorRadom,
             }}
-            className='flex items-center justify-center flex-shrink-0 w-20 h-20 text-2xl font-bold text-white rounded-xl'
+            className='flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-xl text-2xl font-bold text-white'
           >
             {workspace?.name.charAt(0).toUpperCase()}
           </div>
@@ -49,7 +51,7 @@ const WorkspaceDetail = () => {
                 <div className='flex items-center gap-x-4'>
                   <Tag color='gold'>Premium</Tag>
                   <div className='flex items-center'>
-                    <LockKeyhole color='red' className='w-4 h-4 mr-1' />
+                    <LockKeyhole color='red' className='mr-1 h-4 w-4' />
                     <Tag color='red'>{workspace?.type}</Tag>
                   </div>
                 </div>
@@ -142,19 +144,13 @@ const WorkspaceDetail = () => {
 
             <div className='flex flex-col gap-1'>
               <Typography.Text>Search</Typography.Text>
-              <Search
-                placeholder='Search project'
-                allowClear
-                onSearch={onSearch}
-                style={{ width: 270 }}
-                onChange={(e) => console.log(e.target.value)}
-              />
+              <SearchParam.Keyword />
             </div>
           </div>
-          <div className='grid grid-cols-4 gap-4 my-6'>
+          <div className='my-6 grid grid-cols-4 gap-4'>
             <Button
-              className='flex items-center justify-center w-full h-32 mx-auto'
-              icon={<PlusCircle className='w-4 h-4' />}
+              className='mx-auto flex h-32 w-full items-center justify-center'
+              icon={<PlusCircle className='h-4 w-4' />}
               type='dashed'
               onClick={showModal}
             >
@@ -164,6 +160,14 @@ const WorkspaceDetail = () => {
               <div className='mx-auto mt-6'>
                 <Spin />
               </div>
+            ) : keyword ? (
+              isLoading ? (
+                <div className='mx-auto mt-6'>
+                  <Spin />
+                </div>
+              ) : (
+                result?.map((item) => <ProjectItem key={item.id} project={item} />)
+              )
             ) : (
               workspace?.projects.map((item) => <ProjectItem key={item.id} project={item} />)
             )}
@@ -221,7 +225,7 @@ const ModalCreateWorkspace = () => {
               layout='vertical'
               onFinish={handleSubmit}
               name='create-workspace'
-              className='flex flex-col w-full'
+              className='flex w-full flex-col'
             >
               <Form.Item>
                 <Form.Item
@@ -259,7 +263,7 @@ const ModalCreateWorkspace = () => {
               </Button>
             </Form>
           </div>
-          <div className='flex flex-col col-span-1'>
+          <div className='col-span-1 flex flex-col'>
             <img loading='lazy' src={createWps} className='h-[360px] w-[350px]' />
           </div>
         </div>
@@ -290,7 +294,7 @@ export const ModalCreateProject = () => {
           <Typography.Text className='text-base font-semibold'>Create project</Typography.Text>
         </div>
 
-        <div className='flex items-center w-full gap-x-6'>
+        <div className='flex w-full items-center gap-x-6'>
           <ProjectBackground />
         </div>
       </div>

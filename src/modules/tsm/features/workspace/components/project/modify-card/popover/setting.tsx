@@ -37,46 +37,46 @@ const Setting = (props: { setVisible: (newOpen: boolean) => void }) => {
     <>
       <div className='flex w-[250px] flex-col gap-1'>
         <div className='flex items-center'>
-          <Typography.Text className='text-base font-semibold text-center'>
+          <Typography.Text className='text-center text-base font-semibold'>
             Project settings
           </Typography.Text>
           <div
             className='ml-auto flex items-center rounded px-[6px] py-1 transition-all hover:bg-primary-default hover:text-white'
             onClick={() => props.setVisible(false)}
           >
-            <X className='w-5 h-5' />
+            <X className='h-5 w-5' />
           </div>
         </div>
         <Button
-          icon={<Info className='w-4 h-4' color={btnColor} />}
+          icon={<Info className='h-4 w-4' color={btnColor} />}
           type='text'
           size='large'
-          className='flex items-center w-full text-sm text-left rounded gap-x-2 opacity-90'
+          className='flex w-full items-center gap-x-2 rounded text-left text-sm opacity-90'
         >
           About project
         </Button>
         <Button
-          icon={<SquareGanttChart className='w-4 h-4' color={btnColor} />}
+          icon={<SquareGanttChart className='h-4 w-4' color={btnColor} />}
           type='text'
           size='large'
-          className='flex items-center w-full text-sm text-left rounded gap-x-2 opacity-90'
+          className='flex w-full items-center gap-x-2 rounded text-left text-sm opacity-90'
         >
           Activity
         </Button>
         <Button
-          icon={<ArchiveRestore className='w-4 h-4' color={btnColor} />}
+          icon={<ArchiveRestore className='h-4 w-4' color={btnColor} />}
           type='text'
           size='large'
-          className='flex items-center w-full text-sm text-left rounded gap-x-2 opacity-90'
+          className='flex w-full items-center gap-x-2 rounded text-left text-sm opacity-90'
         >
           Archived
         </Button>
         <Divider className='my-[1px]' />
         <Button
-          icon={<Settings className='w-4 h-4' color={btnColor} />}
+          icon={<Settings className='h-4 w-4' color={btnColor} />}
           type='text'
           size='large'
-          className='flex items-center w-full text-sm text-left rounded gap-x-2 opacity-90'
+          className='flex w-full items-center gap-x-2 rounded text-left text-sm opacity-90'
         >
           Setting
         </Button>
@@ -84,57 +84,57 @@ const Setting = (props: { setVisible: (newOpen: boolean) => void }) => {
           type='text'
           size='large'
           onClick={() => setParam(SEARCH_PARAMS_VALUE.BACKGROUND)}
-          className='flex items-center w-full text-sm text-left -translate-x-1 rounded gap-x-2 opacity-80'
+          className='flex w-full -translate-x-1 items-center gap-x-2 rounded text-left text-sm opacity-80'
         >
           <div className='flex items-center gap-x-4'>
-            <div className='w-8 h-8 rounded'>
+            <div className='h-8 w-8 rounded'>
               <img
                 src={project?.backgroundUnsplash?.urls?.small}
                 alt=''
-                className='w-full h-full rounded'
+                className='h-full w-full rounded'
               />
             </div>
             <p> Change background</p>
           </div>
         </Button>
         <Button
-          icon={<TagIcon className='w-4 h-4' color={btnColor} />}
+          icon={<TagIcon className='h-4 w-4' color={btnColor} />}
           type='text'
           size='large'
-          className='flex items-center w-full text-sm text-left rounded gap-x-2 opacity-90'
+          className='flex w-full items-center gap-x-2 rounded text-left text-sm opacity-90'
         >
           Label
         </Button>
         <Button
-          icon={<PersonStanding className='w-4 h-4' color={btnColor} />}
+          icon={<PersonStanding className='h-4 w-4' color={btnColor} />}
           type='text'
           size='large'
-          className='flex items-center w-full text-sm text-left rounded gap-x-2 opacity-90'
+          className='flex w-full items-center gap-x-2 rounded text-left text-sm opacity-90'
         >
           Utilities
         </Button>
         <Divider className='my-[1px]' />
         <Button
-          icon={<Rss className='w-4 h-4' color={btnColor} />}
+          icon={<Rss className='h-4 w-4' color={btnColor} />}
           type='text'
           size='large'
-          className='flex items-center w-full text-sm text-left rounded gap-x-2 opacity-90'
+          className='flex w-full items-center gap-x-2 rounded text-left text-sm opacity-90'
         >
           Follow
         </Button>
         <Button
-          icon={<Copy className='w-4 h-4' color={btnColor} />}
+          icon={<Copy className='h-4 w-4' color={btnColor} />}
           type='text'
           size='large'
-          className='flex items-center w-full text-sm text-left rounded gap-x-2 opacity-90'
+          className='flex w-full items-center gap-x-2 rounded text-left text-sm opacity-90'
         >
           Copy project
         </Button>
         <Button
-          icon={<LogOut className='w-4 h-4' color={btnColor} />}
+          icon={<LogOut className='h-4 w-4' color={btnColor} />}
           type='text'
           size='large'
-          className='flex items-center w-full text-sm text-left rounded gap-x-2 opacity-90'
+          className='flex w-full items-center gap-x-2 rounded text-left text-sm opacity-90'
         >
           Leave project
         </Button>
@@ -177,6 +177,7 @@ const UpdateBackground = () => {
       });
     }
   };
+
   const handleChangeBackground = (value: UnsplashResponse) => {
     setBackgroundUnsplash(value);
     setBackground(value.urls.small);
@@ -190,7 +191,7 @@ const UpdateBackground = () => {
   return (
     <>
       <CloseButton onClose={() => onClose()}></CloseButton>
-      <div className='flex flex-col items-center w-full gap-x-6'>
+      <div className='flex w-full flex-col items-center gap-x-6'>
         <div
           style={{
             backgroundImage: `url(${backgroundUnsplash ? backgroundUnsplash.urls.regular : project?.backgroundUnsplash?.urls.regular})`,
@@ -201,7 +202,7 @@ const UpdateBackground = () => {
           className='h-[120px] w-[192px] rounded'
         >
           <div className='mx-auto mt-2 h-[103px] w-[160px] rounded'>
-            <img src={dashboard} alt='dashboard' className='w-full h-full rounded' />
+            <img src={dashboard} alt='dashboard' className='h-full w-full rounded' />
           </div>
         </div>
         <div className='flex flex-col gap-y-1'>
@@ -216,7 +217,7 @@ const UpdateBackground = () => {
                 <img
                   src={item.urls.small}
                   alt='background'
-                  className='object-cover w-full h-full rounded'
+                  className='h-full w-full rounded object-cover'
                 />
               </div>
             ))}
@@ -233,7 +234,7 @@ const UpdateBackground = () => {
                 className={`relative h-[32px] w-[40px] cursor-pointer rounded transition-all hover:brightness-125`}
               >
                 {item.color === background && (
-                  <Check className='absolute w-4 h-4 text-white right-3 top-2' />
+                  <Check className='absolute right-3 top-2 h-4 w-4 text-white' />
                 )}
               </div>
             ))}
@@ -250,7 +251,7 @@ const UpdateBackground = () => {
               }
             >
               <Button className='flex items-center'>
-                <Ellipsis className='w-4 h-4' />
+                <Ellipsis className='h-4 w-4' />
               </Button>
             </Popover>
           </div>
@@ -258,7 +259,7 @@ const UpdateBackground = () => {
 
         <Button
           onClick={handleUpdateBackground}
-          className='w-full mt-6 ml-0'
+          className='ml-0 mt-6 w-full'
           type='primary'
           size='large'
           disabled={!background && !backgroundUnsplash}

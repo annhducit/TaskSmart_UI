@@ -59,7 +59,7 @@ const SectionOne = () => {
           icon={<ArrowRight className='absolute right-4 top-[10px] h-5 w-5' />}
           type='primary'
           size='large'
-          onClick={() => navigate('../auth/sign-up')}
+          onClick={() => navigate('tsm/home')}
         >
           Get Started
         </Button>

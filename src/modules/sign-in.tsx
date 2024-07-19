@@ -40,7 +40,6 @@ const Signin = () => {
       setIsSubmitting(true);
 
       const res = await dispatch(signInAction(auth));
-      console.log(res);
       if (res.meta.requestStatus === 'rejected') {
         toast.error('Sign in failed', {
           description: 'Please check your username or password again',

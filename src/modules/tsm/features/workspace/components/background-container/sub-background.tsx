@@ -89,7 +89,7 @@ const SubBackgroundModal = ({
             onSearch={onSearch}
           ></Input.Search>
         </div>
-        <div className='mb-2 mt-1 flex w-[320px] flex-wrap items-center gap-2'>
+        <div className='mb-2 mt-1 flex max-h-[400px] w-[320px] flex-wrap items-center gap-2 overflow-y-scroll'>
           <List
             grid={{ column: 4 }}
             loadMore={loadMore}
@@ -102,11 +102,11 @@ const SubBackgroundModal = ({
                 <img
                   src={item.urls.small}
                   alt='background'
-                  className='object-cover w-full h-full rounded'
+                  className='h-full w-full rounded object-cover'
                 />
               </div>
             )}
-          ></List>
+          />
         </div>
         <Divider className='my-1' />
         <Typography.Text className='text-sm'>Color</Typography.Text>
@@ -121,7 +121,7 @@ const SubBackgroundModal = ({
               className={`relative h-[32px] w-[40px] cursor-pointer rounded transition-all hover:brightness-125`}
             >
               {item.color === color && (
-                <Check className='absolute w-4 h-4 text-white right-3 top-2' />
+                <Check className='absolute right-3 top-2 h-4 w-4 text-white' />
               )}
             </div>
           ))}
