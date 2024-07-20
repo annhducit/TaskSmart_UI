@@ -1,4 +1,4 @@
-import { Button, Divider, Form, Input, Popover, Select, Typography } from 'antd';
+import { Button, Divider, Form, Input, Popover, Select, Spin, Typography } from 'antd';
 import { Check, Ellipsis } from 'lucide-react';
 import { useState } from 'react';
 
@@ -52,7 +52,7 @@ const BackgroundReview = () => {
     }
   };
 
-  const { data: listBackground } = useGetBackground();
+  const { data: listBackground, isLoading } = useGetBackground();
 
   return (
     <Form
@@ -92,6 +92,11 @@ const BackgroundReview = () => {
                 />
               </div>
             ))}
+            {isLoading && (
+              <div className='flex items-center justify-center'>
+                <Spin size='small' />
+              </div>
+            )}
           </div>
           <Divider className='my-1' />
           <div className='flex items-center justify-center gap-x-2'>

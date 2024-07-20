@@ -1,6 +1,7 @@
 import { tsmAxios } from '@/configs/axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AuthData } from '.';
+import { AxiosResponse } from 'axios';
 
 export const signInAction = createAsyncThunk(
   'auth/sign-in',
@@ -23,5 +24,32 @@ export const reSignInAction = createAsyncThunk(
       refresh: `Bearer ${refreshToken}`,
     });
     return res;
+  }
+);
+
+export const signInGoogleAction = createAsyncThunk(
+  'auth/sign-in-google',
+  (
+    data: AxiosResponse<
+      {
+        data: AuthData;
+      },
+      any
+    >
+  ) => {
+    return data;
+  }
+);
+export const signInGithubAction = createAsyncThunk(
+  'auth/sign-in-github',
+  (
+    data: AxiosResponse<
+      {
+        data: AuthData;
+      },
+      any
+    >
+  ) => {
+    return data;
   }
 );

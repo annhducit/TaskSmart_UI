@@ -223,7 +223,7 @@ const Sidebar = ({
       {type === 'workspace' && (
         <Tooltip title={project?.workspace.name}>
           <div
-            className={`flex items-center gap-x-2  p-2 pt-3 shadow-lg ${isProject && 'bg-black/50 bg-gray-900 bg-opacity-50 backdrop-blur-lg backdrop-filter'}`}
+            className={`flex items-center gap-x-2  p-2 pb-2 pt-3 shadow-lg ${isProject && 'bg-black/50 bg-gray-900 bg-opacity-50 backdrop-blur-lg backdrop-filter'}`}
           >
             <div
               style={{
@@ -240,7 +240,7 @@ const Sidebar = ({
               }}
             >
               <p className='w-[150px] truncate text-sm font-semibold'>TaskSmart Workspace</p>
-              <p className='text-xs'>{project?.workspace.name}</p>
+              <p className='w-[150px] truncate text-xs'>{project?.workspace.name}</p>
             </div>
           </div>
         </Tooltip>

@@ -47,7 +47,7 @@ import { Tag, Typography } from 'antd';
 import { Check, Info, X } from 'lucide-react';
 import { useState } from 'react';
 
-const ChangeTheme = ({ handleClose }: { handleClose: () => void }) => {
+const ChangeTheme = () => {
   const [selectedTheme, setSelectedTheme] = useState<string>('');
 
   const dispatch = useDispatch();
@@ -61,12 +61,6 @@ const ChangeTheme = ({ handleClose }: { handleClose: () => void }) => {
         <Typography.Text className='text-center text-base font-semibold'>
           Change theme
         </Typography.Text>
-        <div
-          onClick={handleClose}
-          className='ml-auto flex items-center rounded px-[6px] py-1 transition-all hover:bg-primary-default hover:text-white'
-        >
-          <X className='h-5 w-5' />
-        </div>
       </div>
       <div className='flex items-center gap-x-2'>
         <Typography.Text className='text-sm'>Choose a theme for your project</Typography.Text>

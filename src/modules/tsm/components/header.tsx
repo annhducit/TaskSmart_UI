@@ -46,7 +46,6 @@ import ModalSearch from './search';
 
 const Header = () => {
   const [open, setOpen] = useCollapse<boolean>(false);
-  const [openTheme, setOpenTheme] = useCollapse<boolean>(false);
   const [openFlyer, setOpenFlyer] = useCollapse<boolean>(false);
   const [, setDialog] = useSearchParam(SEARCH_PARAMS.DIALOG);
   const dispatch = useDispatch();
@@ -126,6 +125,7 @@ const Header = () => {
     templates?.map((template) => ({
       label: template.name,
       key: template.id,
+      onClick: () => navigate(`../../../tsm/template/${template.id}`),
       icon: <img src={template.image?.urls?.small} className='h-10 w-10 rounded-lg' />,
     })) || [];
 
@@ -312,13 +312,7 @@ const Header = () => {
                     >
                       Activities
                     </Button>
-                    <Popover
-                      open={openTheme}
-                      onOpenChange={() => setOpenTheme(true)}
-                      trigger='click'
-                      placement='bottomLeft'
-                      content={<ChangeTheme handleClose={() => setOpenTheme(false)} />}
-                    >
+                    <Popover trigger='click' placement='bottomLeft' content={<ChangeTheme />}>
                       <Button
                         icon={<Palette className='h-4 w-4' color={btnColor} />}
                         type='text'

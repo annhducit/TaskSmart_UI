@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { reSignInAction, signInAction } from './action';
+import { reSignInAction, signInAction, signInGithubAction, signInGoogleAction } from './action';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
@@ -117,6 +117,59 @@ export const auth = createSlice({
       }
     });
     builder.addCase(reSignInAction.rejected, (state) => {
+      state.loadingState = 'failed';
+      state.data = {} as AuthData;
+      state.isSignedIn = false;
+      state.isLoaded = true;
+    });
+
+    /**
+     * OAuth Google
+     */
+    builder.addCase(signInGoogleAction.pending, (state) => {
+      state.loadingState = 'loading';
+      state.data = {} as AuthData;
+      state.isLoaded = false;
+      state.isSignedIn = false;
+    });
+    builder.addCase(signInGoogleAction.fulfilled, (state, action) => {
+      state.loadingState = 'succeeded';
+      state.isLoaded = true;
+      if (action.payload.data) {
+        state.data = action.payload.data as unknown as AuthData;
+        state.isSignedIn = true;
+      } else {
+        state.isSignedIn = false;
+        state.data = {} as AuthData;
+      }
+    });
+    builder.addCase(signInGoogleAction.rejected, (state) => {
+      state.loadingState = 'failed';
+      state.data = {} as AuthData;
+      state.isSignedIn = false;
+      state.isLoaded = true;
+    });
+    /**
+     * OAuth Github
+     */
+    builder.addCase(signInGithubAction.pending, (state) => {
+      state.loadingState = 'loading';
+      state.data = {} as AuthData;
+      state.isLoaded = false;
+      state.isSignedIn = false;
+    });
+    builder.addCase(signInGithubAction.fulfilled, (state, action) => {
+      state.loadingState = 'succeeded';
+      state.isLoaded = true;
+      if (action.payload.data) {
+        state.data = action.payload.data as unknown as AuthData;
+        state.isSignedIn = true;
+      } else {
+        state.isSignedIn = false;
+        state.data = {} as AuthData;
+      }
+    });
+    builder.addCase(signInGithubAction.rejected, (state) => {
       state.loadingState = 'failed';
       state.data = {} as AuthData;
       state.isSignedIn = false;

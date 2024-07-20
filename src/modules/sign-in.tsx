@@ -3,7 +3,7 @@ import { Lock, User } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '@/shared/hooks/use-redux';
-import { signInAction } from '@/store/auth/action';
+import { signInAction, signInGoogleAction } from '@/store/auth/action';
 import { toast } from 'sonner';
 import { OAuthConfig } from '@/configs/OAuthConfig';
 
@@ -53,7 +53,7 @@ const Signin = () => {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
     <div className='absolute right-20 top-16 h-[550px] w-[540px] rounded-lg bg-white shadow-lg'>
       <div className='p-10'>
@@ -76,7 +76,7 @@ const Signin = () => {
           </div>
 
           <div className='flex items-center gap-x-4'>
-            <GoogleButton  />
+            <GoogleButton />
             <GithubButton />
           </div>
 
@@ -91,7 +91,7 @@ const Signin = () => {
                 },
               ]}
             >
-              <Input prefix={<User className='w-4 h-4 mr-2 text-primary-default' />} size='large' />
+              <Input prefix={<User className='mr-2 h-4 w-4 text-primary-default' />} size='large' />
             </Form.Item>
             <Form.Item
               name='password'
@@ -104,7 +104,7 @@ const Signin = () => {
               ]}
             >
               <Input.Password
-                prefix={<Lock className='w-4 h-4 mr-2 text-primary-default' />}
+                prefix={<Lock className='mr-2 h-4 w-4 text-primary-default' />}
                 size='large'
                 type='password'
               />
@@ -125,21 +125,14 @@ const Signin = () => {
   );
 };
 
-const GoogleButton = (_props: {
-  isSubmitting?: boolean;
-  setIsSubmitting?: Dispatch<SetStateAction<boolean>>;
-}) => {
+const GoogleButton = () => {
   const handleClick = () => {
     const callbackUrl = OAuthConfig.google.redirectUri;
     const authUrl = OAuthConfig.google.authUri;
     const googleClientId = OAuthConfig.google.clientId;
-
     const targetUrl = `${authUrl}?redirect_uri=${encodeURIComponent(
       callbackUrl
     )}&response_type=code&client_id=${googleClientId}&scope=openid%20email%20profile`;
-
-    console.log(targetUrl);
-
     window.location.href = targetUrl;
   };
   return (
@@ -155,11 +148,11 @@ const GoogleButton = (_props: {
     </Button>
   );
 };
+
 const GithubButton = (_props: {
   isSubmitting?: boolean;
   setIsSubmitting?: Dispatch<SetStateAction<boolean>>;
 }) => {
-
   const handleClick = () => {
     const callbackUrl = OAuthConfig.github.redirectUri;
     const authUrl = OAuthConfig.github.authUri;
