@@ -3,7 +3,7 @@ import { Lock, User } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '@/shared/hooks/use-redux';
-import { signInAction, signInGoogleAction } from '@/store/auth/action';
+import { signInAction } from '@/store/auth/action';
 import { toast } from 'sonner';
 import { OAuthConfig } from '@/configs/OAuthConfig';
 
@@ -91,7 +91,7 @@ const Signin = () => {
                 },
               ]}
             >
-              <Input prefix={<User className='mr-2 h-4 w-4 text-primary-default' />} size='large' />
+              <Input prefix={<User className='w-4 h-4 mr-2 text-primary-default' />} size='large' />
             </Form.Item>
             <Form.Item
               name='password'
@@ -104,7 +104,7 @@ const Signin = () => {
               ]}
             >
               <Input.Password
-                prefix={<Lock className='mr-2 h-4 w-4 text-primary-default' />}
+                prefix={<Lock className='w-4 h-4 mr-2 text-primary-default' />}
                 size='large'
                 type='password'
               />

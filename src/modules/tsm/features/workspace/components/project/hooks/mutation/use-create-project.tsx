@@ -28,7 +28,6 @@ const useCreateProject = () => {
         navigate(`tsm/project/${data?.data?.id}?view=project`, {
           replace: true,
         });
-        console.log(data.data.id);
       }
     },
   });

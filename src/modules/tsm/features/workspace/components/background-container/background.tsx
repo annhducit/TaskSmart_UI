@@ -93,8 +93,8 @@ const BackgroundReview = () => {
               </div>
             ))}
             {isLoading && (
-              <div className='flex items-center justify-center'>
-                <Spin size='small' />
+              <div className='mx-auto flex items-center justify-center'>
+                <Spin size='small' className='text-center' />
               </div>
             )}
           </div>

@@ -13,6 +13,7 @@ import {
   UploadCloud,
   FileUp,
   UploadIcon,
+  Share2,
 } from 'lucide-react';
 import SubBackgroundModal from '../background-container/sub-background';
 import useGetBackground from '../../hooks/query/use-get-background';
@@ -52,7 +53,7 @@ export default function ProjectSetting() {
             <div className='ml-3 h-[50px] text-center text-2xl leading-[50px]'>
               {project?.name} <Pencil className='ml-3 cursor-pointer' size={16}></Pencil>
             </div>
-            <div className='ml-3 text-sm text-2xl align-middle'>
+            <div className='ml-3 align-middle text-2xl text-sm'>
               <Component size={13} />
               <span className='ml-2'>{project?.workspace.name}</span>
             </div>
@@ -60,8 +61,12 @@ export default function ProjectSetting() {
         </div>
 
         <div>
-          <Button type='primary' onClick={() => setModal(SEARCH_PARAMS_VALUE.ADD_MEMBER)}>
-            Invite members
+          <Button
+            icon={<Share2 className='h-4 w-4' />}
+            type='primary'
+            onClick={() => setModal(SEARCH_PARAMS_VALUE.ADD_MEMBER)}
+          >
+            Share
           </Button>
         </div>
       </div>
@@ -72,7 +77,7 @@ export default function ProjectSetting() {
         <div className='text-xl font-semibold'>Project Settings</div>
         <div className='mt-3 align-middle'>
           <Typography.Text className='my-3 font-semibold'>
-            <Info className='p-0 m-0' size={15} />
+            <Info className='m-0 p-0' size={15} />
             <span className='ml-2 text-[15px]'>Desciption</span>
           </Typography.Text>
           <div>
@@ -80,7 +85,7 @@ export default function ProjectSetting() {
               className='h-[100px]'
               defaultValue={project?.description}
             ></Input.TextArea>
-            <div className='flex justify-end w-full'>
+            <div className='flex w-full justify-end'>
               <Button className='bottom-0 right-0 mt-2' type='primary' size='middle'>
                 Update desciption
               </Button>
@@ -92,7 +97,7 @@ export default function ProjectSetting() {
 
         <div className='mt-3 align-middle'>
           <Typography.Text className='my-3 font-semibold'>
-            <FileInput className='p-0 m-0' size={15} />
+            <FileInput className='m-0 p-0' size={15} />
             <span className='ml-2 text-[15px]'>Project document</span>
           </Typography.Text>
           <div className='mt-3'>
@@ -104,7 +109,7 @@ export default function ProjectSetting() {
 
         <div className='mt-3 align-middle'>
           <Typography.Text className='my-3 font-semibold'>
-            <Image className='p-0 m-0' size={15} />
+            <Image className='m-0 p-0' size={15} />
             <span className='ml-2 text-[15px]'>Background</span>
           </Typography.Text>
           <UpdateBackground></UpdateBackground>
@@ -115,7 +120,7 @@ export default function ProjectSetting() {
   );
 }
 
-const UploadDocument = ({project}: {project: Project | undefined}) => {
+const UploadDocument = ({ project }: { project: Project | undefined }) => {
   const { btnColor } = useSelector((state) => state.theme);
 
   const [file, setFile] = useState<FileType | null>(null);
@@ -155,7 +160,7 @@ const UploadDocument = ({project}: {project: Project | undefined}) => {
       message.error('Please select a file');
     }
   };
-  
+
   return (
     <div className='flex items-center justify-center'>
       <div
@@ -182,7 +187,7 @@ const UploadDocument = ({project}: {project: Project | undefined}) => {
                 style={{
                   borderColor: btnColor,
                 }}
-                className='flex items-center justify-center w-20 h-20 mx-auto bg-transparent border-2 border-dashed rounded-lg'
+                className='mx-auto flex h-20 w-20 items-center justify-center rounded-lg border-2 border-dashed bg-transparent'
               >
                 <UploadCloud
                   size={24}
@@ -193,7 +198,7 @@ const UploadDocument = ({project}: {project: Project | undefined}) => {
                 />
               </div>
             </div>
-            <div className='flex flex-col py-4 text-left gap-y-4'>
+            <div className='flex flex-col gap-y-4 py-4 text-left'>
               <Typography.Text
                 className='block font-semibold '
                 style={{
@@ -208,7 +213,7 @@ const UploadDocument = ({project}: {project: Project | undefined}) => {
             </div>
           </div>
         </Dragger>
-        <div className='flex items-center ml-auto gap-x-2'>
+        <div className='ml-auto flex items-center gap-x-2'>
           <Button danger>Cancel</Button>
           <Button
             icon={<UploadIcon size={14} />}
@@ -259,8 +264,8 @@ const UpdateBackground = () => {
 
   return (
     <>
-      <div className='flex flex-col items-center w-full gap-x-6'>
-        <div className='relative flex justify-center w-full'>
+      <div className='flex w-full flex-col items-center gap-x-6'>
+        <div className='relative flex w-full justify-center'>
           <div
             style={{
               backgroundImage: `url(${backgroundUnsplash ? backgroundUnsplash.urls.regular : project?.backgroundUnsplash?.urls.regular})`,
@@ -271,7 +276,7 @@ const UpdateBackground = () => {
             className='h-[120px] w-[192px] rounded'
           >
             <div className='mx-auto mt-2 h-[103px] w-[160px] rounded'>
-              <img src={dashboard} alt='dashboard' className='w-full h-full rounded' />
+              <img src={dashboard} alt='dashboard' className='h-full w-full rounded' />
             </div>
           </div>
           <Button
@@ -286,7 +291,7 @@ const UpdateBackground = () => {
           </Button>
         </div>
 
-        <div className='flex flex-col mt-3 gap-y-1'>
+        <div className='mt-3 flex flex-col gap-y-1'>
           <div className='flex items-center gap-x-2'>
             {listBackground?.map((item) => (
               <div
@@ -297,7 +302,7 @@ const UpdateBackground = () => {
                 <img
                   src={item.urls.small}
                   alt='background'
-                  className='object-cover w-full h-full rounded'
+                  className='h-full w-full rounded object-cover'
                 />
               </div>
             ))}
@@ -314,7 +319,7 @@ const UpdateBackground = () => {
                 className={`relative h-[45px] w-[76px] cursor-pointer rounded transition-all hover:brightness-125`}
               >
                 {item.color === background && (
-                  <Check className='absolute w-4 h-4 text-white right-3 top-2' />
+                  <Check className='absolute right-3 top-2 h-4 w-4 text-white' />
                 )}
               </div>
             ))}
@@ -332,7 +337,7 @@ const UpdateBackground = () => {
             >
               <Button className='flex items-center'>
                 More
-                <Ellipsis className='w-4 h-4 pl-1' />
+                <Ellipsis className='h-4 w-4 pl-1' />
               </Button>
             </Popover>
           </div>

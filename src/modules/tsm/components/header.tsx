@@ -24,7 +24,6 @@ import {
 } from 'lucide-react';
 
 import user from '@/assets/images/user.png';
-import template from '@/assets/images/karban.png';
 import Tooltip from '@/shared/components/tooltip';
 import useSearchParam from '@/shared/hooks/use-search-param';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
@@ -43,6 +42,7 @@ import useGetProfile from './hooks/use-profile';
 import { isEmpty } from 'lodash';
 import ChangeTheme from '../features/workspace/components/project/modify-card/popover/change-theme';
 import ModalSearch from './search';
+import { listColor } from '@/shared/data';
 
 const Header = () => {
   const [open, setOpen] = useCollapse<boolean>(false);
@@ -81,6 +81,8 @@ const Header = () => {
     ? `http://localhost:8888/api/image/${userAuthenticated?.profileImagePath}`
     : user;
 
+  const colorRadom = listColor[Math.floor(Math.random() * listColor.length)].color;
+
   const workspaces: MenuProps['items'] = [
     {
       label: 'Current workspace',
@@ -91,7 +93,16 @@ const Header = () => {
       label: project?.workspace.name,
       style: { display: isProject ? 'flex' : 'none' },
       key: '1',
-      icon: <img src={template} className='h-10 w-10 rounded-lg' />,
+      icon: (
+        <div
+          style={{
+            backgroundColor: colorRadom,
+          }}
+          className='flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl text-2xl font-bold text-white'
+        >
+          {project?.workspace?.name.charAt(0).toUpperCase()}
+        </div>
+      ),
       className: 'gap-x-1',
       onClick: () => navigate(`../../../tsm/workspace/${project?.workspace.id}`),
     },
@@ -110,13 +121,31 @@ const Header = () => {
       style: { display: 'flex' },
       className: 'gap-x-1',
       key: workspace.id,
-      icon: <img src={template as string} className='h-10 w-10 rounded-lg' />,
+      icon: (
+        <div
+          style={{
+            backgroundColor: colorRadom,
+          }}
+          className='flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl text-2xl font-bold text-white'
+        >
+          {workspace.name?.charAt(0).toUpperCase()}
+        </div>
+      ),
       onClick: () => navigate(`../../../tsm/workspace/${workspace.id}`),
     })),
     {
       label: profile?.personalWorkSpace.name,
       key: '3',
-      icon: <img src={template} className='h-10 w-10 rounded-lg' />,
+      icon: (
+        <div
+          style={{
+            backgroundColor: colorRadom || '#000',
+          }}
+          className='flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl text-2xl font-bold text-white'
+        >
+          {profile?.personalWorkSpace?.name.charAt(0).toUpperCase()}
+        </div>
+      ),
       onClick: () => navigate(`../../../tsm/workspace/${profile?.personalWorkSpace.id}`),
     },
   ];

@@ -2,6 +2,7 @@ import type { VariantProps } from 'class-variance-authority';
 import { cva } from 'class-variance-authority';
 import { cn } from '@/shared/router/cn';
 import { Spin } from 'antd';
+import { useSelector } from '@/store';
 
 const loadingPageVars = cva(
   'flex items-center justify-center fixed top-0 left-0 right-0 bottom-0 overflow-y-auto',
@@ -22,10 +23,15 @@ type Props = VariantProps<typeof loadingPageVars>;
 
 export default function LoadingPage(props: Props) {
   const { size } = props;
-
+  const { btnColor } = useSelector((state) => state.theme);
   return (
     <div className={cn(loadingPageVars({ size }))}>
-      <Spin size='default' />
+      <Spin
+        size='default'
+        style={{
+          color: btnColor,
+        }}
+      />
     </div>
   );
 }
