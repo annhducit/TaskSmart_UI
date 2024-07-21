@@ -12,13 +12,14 @@ import Loading from '@/shared/components/loading';
 import Tooltip from '@/shared/components/tooltip';
 import {
   BrainCircuit,
-  CalendarDays,
+  Settings,
   Ellipsis,
   FolderKanban,
   PanelsTopLeft,
   Search,
   User,
   UserPlus,
+  CalendarDays,
 } from 'lucide-react';
 import { TabsProps } from 'antd/lib';
 import Setting from '../tsm/features/workspace/components/project/modify-card/popover/setting';
@@ -33,6 +34,7 @@ const CalendarFeature = lazy(
   () => import('../tsm/features/workspace/components//calendar-timeline')
 );
 const OverviewFeature = lazy(() => import('../tsm/features/workspace/components//overview'));
+const SettingFeature = lazy(() => import('../tsm/features/workspace/components/settings'));
 /**
  *
  * @returns  Dashboard layout component
@@ -255,6 +257,12 @@ const items: TabsProps['items'] = [
 
     icon: <BrainCircuit size='15' className='translate-x-[6px] translate-y-[2px]' />,
     children: <AIGenerator />,
+  },
+  {
+    key: 'setting',
+    label: 'Setting',
+    icon: <Settings size='15' className='translate-x-[6px] translate-y-[2px]' />,
+    children: <SettingFeature />,
   },
   // {
   //   key: 'sql',

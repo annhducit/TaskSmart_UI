@@ -34,6 +34,11 @@ type Workspace = {
   backgroundUnsplash: string;
 };
 
+type TsmError = {
+  message: string;
+  status: number;
+};
+
 type Project = {
   id: string;
   name: string;

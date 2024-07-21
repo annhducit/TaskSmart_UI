@@ -1,6 +1,7 @@
 import { createRouters } from '@/shared/router/utils';
 import { lazy } from 'react';
 import { Navigate, useRoutes } from 'react-router-dom';
+import ViewDoc from './features/workspace/components/project/components/view-doc';
 
 /**
  * Modules
@@ -52,6 +53,10 @@ const tsmRoutes = createRouters([
   {
     path: 'workspace/:workspaceId/*',
     element: <WorkspaceDetailFeature />,
+  },
+  {
+    path: 'source/doc/:projectId/*',
+    element: <ViewDoc />,
   },
   {
     path: 'project/:projectId/*',
