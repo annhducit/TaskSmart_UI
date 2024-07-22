@@ -277,3 +277,32 @@ type TSMSearchEverything = {
   templates: TSMTemplate[];
   notes: TSMNote[];
 };
+
+type TasksGenerate = {
+  listCards: ListCardGenerate[];
+};
+
+type ListCardGenerate = {
+  id: string;
+  name: string;
+  cards: CardGenerate[];
+};
+
+type CardGenerate = {
+  id: string;
+  listCardId?: string;
+  name: string;
+  description: string;
+  listCardId: string;
+  checkLists: CheckListGroupGenerate[];
+};
+
+type CheckListGenerate = {
+  name: CheckList['name'];
+  checked?: CheckList['checked'];
+};
+
+type CheckListGroupGenerate = {
+  name: CheckListGroup['name'];
+  checkList: CheckListGenerate[];
+};

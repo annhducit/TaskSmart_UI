@@ -7,12 +7,12 @@ import { Paperclip, Rss, Text } from 'lucide-react';
 import { CSS } from '@dnd-kit/utilities';
 
 interface Props {
-  card: CardRequest;
+  card: CardGenerate;
   deleteTask?: (id: Id) => void;
   updateTask?: (id: Id, content: string) => void;
 }
 
-function TaskCard({ card }: Props) {
+function TaskCardAI({ card }: Props) {
   const searhParams = useSearchParams();
 
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
@@ -102,4 +102,4 @@ function TaskCard({ card }: Props) {
   );
 }
 
-export default TaskCard;
+export default TaskCardAI;
