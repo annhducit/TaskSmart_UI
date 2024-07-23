@@ -54,9 +54,9 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div className='flex flex-col h-screen overflow-hidden'>
+    <div className='flex h-screen flex-col overflow-hidden'>
       <Header />
-      <div className='relative flex flex-row flex-1'>
+      <div className='relative flex flex-1 flex-row'>
         <div className='block'>
           <SidebarComponent
             typeSidebar={isProject ? 'workspace' : 'home'}
@@ -124,7 +124,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
   return (
     <>
       <section
-        className='relative object-contain w-full h-screen bg-center bg-no-repeat bg-cover'
+        className='relative h-screen w-full bg-cover bg-center bg-no-repeat object-contain'
         style={{
           backgroundPosition: 'center',
           backgroundSize: 'cover',
@@ -193,7 +193,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
                     >
                       <img
                         src={`http://localhost:8888/api/image/${user.profileImagePath}`}
-                        className='object-cover rounded-full'
+                        className='rounded-full object-cover'
                         style={{ width: '28px', height: '28px' }}
                       />
                       <Badge status='success' className='absolute -right-[2px] -top-1 z-[99999]' />
@@ -211,7 +211,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
               open={visible}
               onOpenChange={handleOpenChange}
             >
-              <div className='px-1 transition-all rounded cursor-pointer hover:bg-primary-default hover:text-white'>
+              <div className='cursor-pointer rounded px-1 transition-all hover:bg-primary-default hover:text-white'>
                 <Ellipsis size='20' color='white' className='mt-1' />
               </div>
             </Popover>
@@ -245,7 +245,7 @@ const items: TabsProps['items'] = [
   {
     key: 'ai-generator',
     label: (
-      <Typography.Text className='text-transparent bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text'>
+      <Typography.Text className='bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text text-transparent'>
         AI Generator
       </Typography.Text>
     ),

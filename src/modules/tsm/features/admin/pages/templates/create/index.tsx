@@ -26,6 +26,7 @@ import useCreateTemplate from '../../../hooks/mutation/use-create-template';
 import dayjs from 'dayjs';
 import { DATE_TIME_FORMAT } from '@/shared/constant/date';
 import BackgroundProject from './components/background-project';
+import { useSelector } from '@/store';
 
 const CreateTemplate: React.FC = () => {
   const [current, setCurrent] = useState(0);
@@ -414,6 +415,8 @@ const CreateContent = ({
     migrateListCard(cardsMoved);
   };
 
+  const btnColor = useSelector((state) => state.theme.btnColor);
+
   return (
     <DndContext
       sensors={sensors}
@@ -455,8 +458,12 @@ const CreateContent = ({
                 <div className='ml-auto flex items-center gap-x-2'>
                   <Button
                     onClick={handleAddListCard}
-                    type='primary'
-                    className='rounded text-xs font-semibold '
+                    type='text'
+                    style={{
+                      backgroundColor: btnColor,
+                      color: '#fff',
+                    }}
+                    className='rounded text-xs font-semibold text-white'
                   >
                     Add list
                   </Button>

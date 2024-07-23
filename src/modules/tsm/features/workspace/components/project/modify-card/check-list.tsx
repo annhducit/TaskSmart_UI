@@ -103,7 +103,7 @@ const CheckList = ({
                 danger
                 type='text'
                 icon={<Trash className='h-3 w-3' />}
-              ></Button>
+              />
             </div>
             <div className='flex flex-col gap-2 pl-3'>
               {item?.checkList.map((check, index) => (
@@ -197,7 +197,7 @@ const CheckList = ({
               <Button
                 onClick={createCheckListGroup}
                 icon={<Plus className='mt-1 h-3 w-3' />}
-                className='w-[90px]'
+                className={`text-${textColor} flex w-[90px] items-center`}
               >
                 Add
               </Button>
@@ -206,7 +206,8 @@ const CheckList = ({
             <Button
               onClick={() => setVisible(false)}
               type='default'
-              className='0 w-[90px] bg-red-500 text-white'
+              danger
+              className='0 w-[90px]  text-white'
             >
               Cancel
             </Button>

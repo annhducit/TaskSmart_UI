@@ -49,6 +49,7 @@ type Project = {
   };
   backgroundColor: string;
   backgroundUnsplash: UnsplashResponse;
+  speDocPath: string;
   inviteCode: string;
   listCards: ListCard[];
   users: UserRelation[];

@@ -7,6 +7,7 @@ import { Ellipsis, Plus, Trash2 } from 'lucide-react';
 import Tooltip from '@/shared/components/tooltip';
 import useCollapse from '@/shared/hooks/use-collapse';
 import TaskCardAI from './card';
+import { useSelector } from '@/store';
 
 interface Props {
   column: ListCardGenerate;
@@ -60,6 +61,8 @@ const ColumnContainerAI = ({ column, cards, updateColumn, deleteColumn, createCa
     );
   }
 
+  const btnColor = useSelector((state) => state.theme.btnColor);
+
   return (
     <div
       ref={setNodeRef}
@@ -72,7 +75,7 @@ const ColumnContainerAI = ({ column, cards, updateColumn, deleteColumn, createCa
             allowClear
             type='text'
             defaultValue={column.name}
-            className='text-base font-bold transition-all border-none cursor-pointer rounded-xl'
+            className='cursor-pointer rounded-xl border-none text-base font-bold transition-all'
             onPressEnter={(e) => {
               updateColumn &&
                 updateColumn({
@@ -92,29 +95,29 @@ const ColumnContainerAI = ({ column, cards, updateColumn, deleteColumn, createCa
         <Popover
           placement='rightTop'
           trigger='click'
-          title={<div className='font-semibold text-center'>Behavior</div>}
+          title={<div className='text-center font-semibold'>Behavior</div>}
           content={
             <div className='flex flex-col gap-y-2'>
-              <Button type='default' className='text-xs text-left'>
+              <Button type='default' className='text-left text-xs'>
                 Add Card
               </Button>
-              <Button type='default' className='text-xs text-left '>
+              <Button type='default' className='text-left text-xs '>
                 Add List
               </Button>
-              <Button type='default' className='text-xs text-left '>
+              <Button type='default' className='text-left text-xs '>
                 Copy List
               </Button>
-              <Button type='default' className='text-xs text-left '>
+              <Button type='default' className='text-left text-xs '>
                 Move List
               </Button>
-              <Button type='default' className='text-xs text-left '>
+              <Button type='default' className='text-left text-xs '>
                 Archive List
               </Button>
             </div>
           }
         >
           <div className='rounded px-1 transition-all hover:bg-[#091E4224]'>
-            <Ellipsis className='w-5 h-5 mt-1 text-slate-500' />
+            <Ellipsis className='mt-1 h-5 w-5 text-slate-500' />
           </div>
         </Popover>
       </div>
@@ -153,7 +156,7 @@ const ColumnContainerAI = ({ column, cards, updateColumn, deleteColumn, createCa
               <Button
                 type='primary'
                 size='small'
-                className='w-full'
+                className='w-full text-white'
                 onClick={
                   createCard &&
                   (() => {
@@ -162,6 +165,10 @@ const ColumnContainerAI = ({ column, cards, updateColumn, deleteColumn, createCa
                     setCardCreationName('');
                   })
                 }
+                style={{
+                  backgroundColor: btnColor,
+                  color: '#fff',
+                }}
               >
                 Add Card
               </Button>
@@ -170,8 +177,8 @@ const ColumnContainerAI = ({ column, cards, updateColumn, deleteColumn, createCa
         >
           <Button
             type='dashed'
-            icon={<Plus className='w-4 h-4' />}
-            className='flex items-center w-full rounded-xl'
+            icon={<Plus className='h-4 w-4' />}
+            className='flex w-full items-center rounded-xl'
           >
             Add Card
           </Button>
@@ -185,7 +192,7 @@ const ColumnContainerAI = ({ column, cards, updateColumn, deleteColumn, createCa
                   deleteColumn(column.id);
                 })
               }
-              className='w-4 h-4 mt-1 text-slate-500'
+              className='mt-1 h-4 w-4 text-slate-500'
             />
           </div>
         </Tooltip>

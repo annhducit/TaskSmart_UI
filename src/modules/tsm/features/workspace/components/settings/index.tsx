@@ -14,6 +14,9 @@ import {
   FileUp,
   UploadIcon,
   Share2,
+  Save,
+  Eye,
+  FileWarning,
 } from 'lucide-react';
 import SubBackgroundModal from '../background-container/sub-background';
 import useGetBackground from '../../hooks/query/use-get-background';
@@ -25,12 +28,18 @@ import dashboard from '@/assets/svgs/dashboard.svg';
 import Dragger from 'antd/es/upload/Dragger';
 import { useSelector } from '@/store';
 import { tsmAxios } from '@/configs/axios';
+import Tooltip from '@/shared/components/tooltip';
+import { useNavigate } from 'react-router-dom';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
 export default function ProjectSetting() {
+  const navigate = useNavigate();
+
   const [, setModal] = useSearchParam(SEARCH_PARAMS.MODAL);
   const { data: project } = useGetProject();
+
+  const { btnColor } = useSelector((state) => state.theme);
   return (
     <div className='mx-10 h-[600px] overflow-y-scroll rounded-xl bg-white p-8 text-black'>
       <div className='flex justify-between px-[100px]'>
@@ -38,7 +47,7 @@ export default function ProjectSetting() {
           <div>
             {project?.backgroundUnsplash ? (
               <img
-                className='h-[80px] w-[80px]'
+                className='h-[80px] w-[80px] rounded object-cover'
                 src={project.backgroundUnsplash.urls.small}
                 alt=''
               />
@@ -46,15 +55,26 @@ export default function ProjectSetting() {
               <div
                 style={{ backgroundColor: project?.backgroundColor }}
                 className='h-[80px] w-[80px]'
-              ></div>
+              />
             )}
           </div>
           <div className='flex flex-col'>
-            <div className='ml-3 h-[50px] text-center text-2xl leading-[50px]'>
-              {project?.name} <Pencil className='ml-3 cursor-pointer' size={16}></Pencil>
+            <div className='flex items-center gap-x-4'>
+              <Typography.Text className='ml-3 text-center text-2xl leading-[50px]'>
+                {project?.name}
+              </Typography.Text>
+              <Tooltip title='Rename'>
+                <Pencil
+                  className='cursor-pointer transition-all hover:opacity-25'
+                  style={{
+                    color: btnColor,
+                  }}
+                  size={16}
+                />
+              </Tooltip>
             </div>
-            <div className='ml-3 align-middle text-2xl text-sm'>
-              <Component size={13} />
+            <div className='ml-3 flex items-center align-middle text-2xl text-sm'>
+              <Component size={13} color={btnColor} />
               <span className='ml-2'>{project?.workspace.name}</span>
             </div>
           </div>
@@ -62,8 +82,12 @@ export default function ProjectSetting() {
 
         <div>
           <Button
-            icon={<Share2 className='h-4 w-4' />}
-            type='primary'
+            icon={<Share2 className='color-white h-4 w-4' />}
+            type='text'
+            className='flex items-center text-white'
+            style={{
+              backgroundColor: btnColor,
+            }}
             onClick={() => setModal(SEARCH_PARAMS_VALUE.ADD_MEMBER)}
           >
             Share
@@ -71,50 +95,102 @@ export default function ProjectSetting() {
         </div>
       </div>
 
-      <Divider />
+      <Divider
+        style={{
+          backgroundColor: btnColor,
+          opacity: 0.3,
+        }}
+      />
 
       <div className='px-[100px]'>
         <div className='text-xl font-semibold'>Project Settings</div>
         <div className='mt-3 align-middle'>
-          <Typography.Text className='my-3 font-semibold'>
-            <Info className='m-0 p-0' size={15} />
-            <span className='ml-2 text-[15px]'>Desciption</span>
-          </Typography.Text>
+          <div className='my-3 flex items-center gap-x-2 font-semibold'>
+            <Info size={15} color={btnColor} />
+            <Typography.Text className='text-sm'>Description</Typography.Text>
+          </div>
           <div>
-            <Input.TextArea
-              className='h-[100px]'
-              defaultValue={project?.description}
-            ></Input.TextArea>
+            <Input.TextArea className='h-[100px]' defaultValue={project?.description} />
             <div className='flex w-full justify-end'>
-              <Button className='bottom-0 right-0 mt-2' type='primary' size='middle'>
-                Update desciption
+              <Button
+                icon={<Save className='h-4 w-4' />}
+                className='my-2 flex items-center text-white'
+                type='text'
+                size='middle'
+                style={{
+                  backgroundColor: btnColor,
+                }}
+              >
+                Save
               </Button>
             </div>
           </div>
         </div>
 
-        <Divider className='my-7 bg-[#c8d6e5]' />
+        <Divider
+          className='my-7'
+          style={{
+            backgroundColor: btnColor,
+            opacity: 0.3,
+          }}
+        />
 
         <div className='mt-3 align-middle'>
-          <Typography.Text className='my-3 font-semibold'>
-            <FileInput className='m-0 p-0' size={15} />
-            <span className='ml-2 text-[15px]'>Project document</span>
-          </Typography.Text>
+          <div className='flex items-center justify-between'>
+            <div className='my-3 flex items-center gap-x-2 font-semibold'>
+              <FileInput size={15} color={btnColor} />
+              <Typography.Text className='text-sm'>Project document</Typography.Text>
+            </div>
+            {project?.speDocPath ? (
+              <div className='flex items-center gap-x-2'>
+                <Tooltip title='View file'>
+                  <Button
+                    icon={<Eye className='h-4 w-4' />}
+                    type='primary'
+                    size='small'
+                    className='flex items-center text-white'
+                    style={{
+                      backgroundColor: btnColor,
+                    }}
+                    onClick={() => navigate(`/tsm/source/doc/${project?.id}`)}
+                  />
+                </Tooltip>
+              </div>
+            ) : (
+              <Tooltip title='Please upload document file!'>
+                <div className='flex items-center gap-x-2'>
+                  <FileWarning size={15} color='red' />
+                  <Typography.Text className='text-sm'>No document</Typography.Text>
+                </div>
+              </Tooltip>
+            )}
+          </div>
           <div className='mt-3'>
             <UploadDocument project={project}></UploadDocument>
           </div>
         </div>
 
-        <Divider className='my-7 bg-[#c8d6e5]' />
+        <Divider
+          className='my-7'
+          style={{
+            backgroundColor: btnColor,
+            opacity: 0.3,
+          }}
+        />
 
         <div className='mt-3 align-middle'>
-          <Typography.Text className='my-3 font-semibold'>
-            <Image className='m-0 p-0' size={15} />
-            <span className='ml-2 text-[15px]'>Background</span>
-          </Typography.Text>
-          <UpdateBackground></UpdateBackground>
+          <div className='my-3 flex items-center gap-x-2 font-semibold'>
+            <Image size={15} color={btnColor} />
+            <Typography.Text className='text-sm'>Background</Typography.Text>
+          </div>
+          <UpdateBackground />
         </div>
-        <Divider className='bg-[#c8d6e5]' />
+        <Divider
+          style={{
+            backgroundColor: btnColor,
+            opacity: 0.3,
+          }}
+        />
       </div>
     </div>
   );
@@ -147,7 +223,6 @@ const UploadDocument = ({ project }: { project: Project | undefined }) => {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         if (res.data) {
-          console.log(res.data);
           message.success('Upload success');
         }
       } catch (error) {
@@ -259,12 +334,14 @@ const UpdateBackground = () => {
 
   const handleChangeBackgroundColor = (value: string) => {
     setBackground(value);
-    console.log(value);
+    setBackgroundUnsplash(undefined);
   };
+
+  const btnColor = useSelector((state) => state.theme.btnColor);
 
   return (
     <>
-      <div className='flex w-full flex-col items-center gap-x-6'>
+      <div className='flex w-full flex-col items-end gap-x-6 gap-y-2'>
         <div className='relative flex w-full justify-center'>
           <div
             style={{
@@ -273,22 +350,12 @@ const UpdateBackground = () => {
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
-            className='h-[120px] w-[192px] rounded'
+            className='h-[150px] w-[222px] rounded'
           >
-            <div className='mx-auto mt-2 h-[103px] w-[160px] rounded'>
+            <div className='mx-auto mt-2 h-[110px] w-[167px] rounded'>
               <img src={dashboard} alt='dashboard' className='h-full w-full rounded' />
             </div>
           </div>
-          <Button
-            onClick={handleUpdateBackground}
-            className='absolute bottom-0 right-0'
-            type='primary'
-            size='middle'
-            disabled={!background && !backgroundUnsplash}
-            loading={isLoading}
-          >
-            Update background
-          </Button>
         </div>
 
         <div className='mt-3 flex flex-col gap-y-1'>
@@ -296,18 +363,25 @@ const UpdateBackground = () => {
             {listBackground?.map((item) => (
               <div
                 key={item.id}
-                className='h-[60px] w-[110px] cursor-pointer rounded transition-all hover:brightness-125'
+                className='relative h-[60px] w-[110px] cursor-pointer rounded transition-all hover:brightness-125'
                 onClick={() => handleChangeBackground(item)}
               >
                 <img
                   src={item.urls.small}
                   alt='background'
-                  className='h-full w-full rounded object-cover'
+                  className={`h-full w-full rounded object-cover object-center ${
+                    item.id === backgroundUnsplash?.id
+                      ? 'border-2 border-solid border-blue-500'
+                      : ''
+                  }`}
                 />
+                {item.id === backgroundUnsplash?.id && (
+                  <Check className='absolute right-11 top-4 h-5 w-5 text-white' />
+                )}
               </div>
             ))}
           </div>
-          <Divider className='my-1' />
+          <Divider className='my-4' />
           <div className='flex items-center justify-center gap-x-2'>
             {listColor.slice(0, 10).map((item) => (
               <div
@@ -319,29 +393,51 @@ const UpdateBackground = () => {
                 className={`relative h-[45px] w-[76px] cursor-pointer rounded transition-all hover:brightness-125`}
               >
                 {item.color === background && (
-                  <Check className='absolute right-3 top-2 h-4 w-4 text-white' />
+                  <Check className='absolute right-7 top-3 h-4 w-4 text-white' />
                 )}
               </div>
             ))}
-            <Popover
-              trigger='click'
-              placement='right'
-              content={
-                <SubBackgroundModal
-                  color={background as string}
-                  handleChangeBackground={handleChangeBackground}
-                  handleChangeBackgroundColor={handleChangeBackgroundColor}
-                  defaultBackgrounds={listBackground || []}
-                />
-              }
-            >
-              <Button className='flex items-center'>
-                More
-                <Ellipsis className='h-4 w-4 pl-1' />
-              </Button>
-            </Popover>
+            <Tooltip color='black' title='More'>
+              <Popover
+                trigger='click'
+                placement='right'
+                content={
+                  <SubBackgroundModal
+                    color={background as string}
+                    handleChangeBackground={handleChangeBackground}
+                    handleChangeBackgroundColor={handleChangeBackgroundColor}
+                    defaultBackgrounds={listBackground || []}
+                  />
+                }
+              >
+                <Button
+                  className='flex items-center justify-center'
+                  style={{
+                    width: '76px',
+                    height: '45px',
+                  }}
+                >
+                  <Ellipsis className='h-5 w-5 ' />
+                </Button>
+              </Popover>
+            </Tooltip>
           </div>
         </div>
+        <Button
+          onClick={handleUpdateBackground}
+          type='text'
+          icon={<Save className='h-4 w-4' />}
+          style={{
+            backgroundColor: btnColor,
+            color: '#fff',
+          }}
+          className='float-right mt-6 flex w-[120px] items-center justify-center text-white'
+          size='middle'
+          disabled={!background || !backgroundUnsplash}
+          loading={isLoading}
+        >
+          Update
+        </Button>
       </div>
     </>
   );

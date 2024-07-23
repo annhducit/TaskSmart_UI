@@ -211,14 +211,22 @@ const UpdateBackground = () => {
             {listBackground?.map((item) => (
               <div
                 key={item.id}
-                className='h-[40px] w-[64px] cursor-pointer rounded transition-all hover:brightness-125'
+                className='relative h-[40px] w-[64px] cursor-pointer rounded transition-all hover:brightness-125'
                 onClick={() => handleChangeBackground(item)}
               >
                 <img
                   src={item.urls.small}
                   alt='background'
-                  className='h-full w-full rounded object-cover'
+                  className={`h-full w-full rounded object-cover object-center ${
+                    item.id === backgroundUnsplash?.id
+                      ? 'border-2 border-solid border-blue-500'
+                      : ''
+                  }`}
                 />
+
+                {item.id === backgroundUnsplash?.id && (
+                  <Check className='absolute right-6 top-3 h-4 w-4 text-white' />
+                )}
               </div>
             ))}
           </div>

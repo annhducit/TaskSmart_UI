@@ -10,7 +10,7 @@ const SQLGenerate = () => {
 
   const [sql, setSql] = useState<string>(sqlQuery);
   return (
-    <section className='flex h-[calc(100vh-190px)] w-full flex-col gap-y-6 overflow-y-scroll rounded bg-[#f8f9fc] p-6'>
+    <section className='flex h-[calc(100vh-180px)] w-full flex-col gap-y-6 overflow-y-scroll rounded bg-[#f8f9fc] p-6'>
       <div className='grid grid-cols-3 gap-x-6'>
         <div className='card-ai flex flex-col gap-y-2 bg-white p-6'>
           <Typography.Text>SQL Query Generated </Typography.Text>

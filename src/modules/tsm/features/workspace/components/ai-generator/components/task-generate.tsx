@@ -23,17 +23,17 @@ import TaskCardAI from './card';
 import { Plus } from 'lucide-react';
 import useCollapse from '@/shared/hooks/use-collapse';
 import useApplyGenerate from '../hook/mutation/use-apply-generate';
-import { useLocation, useNavigate } from 'react-router-dom';
-
+import blink from '@/assets/images/blink.png';
+import { useSelector } from '@/store';
 const TaskGenerate = () => {
   const [taskGenerate, setTaskGenerate] = useState<TasksGenerate>({ listCards: [] });
   const { data: project } = useGetProject();
 
   const [loading, setLoading] = useState(false);
 
-  
   const { mutate: applyGenerate, isPending } = useApplyGenerate();
 
+  const btnColor = useSelector((state) => state.theme.btnColor);
   const generateTask = () => {
     const generateAsync = async () => {
       setLoading(true);
@@ -50,30 +50,42 @@ const TaskGenerate = () => {
           const data = errorAxios.response?.data as TsmError;
           message.error(data.message);
         } else {
-          message.error("Something went wrong. Please try again later!");
+          message.error('Something went wrong. Please try again later!');
         }
       }
     };
     generateAsync();
   };
   const saveListCardToProject = () => {
-    applyGenerate({taskGenerate})
-  }
+    applyGenerate({ taskGenerate });
+  };
   return (
-    <div className='inline-block min-h-screen px-6 '>
+    <div className='inline-block min-h-screen px-6'>
       {taskGenerate.listCards.length > 0 ? (
         <div>
           <div className='flex items-start justify-start gap-x-3'>
-            <TaskGenerateHanler taskGenerate={taskGenerate} setTaskGenerate={setTaskGenerate} />
+            <TaskGenerateHandler taskGenerate={taskGenerate} setTaskGenerate={setTaskGenerate} />
           </div>
-          <div className='flex items-start justify-start w-full h-full mt-3 gap-x-3'>
-            <Button type='primary' loading={isPending} onClick={saveListCardToProject}>Save</Button>
+          <div className='mt-3 flex h-full w-full items-start justify-start gap-x-3'>
+            <Button type='primary' loading={isPending} onClick={saveListCardToProject}>
+              Save
+            </Button>
             <Button>Cancel</Button>
           </div>
         </div>
       ) : (
-        <div className='flex items-start justify-start w-full h-full gap-x-3'>
-          <Button loading={loading} onClick={generateTask}>
+        <div className='flex h-[174px] w-[250px] items-center justify-center rounded-lg bg-white'>
+          <Button
+            icon={<img src={blink} className='h-8 w-8' />}
+            loading={loading}
+            type='default'
+            size='large'
+            onClick={generateTask}
+            style={{
+              border: `2px solid ${btnColor}`,
+            }}
+            className='flex items-center bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text font-semibold text-transparent'
+          >
             Generate Task
           </Button>
         </div>
@@ -82,9 +94,9 @@ const TaskGenerate = () => {
   );
 };
 
-const TaskGenerateHanler = ({
+const TaskGenerateHandler = ({
   taskGenerate,
-  setTaskGenerate
+  setTaskGenerate,
 }: {
   taskGenerate: TasksGenerate;
   setTaskGenerate: React.Dispatch<React.SetStateAction<TasksGenerate>>;
@@ -107,7 +119,7 @@ const TaskGenerateHanler = ({
   const [columns, setColumns] = useState<ListCardGenerate[]>(taskGenerate.listCards);
 
   const columnsId = useMemo(() => columns.map((col) => col?.id), [columns]);
-  const [cards, setCards] = useState<CardGenerate[]>(()=>{
+  const [cards, setCards] = useState<CardGenerate[]>(() => {
     const listCardIterator: CardGenerate[] = [];
     taskGenerate.listCards.forEach((listCard) => {
       listCard.cards.forEach((card) => {
@@ -128,15 +140,15 @@ const TaskGenerateHanler = ({
       ...col,
       cards: cardsChange.filter((card) => card.listCardId === col.id),
     }));
-    setTaskGenerate({listCards: columnFilterCard});
+    setTaskGenerate({ listCards: columnFilterCard });
   };
 
   const handleAddListCard = () => {
     setColumns((prev) => [...prev, listCard]);
 
     setTaskGenerate((prev) => ({
-        listCards: [...prev.listCards, listCard],
-      }));
+      listCards: [...prev.listCards, listCard],
+    }));
   };
 
   const createCard = async (columnId: string, card: CardGenerate) => {
@@ -188,21 +200,21 @@ const TaskGenerateHanler = ({
                   placeholder='Enter list title'
                   allowClear
                   size='large'
-                  className='text-sm font-semibold rounded '
+                  className='rounded text-sm font-semibold '
                   value={listCard.name}
                   onChange={(e) => {
                     setListCard((prev) => ({ ...prev, name: e.target.value }));
                   }}
                 />
-                <div className='flex items-center ml-auto gap-x-2'>
+                <div className='ml-auto flex items-center gap-x-2'>
                   <Button
                     onClick={handleAddListCard}
                     type='primary'
-                    className='text-xs font-semibold rounded '
+                    className='rounded text-xs font-semibold '
                   >
                     Add list
                   </Button>
-                  <Button type='default' className='w-16 text-xs font-semibold rounded'>
+                  <Button type='default' className='w-16 rounded text-xs font-semibold'>
                     Cancel
                   </Button>
                 </div>
@@ -210,7 +222,7 @@ const TaskGenerateHanler = ({
             }
           >
             <Button
-              icon={<Plus className='w-4 h-4 opacity-65' />}
+              icon={<Plus className='h-4 w-4 opacity-65' />}
               size='large'
               className='flex w-[275px] items-center rounded-xl border-none bg-[#ffffff3d] text-sm font-semibold text-white'
             >

@@ -7,7 +7,7 @@ import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
-import useGetPdf from '../../hooks/query/use-get-pdf';
+import useGetPdf from '../hooks/query/use-get-pdf';
 import { useEffect, useState } from 'react';
 import Loading from '@/shared/components/loading';
 import { useSelector } from '@/store';
