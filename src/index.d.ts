@@ -307,3 +307,18 @@ type CheckListGroupGenerate = {
   name: CheckListGroup['name'];
   checkList: CheckListGenerate[];
 };
+
+type DatabaseRAGRequest = {
+  question: string;
+  database: string;
+};
+
+type Statement = {
+  statement: string;
+  title: string;
+}
+
+type DatabaseRAGResponse = {
+  statements: Statement[];
+  database: string;
+}

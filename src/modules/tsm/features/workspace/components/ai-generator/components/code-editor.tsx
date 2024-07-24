@@ -21,17 +21,50 @@ import Tooltip from '@/shared/components/tooltip';
 import { cn } from '@/shared/router/cn';
 import { useSelector } from '@/store';
 
-const SqlEditor = ({ code, onChange }: { code: string; onChange: (code: string) => void }) => {
+const SqlEditor = ({ statement }: { statement: Statement}) => {
   const [theme, setTheme] = useState<string>('prism');
 
   const handleThemeChange = (value: string) => {
     setTheme(value);
   };
 
+  const editorStyle = {
+    fontFamily: '"Fira code", "Fira Mono", monospace',
+    fontSize: 14,
+    backgroundColor:
+      theme === 'prism-tomorrow'
+        ? '#2d2d2d'
+        : theme === 'prism-okaidia'
+          ? '#272822'
+          : theme === 'prism-solarizedlight'
+            ? '#fdf6e3'
+            : theme === 'prism-coy'
+              ? '#f5f2f0'
+              : theme === 'prism-twilight'
+                ? '#141414'
+                : theme === 'prism-dark'
+                  ? '#1e1e1e'
+                  : '#f5f2f0',
+    color:
+      theme === 'prism-tomorrow'
+        ? '#f8f8f2'
+        : theme === 'prism-okaidia'
+          ? '#f8f8f2'
+          : theme === 'prism-solarizedlight'
+            ? '#657b83'
+            : theme === 'prism-coy'
+              ? '#000'
+              : theme === 'prism-twilight'
+                ? '#f8f8f2'
+                : theme === 'prism-dark'
+                  ? '#f8f8f2'
+                  : '#000',
+  }
+
   return (
-    <div className='mb-4 flex flex-col gap-y-2'>
+    <div className='flex flex-col mb-4 gap-y-2'>
       <div className='flex items-center justify-between'>
-        <Typography.Text className='block'>Your AI-generated SQL query:</Typography.Text>{' '}
+        <Typography.Text className='block'>{statement.title}</Typography.Text>{' '}
         <div className='flex items-center justify-end gap-x-2'>
           <Typography.Text className='block'>Theme</Typography.Text>
           <Select onChange={handleThemeChange} className='w-[200px]' defaultValue='prism'>
@@ -47,53 +80,22 @@ const SqlEditor = ({ code, onChange }: { code: string; onChange: (code: string) 
       </div>
       <div className={`${theme}`}>
         <Editor
-          value={code}
-          onValueChange={onChange}
-          className='card-ai rounded-lg p-4'
+          value={statement.statement}
+          onValueChange={()=>{console.log('onValueChange')}}
+          className='p-4 rounded-lg card-ai'
           highlight={(code) => highlight(code, languages.sql, 'sql')}
           padding={10}
-          style={{
-            fontFamily: '"Fira code", "Fira Mono", monospace',
-            fontSize: 14,
-            backgroundColor:
-              theme === 'prism-tomorrow'
-                ? '#2d2d2d'
-                : theme === 'prism-okaidia'
-                  ? '#272822'
-                  : theme === 'prism-solarizedlight'
-                    ? '#fdf6e3'
-                    : theme === 'prism-coy'
-                      ? '#f5f2f0'
-                      : theme === 'prism-twilight'
-                        ? '#141414'
-                        : theme === 'prism-dark'
-                          ? '#1e1e1e'
-                          : '#f5f2f0',
-            color:
-              theme === 'prism-tomorrow'
-                ? '#f8f8f2'
-                : theme === 'prism-okaidia'
-                  ? '#f8f8f2'
-                  : theme === 'prism-solarizedlight'
-                    ? '#657b83'
-                    : theme === 'prism-coy'
-                      ? '#000'
-                      : theme === 'prism-twilight'
-                        ? '#f8f8f2'
-                        : theme === 'prism-dark'
-                          ? '#f8f8f2'
-                          : '#000',
-          }}
+          style={editorStyle}
         />
       </div>
       <Space className='flex justify-end'>
-        <CopyUrlButton link={code} />
+        <CopyUrlButton link={statement.statement} />
         <Button
           type='default'
           danger
           icon={<Trash size={12} />}
           onClick={() => {
-            onChange('');
+            // onChange('');
           }}
         >
           Clear

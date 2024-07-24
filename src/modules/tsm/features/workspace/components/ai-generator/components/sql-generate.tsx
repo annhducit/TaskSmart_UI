@@ -1,34 +1,70 @@
-import { Button, Form, FormInstance, Input, Popover, Select, Tooltip, Typography } from 'antd';
+import {
+  Button,
+  Form,
+  FormInstance,
+  FormProps,
+  Input,
+  Popover,
+  Select,
+  Tooltip,
+  Typography,
+} from 'antd';
 import SQLEditor from './code-editor';
 import { useState } from 'react';
 import { useSelector } from '@/store';
 import { Ellipsis } from 'lucide-react';
+import { getIdProjectFromUrl } from '@/shared/components/getIdByUrl';
+import { tsmAxios } from '@/configs/axios';
+
+type FormType = FormProps<DatabaseRAGRequest>;
 
 const SQLGenerate = () => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<DatabaseRAGRequest>();
   const { btnColor } = useSelector((state) => state.theme);
+  const staInit :Statement = {
+    statement:`CREATE TABLE boards(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  description TEXT,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE lists(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  board_id INTEGER NOT NULL,\n  position INTEGER NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (board_id) REFERENCES boards (id)\n);\n\nCREATE TABLE cards(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  description TEXT,\n  list_id INTEGER NOT NULL,\n  position INTEGER NOT NULL,\n  due_date TIMESTAMP,\n  assigned_to INTEGER,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (list_id) REFERENCES lists (id),\n  FOREIGN KEY (assigned_to) REFERENCES users (id)\n);\n\nCREATE TABLE users(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  email VARCHAR(255) NOT NULL UNIQUE,\n  password_digest VARCHAR(255) NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE board_members(\n  board_id INTEGER NOT NULL,\n  user_id INTEGER NOT NULL,\n  role VARCHAR(255) NOT NULL,\n  PRIMARY KEY (board_id, user_id),\n  FOREIGN KEY (board_id) REFERENCES boards (id),\n  FOREIGN KEY (user_id) REFERENCES users (id)\n);\n\nCREATE TABLE card_comments(\n  id SERIAL PRIMARY KEY,\n  card_id INTEGER NOT NULL,\n  user_id INTEGER NOT NULL,\n  comment TEXT NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (card_id) REFERENCES cards (id),\n  FOREIGN KEY (user_id) REFERENCES users (id)\n);\n\nCREATE TABLE card_labels(\n  id SERIAL PRIMARY KEY,\n  card_id INTEGER NOT NULL,\n  label VARCHAR(255) NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (card_id) REFERENCES cards (id)\n);\n\nCREATE TABLE card_attachments(\n  id SERIAL PRIMARY KEY,\n  card_id INTEGER NOT NULL,\n  file_name VARCHAR(255) NOT NULL,\n  file_type VARCHAR(255) NOT NULL,\n  file_size BIGINT NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (card_id) REFERENCES cards (id)\n);\n\nCREATE TABLE integrations(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  type VARCHAR(255) NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE board_integrations(\n  board_id INTEGER NOT NULL,\n  integration_id INTEGER NOT NULL,\n  PRIMARY KEY (board_id, integration_id),\n  FOREIGN KEY (board_id) REFERENCES boards (id),\n  FOREIGN KEY (integration_id) REFERENCES integrations (id)\n);`,
+    title: ''
+  }
 
-  const [sql, setSql] = useState<string>(sqlQuery);
+  const [statements, setStatements] = useState<Statement[]>([staInit]);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const onFinish: FormType['onFinish'] = async (value) => {
+    try {
+      setIsSubmitting(true);
+      const projectId = getIdProjectFromUrl();
+
+      value.database = value.database ?? 'SQL';
+      const { data } = await tsmAxios.get<DatabaseRAGResponse>(
+        `/projects/${projectId}/database-rag?question=${value.question}&database=${value.database}`
+      );
+      console.log(data);
+      setStatements(data.statements);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   return (
     <section className='flex h-[calc(100vh-180px)] w-full flex-col gap-y-6 overflow-y-scroll rounded bg-[#f8f9fc] p-6'>
       <div className='grid grid-cols-3 gap-x-6'>
-        <div className='card-ai flex flex-col gap-y-2 bg-white p-6'>
+        <div className='flex flex-col p-6 bg-white card-ai gap-y-2'>
           <Typography.Text>SQL Query Generated </Typography.Text>
           <Typography.Text className='text-xl font-semibold'>0 </Typography.Text>
         </div>
-        <div className='card-ai flex flex-col gap-y-2 bg-white p-6'>
+        <div className='flex flex-col p-6 bg-white card-ai gap-y-2'>
           <Typography.Text>SQL Query Explainer </Typography.Text>
           <Typography.Text className='text-xl font-semibold'>0 </Typography.Text>
         </div>
-        <div className='card-ai flex flex-col gap-y-2 bg-white p-6'>
+        <div className='flex flex-col p-6 bg-white card-ai gap-y-2'>
           <Typography.Text>Total </Typography.Text>
           <Typography.Text className='text-xl font-semibold'>0 </Typography.Text>
         </div>
       </div>
 
-      <div className='card-ai flex flex-col gap-y-10 rounded-lg bg-white p-6'>
-        <Form form={form} layout='vertical'>
-          <Form.Item name='content' label='Write here what you want from your document:'>
+      <div className='flex flex-col p-6 bg-white rounded-lg card-ai gap-y-10'>
+        <Form form={form} layout='vertical' onFinish={onFinish}>
+          <Form.Item name='question' label='Write here what you want from your document:'>
             <Input.TextArea
               rows={6}
               placeholder='Find all customers who have ordered more than 10 products in the last 6 months'
@@ -41,8 +77,8 @@ const SQLGenerate = () => {
             />
           </Form.Item>
 
-          <div className='float-right flex items-center justify-center gap-x-2'>
-            <Form.Item className='flex w-full flex-shrink'>
+          <div className='flex items-center justify-center float-right gap-x-2'>
+            <Form.Item className='flex flex-shrink w-full'>
               <Button
                 icon={<IconQuery />}
                 style={{
@@ -51,12 +87,14 @@ const SQLGenerate = () => {
                   width: '100%',
                 }}
                 size='large'
+                htmlType='submit'
+                loading={isSubmitting}
                 className='flex items-center rounded-xl'
               >
                 Generate SQL
               </Button>
             </Form.Item>
-            <Form.Item>
+            <Form.Item name='database'>
               <Select
                 showSearch
                 allowClear
@@ -65,18 +103,18 @@ const SQLGenerate = () => {
                 filterOption={(input, option) =>
                   (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                 }
-                defaultValue={'8'}
+                defaultValue={'SQL'}
                 options={[
-                  { value: '1', label: 'MariaDB' },
-                  { value: '2', label: 'MySQL' },
-                  { value: '3', label: 'PostgreSQL' },
-                  { value: '4', label: 'SQLite' },
-                  { value: '5', label: 'Oracle' },
-                  { value: '6', label: 'SQL Server' },
-                  { value: '7', label: 'IBM DB2' },
-                  { value: '8', label: 'Standard SQL' },
-                  { value: '9', label: 'Snowflake' },
-                  { value: '10', label: 'Google BigQuery' },
+                  { value: 'SQL', label: 'Standard SQL' },
+                  { value: 'MongoDb', label: 'MongoDb' },
+                  { value: 'MySQL', label: 'MySQL' },
+                  { value: 'Postgre', label: 'PostgreSQL' },
+                  { value: 'SQLite', label: 'SQLite' },
+                  { value: 'Oracle', label: 'Oracle' },
+                  { value: 'SQL Server', label: 'SQL Server' },
+                  { value: 'IBM DB2', label: 'IBM DB2' },
+                  { value: 'Snow flake', label: 'Snowflake' },
+                  { value: 'Google BigQuery', label: 'Google BigQuery' },
                 ]}
               />
             </Form.Item>
@@ -105,7 +143,7 @@ const SQLGenerate = () => {
               >
                 <Button
                   size='small'
-                  icon={<Ellipsis className='h-3 w-3' color={btnColor} />}
+                  icon={<Ellipsis className='w-3 h-3' color={btnColor} />}
                   className='mt-1 rounded-full'
                 />
               </Popover>
@@ -113,73 +151,16 @@ const SQLGenerate = () => {
           </div>
         </Form>
       </div>
-      <SQLEditor code={sql} onChange={setSql} />
+
+      {statements.length > 0 &&
+        statements.map((statement, index) => (
+          <SQLEditor key={`statements_${index}`} statement={statement} />
+        ))}
     </section>
   );
 };
 
 export default SQLGenerate;
-
-const sqlQuery = `
-SELECT 
-    o.order_id,
-    o.order_date,
-    o.shipping_date,
-    o.shipping_status,
-    c.customer_id,
-    c.first_name AS customer_first_name,
-    c.last_name AS customer_last_name,
-    c.email AS customer_email,
-    p.product_id,
-    p.product_name,
-    p.product_description,
-    p.price AS product_price,
-    p.stock_quantity,
-    pc.category_id,
-    pc.category_name,
-    od.quantity AS ordered_quantity,
-    (od.quantity * p.price) AS total_product_price,
-    COUNT(DISTINCT o.order_id) OVER() AS total_orders_count,
-    SUM(od.quantity * p.price) OVER() AS total_revenue,
-    AVG(p.price) OVER() AS average_product_price,
-    MAX(p.price) OVER() AS max_product_price,
-    MIN(p.price) OVER() AS min_product_price
-FROM 
-    orders o
-    JOIN customers c ON o.customer_id = c.customer_id
-    JOIN order_details od ON o.order_id = od.order_id
-    JOIN products p ON od.product_id = p.product_id
-    JOIN product_categories pc ON p.category_id = pc.category_id
-WHERE 
-    o.order_date BETWEEN '2023-01-01' AND '2023-12-31'
-    AND o.shipping_status = 'Delivered'
-    AND p.stock_quantity > 0
-    AND c.email LIKE '%@example.com'
-GROUP BY 
-    o.order_id,
-    o.order_date,
-    o.shipping_date,
-    o.shipping_status,
-    c.customer_id,
-    c.first_name,
-    c.last_name,
-    c.email,
-    p.product_id,
-    p.product_name,
-    p.product_description,
-    p.price,
-    p.stock_quantity,
-    pc.category_id,
-    pc.category_name,
-    od.quantity
-HAVING 
-    COUNT(od.quantity) > 1
-ORDER BY 
-    o.order_date DESC,
-    c.last_name ASC,
-    p.product_name ASC
-LIMIT 1000;
-`;
 
 const IconQuery = () => {
   return (
@@ -189,7 +170,7 @@ const IconQuery = () => {
       fill='currentColor'
       aria-hidden='true'
       data-slot='icon'
-      className='-ml-1 mr-2 h-6 w-6 text-gray-100'
+      className='w-6 h-6 mr-2 -ml-1 text-gray-100'
     >
       <path
         fill-rule='evenodd'
@@ -205,7 +186,7 @@ const ItemRecommend = ({ label, form }: { label: string; form: FormInstance<any>
 
   return (
     <Button
-      className='my-1 flex items-center gap-x-2 rounded-xl text-white'
+      className='flex items-center my-1 text-white gap-x-2 rounded-xl'
       style={{
         backgroundColor: btnColor,
         color: '#fff',
