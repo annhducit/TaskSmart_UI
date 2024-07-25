@@ -1,36 +1,37 @@
-import {
-  Button,
-  Form,
-  FormInstance,
-  FormProps,
-  Input,
-  Popover,
-  Select,
-  Tooltip,
-  Typography,
-} from 'antd';
+import { Button, Divider, Form, Input, Menu, MenuProps, Typography } from 'antd';
 import SQLEditor from './code-editor';
 import { useState } from 'react';
 import { useSelector } from '@/store';
-import { Ellipsis } from 'lucide-react';
+import { FileSymlink, FileText, Link2, Loader, Send } from 'lucide-react';
 import { getIdProjectFromUrl } from '@/shared/components/getIdByUrl';
 import { tsmAxios } from '@/configs/axios';
-
-type FormType = FormProps<DatabaseRAGRequest>;
+import sql from '@/assets/images/sql.png';
+import blink from '@/assets/images/blink-ai.png';
+import useSearchParam from '@/shared/hooks/use-search-param';
+import { SEARCH_PARAMS } from '@/shared/constant/search-param';
+import useGetProject from '../../project/hooks/query/use-get-project';
+import { Modal } from 'antd';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SQLGenerate = () => {
-  const [form] = Form.useForm<DatabaseRAGRequest>();
+  const [form] = Form.useForm();
+
   const { btnColor } = useSelector((state) => state.theme);
-  const staInit :Statement = {
-    statement:`CREATE TABLE boards(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  description TEXT,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE lists(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  board_id INTEGER NOT NULL,\n  position INTEGER NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (board_id) REFERENCES boards (id)\n);\n\nCREATE TABLE cards(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  description TEXT,\n  list_id INTEGER NOT NULL,\n  position INTEGER NOT NULL,\n  due_date TIMESTAMP,\n  assigned_to INTEGER,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (list_id) REFERENCES lists (id),\n  FOREIGN KEY (assigned_to) REFERENCES users (id)\n);\n\nCREATE TABLE users(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  email VARCHAR(255) NOT NULL UNIQUE,\n  password_digest VARCHAR(255) NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE board_members(\n  board_id INTEGER NOT NULL,\n  user_id INTEGER NOT NULL,\n  role VARCHAR(255) NOT NULL,\n  PRIMARY KEY (board_id, user_id),\n  FOREIGN KEY (board_id) REFERENCES boards (id),\n  FOREIGN KEY (user_id) REFERENCES users (id)\n);\n\nCREATE TABLE card_comments(\n  id SERIAL PRIMARY KEY,\n  card_id INTEGER NOT NULL,\n  user_id INTEGER NOT NULL,\n  comment TEXT NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (card_id) REFERENCES cards (id),\n  FOREIGN KEY (user_id) REFERENCES users (id)\n);\n\nCREATE TABLE card_labels(\n  id SERIAL PRIMARY KEY,\n  card_id INTEGER NOT NULL,\n  label VARCHAR(255) NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (card_id) REFERENCES cards (id)\n);\n\nCREATE TABLE card_attachments(\n  id SERIAL PRIMARY KEY,\n  card_id INTEGER NOT NULL,\n  file_name VARCHAR(255) NOT NULL,\n  file_type VARCHAR(255) NOT NULL,\n  file_size BIGINT NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (card_id) REFERENCES cards (id)\n);\n\nCREATE TABLE integrations(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  type VARCHAR(255) NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE board_integrations(\n  board_id INTEGER NOT NULL,\n  integration_id INTEGER NOT NULL,\n  PRIMARY KEY (board_id, integration_id),\n  FOREIGN KEY (board_id) REFERENCES boards (id),\n  FOREIGN KEY (integration_id) REFERENCES integrations (id)\n);`,
-    title: ''
-  }
+  const staInit: Statement = {
+    statement: `CREATE TABLE boards(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  description TEXT,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE lists(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  board_id INTEGER NOT NULL,\n  position INTEGER NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (board_id) REFERENCES boards (id)\n);\n\nCREATE TABLE cards(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  description TEXT,\n  list_id INTEGER NOT NULL,\n  position INTEGER NOT NULL,\n  due_date TIMESTAMP,\n  assigned_to INTEGER,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (list_id) REFERENCES lists (id),\n  FOREIGN KEY (assigned_to) REFERENCES users (id)\n);\n\nCREATE TABLE users(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  email VARCHAR(255) NOT NULL UNIQUE,\n  password_digest VARCHAR(255) NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE board_members(\n  board_id INTEGER NOT NULL,\n  user_id INTEGER NOT NULL,\n  role VARCHAR(255) NOT NULL,\n  PRIMARY KEY (board_id, user_id),\n  FOREIGN KEY (board_id) REFERENCES boards (id),\n  FOREIGN KEY (user_id) REFERENCES users (id)\n);\n\nCREATE TABLE card_comments(\n  id SERIAL PRIMARY KEY,\n  card_id INTEGER NOT NULL,\n  user_id INTEGER NOT NULL,\n  comment TEXT NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (card_id) REFERENCES cards (id),\n  FOREIGN KEY (user_id) REFERENCES users (id)\n);\n\nCREATE TABLE card_labels(\n  id SERIAL PRIMARY KEY,\n  card_id INTEGER NOT NULL,\n  label VARCHAR(255) NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (card_id) REFERENCES cards (id)\n);\n\nCREATE TABLE card_attachments(\n  id SERIAL PRIMARY KEY,\n  card_id INTEGER NOT NULL,\n  file_name VARCHAR(255) NOT NULL,\n  file_type VARCHAR(255) NOT NULL,\n  file_size BIGINT NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (card_id) REFERENCES cards (id)\n);\n\nCREATE TABLE integrations(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  type VARCHAR(255) NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE board_integrations(\n  board_id INTEGER NOT NULL,\n  integration_id INTEGER NOT NULL,\n  PRIMARY KEY (board_id, integration_id),\n  FOREIGN KEY (board_id) REFERENCES boards (id),\n  FOREIGN KEY (integration_id) REFERENCES integrations (id)\n);`,
+    title: 'Create table',
+  };
+
+  const exampleQuery = `SELECT * FROM customers WHERE orders > 10 AND order_date > DATE_SUB(NOW(), INTERVAL 6 MONTH)`;
 
   const [statements, setStatements] = useState<Statement[]>([staInit]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onFinish: FormType['onFinish'] = async (value) => {
+  const [, setValue, view] = useSearchParam(SEARCH_PARAMS.TAB);
+
+  const onFinish = async (value: any) => {
     try {
       setIsSubmitting(true);
       const projectId = getIdProjectFromUrl();
@@ -39,123 +40,123 @@ const SQLGenerate = () => {
       const { data } = await tsmAxios.get<DatabaseRAGResponse>(
         `/projects/${projectId}/database-rag?question=${value.question}&database=${value.database}`
       );
-      console.log(data);
+
       setStatements(data.statements);
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const onClick: MenuProps['onClick'] = (e) => {
+    switch (e.key) {
+      case '1':
+        setValue('uri');
+        break;
+      case '2':
+        setValue('srs');
+        break;
+      case '3':
+        setValue('file');
+        break;
+
+      default:
+        break;
+    }
+  };
+
   return (
-    <section className='flex h-[calc(100vh-180px)] w-full flex-col gap-y-6 overflow-y-scroll rounded bg-[#f8f9fc] p-6'>
-      <div className='grid grid-cols-3 gap-x-6'>
-        <div className='flex flex-col p-6 bg-white card-ai gap-y-2'>
-          <Typography.Text>SQL Query Generated </Typography.Text>
-          <Typography.Text className='text-xl font-semibold'>0 </Typography.Text>
-        </div>
-        <div className='flex flex-col p-6 bg-white card-ai gap-y-2'>
-          <Typography.Text>SQL Query Explainer </Typography.Text>
-          <Typography.Text className='text-xl font-semibold'>0 </Typography.Text>
-        </div>
-        <div className='flex flex-col p-6 bg-white card-ai gap-y-2'>
-          <Typography.Text>Total </Typography.Text>
-          <Typography.Text className='text-xl font-semibold'>0 </Typography.Text>
-        </div>
-      </div>
-
-      <div className='flex flex-col p-6 bg-white rounded-lg card-ai gap-y-10'>
-        <Form form={form} layout='vertical' onFinish={onFinish}>
-          <Form.Item name='question' label='Write here what you want from your document:'>
-            <Input.TextArea
-              rows={6}
-              placeholder='Find all customers who have ordered more than 10 products in the last 6 months'
-              className='rounded-xl'
-              style={{
-                resize: 'none',
-                outline: `1px solid ${btnColor}`,
-                border: `1px solid ${btnColor}`,
-              }}
-            />
-          </Form.Item>
-
-          <div className='flex items-center justify-center float-right gap-x-2'>
-            <Form.Item className='flex flex-shrink w-full'>
-              <Button
-                icon={<IconQuery />}
-                style={{
-                  backgroundColor: btnColor,
-                  color: '#fff',
-                  width: '100%',
-                }}
-                size='large'
-                htmlType='submit'
-                loading={isSubmitting}
-                className='flex items-center rounded-xl'
-              >
-                Generate SQL
-              </Button>
-            </Form.Item>
-            <Form.Item name='database'>
-              <Select
-                showSearch
-                allowClear
-                style={{ width: 150 }}
-                size='large'
-                filterOption={(input, option) =>
-                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                }
-                defaultValue={'SQL'}
-                options={[
-                  { value: 'SQL', label: 'Standard SQL' },
-                  { value: 'MongoDb', label: 'MongoDb' },
-                  { value: 'MySQL', label: 'MySQL' },
-                  { value: 'Postgre', label: 'PostgreSQL' },
-                  { value: 'SQLite', label: 'SQLite' },
-                  { value: 'Oracle', label: 'Oracle' },
-                  { value: 'SQL Server', label: 'SQL Server' },
-                  { value: 'IBM DB2', label: 'IBM DB2' },
-                  { value: 'Snow flake', label: 'Snowflake' },
-                  { value: 'Google BigQuery', label: 'Google BigQuery' },
-                ]}
-              />
-            </Form.Item>
+    <section className='flex h-[calc(100vh-170px)] w-full flex-col gap-y-6  rounded bg-[#f8f9fc] p-6'>
+      <div className='grid grid-cols-12 gap-x-2'>
+        <div className='col-span-2'>
+          <div className={`flex items-center gap-x-2 p-2 py-3 pb-2 pt-3 shadow-md `}>
+            <div className='flex items-center justify-center flex-shrink-0 w-12 h-12 text-lg font-bold rounded'>
+              <img src={sql} className='object-cover w-full h-full rounded' alt='' />
+            </div>
+            <div className='flex flex-col gap-y-1'>
+              <Typography.Text className='w-[150px] truncate text-sm font-semibold '>
+                SQL Generate Tool
+              </Typography.Text>
+              <Typography.Text className='w-[150px] truncate text-xs'>
+                By{' '}
+                <b className='text-transparent bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text'>
+                  TaskSmart AI
+                </b>
+              </Typography.Text>
+            </div>
           </div>
+          <Divider />
+          <Menu
+            defaultSelectedKeys={['1']}
+            onClick={onClick}
+            defaultValue={view}
+            activeKey='1'
+            mode='inline'
+            className='rounded-lg  bg-[#f8f9fc] '
+          >
+            <Menu.Item accessKey='1' icon={<Link2 className='w-4 h-4' />} key='1'>
+              By URI
+            </Menu.Item>
+            <Menu.Item icon={<FileSymlink className='w-4 h-4' />} key='2'>
+              By SRS
+            </Menu.Item>
+            <Menu.Item icon={<FileText className='w-4 h-4' />} key='3'>
+              By SQL File
+            </Menu.Item>
+          </Menu>
+        </div>
+        <div className='col-span-10 mx-2 flex h-[calc(100vh-200px)] flex-col gap-y-4 overflow-y-scroll pr-2'>
+          {view === 'uri' && <URIView />}
+          {view === 'srs' && <SRSView />}
 
-          <Typography.Text className='block'>Recommendations:</Typography.Text>
-          <div className=''>
-            {recommendQuery.slice(0, 3).map((item) => (
-              <ItemRecommend key={item.id} label={item.label} form={form} />
+          {statements.length > 0 &&
+            statements.map((statement, index) => (
+              <SQLEditor key={`statements_${index}`} statement={statement} />
             ))}
-            <Tooltip title='More'>
-              <Popover
-                title={
-                  <Typography.Text className='flex items-center justify-center text-center'>
-                    More recommendations
-                  </Typography.Text>
-                }
-                trigger='click'
-                content={
-                  <div className='flex h-[300px] w-[350px] flex-col gap-y-2 overflow-y-scroll'>
-                    {recommendQuery.slice(3).map((item) => (
-                      <ItemRecommend key={item.id} label={item.label} form={form} />
-                    ))}
-                  </div>
-                }
+          <div className='flex flex-col p-6 bg-white rounded-lg card-ai gap-y-10'>
+            <Form name='sql-query' form={form} layout='vertical' onFinish={onFinish}>
+              <Form.Item
+                name='question'
+                label='Write here what you want from your document:'
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input your question!',
+                  },
+                ]}
               >
-                <Button
-                  size='small'
-                  icon={<Ellipsis className='w-3 h-3' color={btnColor} />}
-                  className='mt-1 rounded-full'
+                <Input
+                  prefix={<img src={blink} className='absolute w-5 h-5 left-4 top-3' alt='' />}
+                  size='large'
+                  placeholder='Find all customers who have ordered more than 10 products in the last 6 months'
+                  className='py-3 pl-12 rounded-xl'
                 />
-              </Popover>
-            </Tooltip>
-          </div>
-        </Form>
-      </div>
+              </Form.Item>
 
-      {statements.length > 0 &&
-        statements.map((statement, index) => (
-          <SQLEditor key={`statements_${index}`} statement={statement} />
-        ))}
+              <div className='flex items-center justify-center float-right gap-x-2'>
+                <Form.Item className='flex flex-shrink w-full'>
+                  <Button
+                    icon={<IconQuery />}
+                    style={{
+                      backgroundColor: btnColor,
+                      color: '#fff',
+                      width: '100%',
+                    }}
+                    size='large'
+                    htmlType='submit'
+                    loading={isSubmitting}
+                    className='flex items-center rounded-xl'
+                    disabled={isSubmitting}
+                  >
+                    Generate SQL
+                  </Button>
+                </Form.Item>
+              </div>
+            </Form>
+          </div>
+
+          <SQLEditor statement={{ statement: exampleQuery, title: 'Result' }} />
+        </div>
+      </div>
     </section>
   );
 };
@@ -181,142 +182,87 @@ const IconQuery = () => {
   );
 };
 
-const ItemRecommend = ({ label, form }: { label: string; form: FormInstance<any> }) => {
-  const { btnColor } = useSelector((state) => state.theme);
+const URIView = () => {
+  const [form] = Form.useForm();
+  const btnColor = useSelector((state) => state.theme.btnColor);
 
+  const onFinish = (value: string) => {
+    console.log(value);
+  };
   return (
-    <Button
-      className='flex items-center my-1 text-white gap-x-2 rounded-xl'
-      style={{
-        backgroundColor: btnColor,
-        color: '#fff',
-      }}
-      onClick={() => {
-        form.setFieldsValue({ content: label });
-      }}
-    >
-      <Typography.Text color='#fff' className='text-white'>
-        {label}
-      </Typography.Text>
-    </Button>
+    <div className='flex flex-col gap-y-1'>
+      <Typography.Text className='text-xs'>Enter the URI of the SQL Database:</Typography.Text>
+      <Form layout='horizontal' form={form} onFinish={onFinish}>
+        <div className='mx-auto my-1 mb-6 flex w-[900px] items-start justify-between gap-x-4 rounded-xl bg-white p-2'>
+          <Form.Item
+            name='uri'
+            className='flex-1 p-0 m-0'
+            rules={[
+              {
+                required: true,
+                message: 'Please input your URI!',
+              },
+            ]}
+          >
+            <Input
+              size='large'
+              className='border-none outline-none'
+              placeholder='mysql+mysqlconnector://<Username>:<Password>@<Host>/<Database Name>'
+            />
+          </Form.Item>
+
+          <Button
+            type='text'
+            htmlType='submit'
+            style={{ backgroundColor: btnColor }}
+            className='flex h-10 w-[50px] items-center justify-center rounded-lg'
+          >
+            <Send className='w-4 h-4 text-white' />
+          </Button>
+        </div>
+      </Form>
+    </div>
   );
 };
+const SRSView = () => {
+  const [showModal, setShowModal] = useState(false);
 
-const recommendQuery = [
-  {
-    id: 1,
-    label: 'Base on file content create database schema',
-  },
-  {
-    id: 2,
-    label: 'SQL query to select data from database',
-  },
-  {
-    id: 3,
-    label: 'SQL query to update data in database',
-  },
-  {
-    id: 4,
-    label: 'Create SQL query to delete data from database',
-  },
-  {
-    id: 5,
-    label: 'Create SQL query to insert data to database',
-  },
-  {
-    id: 6,
-    label: 'Create SQL query to join data from multiple tables',
-  },
-  {
-    id: 7,
-    label: 'Create SQL query to group data',
-  },
-  {
-    id: 8,
-    label: 'Create SQL query to sort data',
-  },
-  {
-    id: 9,
-    label: 'Create SQL query to filter data',
-  },
-  {
-    id: 10,
-    label: 'Create SQL query to aggregate data',
-  },
-  {
-    id: 11,
-    label: 'Create SQL query to calculate data',
-  },
-  {
-    id: 12,
-    label: 'Create SQL query to search data',
-  },
-  {
-    id: 13,
-    label: 'Create SQL query to limit data',
-  },
-  {
-    id: 14,
-    label: 'Create SQL query to offset data',
-  },
-  {
-    id: 15,
-    label: 'Create SQL query to count data',
-  },
-  {
-    id: 16,
-    label: 'Create SQL query to sum data',
-  },
-  {
-    id: 17,
-    label: 'Create SQL query to average data',
-  },
-  {
-    id: 18,
-    label: 'Create SQL query to max data',
-  },
-  {
-    id: 19,
-    label: 'Create SQL query to min data',
-  },
-  {
-    id: 20,
-    label: 'Create SQL query to distinct data',
-  },
-  {
-    id: 21,
-    label: 'Create SQL query to having data',
-  },
-  {
-    id: 22,
-    label: 'Create SQL query to order data',
-  },
-  {
-    id: 23,
-    label: 'Create SQL query to limit data',
-  },
-  {
-    id: 24,
-    label: 'Create SQL query to offset data',
-  },
-  {
-    id: 25,
-    label: 'Create SQL query to count data',
-  },
-  {
-    id: 26,
-    label: 'Create SQL query to sum data',
-  },
-  {
-    id: 27,
-    label: 'Create SQL query to average data',
-  },
-  {
-    id: 28,
-    label: 'Create SQL query to max data',
-  },
-  {
-    id: 29,
-    label: 'Create SQL query to min data',
-  },
-];
+  const navigate = useNavigate();
+
+  const { data: projects } = useGetProject();
+
+  const isFileEmpty = projects?.speDocPath;
+
+  useEffect(() => {
+    if (!projects?.speDocPath) {
+      setShowModal(true);
+    }
+  }, [projects]);
+
+  return (
+    <div className='flex items-center justify-between my-2 mb-6 gap-x-4'>
+      <Button
+        type='primary'
+        className='flex w-[150px] items-center justify-center'
+        icon={<Loader className='w-4 h-4' />}
+      >
+        Generate
+      </Button>
+
+      <Modal
+        title='No File Found'
+        open={showModal}
+        onCancel={() => setShowModal(false)}
+        onOk={() => {
+          setShowModal(false);
+          window.open(`/tsm/project/${projects?.id}?view=setting`, '_blank');
+        }}
+        okText='Upload File'
+      >
+        <p>
+          You have not uploaded any SRS file yet. Please upload the SRS file to use this feature
+        </p>
+      </Modal>
+    </div>
+  );
+};

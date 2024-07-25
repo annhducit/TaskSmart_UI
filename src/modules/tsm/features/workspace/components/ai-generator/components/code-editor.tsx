@@ -19,9 +19,8 @@ import 'prismjs/themes/prism-funky.css'; // Funky theme
 import { CheckIcon, FileCode2, Trash } from 'lucide-react';
 import Tooltip from '@/shared/components/tooltip';
 import { cn } from '@/shared/router/cn';
-import { useSelector } from '@/store';
 
-const SqlEditor = ({ statement }: { statement: Statement}) => {
+const SqlEditor = ({ statement }: { statement: Statement }) => {
   const [theme, setTheme] = useState<string>('prism');
 
   const handleThemeChange = (value: string) => {
@@ -59,7 +58,7 @@ const SqlEditor = ({ statement }: { statement: Statement}) => {
                 : theme === 'prism-dark'
                   ? '#f8f8f2'
                   : '#000',
-  }
+  };
 
   return (
     <div className='flex flex-col mb-4 gap-y-2'>
@@ -78,27 +77,24 @@ const SqlEditor = ({ statement }: { statement: Statement}) => {
           </Select>
         </div>
       </div>
-      <div className={`${theme}`}>
+      <div className={`${theme} relative`}>
         <Editor
           value={statement.statement}
-          onValueChange={()=>{console.log('onValueChange')}}
+          onValueChange={() => {
+            console.log('onValueChange');
+          }}
           className='p-4 rounded-lg card-ai'
           highlight={(code) => highlight(code, languages.sql, 'sql')}
           padding={10}
           style={editorStyle}
         />
+        <div className='absolute right-2 top-2'>
+          <CopyUrlButton link={statement.statement} />
+        </div>
       </div>
       <Space className='flex justify-end'>
-        <CopyUrlButton link={statement.statement} />
-        <Button
-          type='default'
-          danger
-          icon={<Trash size={12} />}
-          onClick={() => {
-            // onChange('');
-          }}
-        >
-          Clear
+        <Button type='default' danger icon={<Trash size={12} />}>
+          Clear content
         </Button>
       </Space>
     </div>
@@ -117,8 +113,6 @@ function CopyUrlButton(props: Props) {
 
   const [isCopied, setIsCopied] = useState(false);
 
-  const { btnColor } = useSelector((state) => state.theme);
-
   const handleClick = () => {
     navigator.clipboard.writeText(link);
     setIsCopied(true);
@@ -134,19 +128,12 @@ function CopyUrlButton(props: Props) {
     <Tooltip title={isCopied ? 'Copied' : 'Copy'}>
       <Button
         htmlType='button'
-        type='text'
+        type='default'
         onClick={handleClick}
         disabled={isCopied}
-        icon={<Icon className={cn('size-4', { 'text-green-500': isCopied })} />}
-        className={cn('z-10 flex items-center justify-center', className)}
-      >
-        <Typography.Text
-          className='font-semibold'
-          style={isCopied ? { color: '#52c41a' } : { color: btnColor }}
-        >
-          {isCopied ? 'Copied SQL to clipboard' : 'Copy SQL to clipboard'}
-        </Typography.Text>
-      </Button>
+        icon={<Icon className={cn('size-4 text-black', { 'text-green-500': isCopied })} />}
+        className={cn('z-10 flex items-center justify-center bg-white ', className)}
+      />
     </Tooltip>
   );
 }

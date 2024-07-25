@@ -23,12 +23,12 @@ const AIFeature = () => {
 
   return (
     <section className=''>
-      <div className='col-span-5 mx-2'>
+      <div className='col-span-5 mx-2 -translate-y-5'>
         <Tabs
           onChange={onChangeTab}
           tabBarGutter={12}
-          className={`custom-tabs-ai mb-0 text-white`}
-          type='card'
+          className={`custom-tabs-ai mb-0  text-white`}
+          // type='card'
           items={items}
         />
       </div>
