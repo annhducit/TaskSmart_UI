@@ -1,4 +1,4 @@
-import { Button, Input, message } from 'antd';
+import { App, Button, Input, message, Space } from 'antd';
 import { useMemo, useState } from 'react';
 import { tsmAxios } from '@/configs/axios';
 import useGetProject from '../../project/hooks/query/use-get-project';
@@ -20,10 +20,12 @@ import ColumnContainerAI from './column';
 import PopoverX from '@/shared/components/popover';
 import { createPortal } from 'react-dom';
 import TaskCardAI from './card';
-import { Plus } from 'lucide-react';
+import { Plus, Save } from 'lucide-react';
 import useCollapse from '@/shared/hooks/use-collapse';
 import useApplyGenerate from '../hook/mutation/use-apply-generate';
 import blink from '@/assets/images/blink.png';
+import LoadingSkeletonHome from '@/shared/components/skeleton/loading-skeleton-task';
+import ModalAnnouncement from './modal-announment';
 import { useSelector } from '@/store';
 const TaskGenerate = () => {
   const [taskGenerate, setTaskGenerate] = useState<TasksGenerate>({ listCards: [] });
@@ -33,8 +35,17 @@ const TaskGenerate = () => {
 
   const { mutate: applyGenerate, isPending } = useApplyGenerate();
 
+  const [showModal, setShowModal] = useState(false);
+
   const btnColor = useSelector((state) => state.theme.btnColor);
+
+  const { modal } = App.useApp();
+
   const generateTask = () => {
+    if (!project?.speDocPath) {
+      setShowModal(true);
+    }
+
     const generateAsync = async () => {
       setLoading(true);
       try {
@@ -50,47 +61,97 @@ const TaskGenerate = () => {
           const data = errorAxios.response?.data as TsmError;
           message.error(data.message);
         } else {
-          message.error('Something went wrong. Please try again later!');
+          return;
         }
       }
     };
     generateAsync();
   };
   const saveListCardToProject = () => {
-    applyGenerate({ taskGenerate });
+    applyGenerate(
+      { taskGenerate },
+      {
+        onSuccess: () => {
+          setTaskGenerate({ listCards: [] });
+        },
+      }
+    );
   };
+
+  const handleRejectResult = async () => {
+    const confirm = modal.confirm({
+      title: 'Confirm',
+      content: 'Are you sure you want to remove the generated tasks?',
+      cancelText: 'Cancel',
+      okText: 'Remove',
+      okType: 'danger',
+    });
+
+    confirm.update({
+      okButtonProps: {
+        onClick: () => {
+          setTaskGenerate({ listCards: [] });
+          confirm.destroy();
+        },
+      },
+      cancelButtonProps: { disabled: isPending },
+    });
+  };
+
   return (
-    <div className='inline-block min-h-screen px-6'>
-      {taskGenerate.listCards.length > 0 ? (
-        <div>
-          <div className='flex items-start justify-start gap-x-3'>
-            <TaskGenerateHandler taskGenerate={taskGenerate} setTaskGenerate={setTaskGenerate} />
+    <>
+      <div className='inline-block flex min-h-screen flex-col px-6'>
+        {taskGenerate.listCards.length > 0 ? (
+          <div>
+            <div className='flex items-start justify-start gap-x-3'>
+              <TaskGenerateHandler taskGenerate={taskGenerate} setTaskGenerate={setTaskGenerate} />
+            </div>
           </div>
-          <div className='mt-3 flex h-full w-full items-start justify-start gap-x-3'>
-            <Button type='primary' loading={isPending} onClick={saveListCardToProject}>
-              Save
-            </Button>
-            <Button>Cancel</Button>
+        ) : (
+          <div className='flex items-start gap-x-10'>
+            {!loading && (
+              <button
+                onClick={generateTask}
+                className='btn-generate-ai relative cursor-pointer border-none'
+              >
+                Generate Task
+                <span className='absolute left-4 top-3'>
+                  <img src={blink} className='h-5 w-5' />
+                </span>
+              </button>
+            )}
+            {loading && <LoadingSkeletonHome />}
           </div>
-        </div>
-      ) : (
-        <div className='flex h-[174px] w-[250px] items-center justify-center rounded-lg bg-white'>
-          <Button
-            icon={<img src={blink} className='h-8 w-8' />}
-            loading={loading}
-            type='default'
-            size='large'
-            onClick={generateTask}
-            style={{
-              border: `2px solid ${btnColor}`,
-            }}
-            className='flex items-center bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text font-semibold text-transparent'
-          >
-            Generate Task
-          </Button>
-        </div>
-      )}
-    </div>
+        )}
+
+        {taskGenerate.listCards.length > 0 && (
+          <div className='float-right mt-2 flex w-full items-center justify-end'>
+            <Space>
+              <Button
+                type='default'
+                className='flex items-center rounded text-white'
+                icon={<Save className='h-4 w-4' />}
+                style={{ backgroundColor: btnColor }}
+                loading={isPending}
+                onClick={saveListCardToProject}
+              >
+                Save
+              </Button>
+              <Button danger onClick={handleRejectResult}>
+                Cancel
+              </Button>
+            </Space>
+          </div>
+        )}
+      </div>
+      <ModalAnnouncement
+        content='
+        You have not uploaded any specification document yet. Please upload the document to generate tasks.'
+        project={project}
+        setShowModal={setShowModal}
+        showModal={showModal}
+      />
+    </>
   );
 };
 

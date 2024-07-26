@@ -6,7 +6,6 @@ import { toast } from 'sonner';
 
 import { AxiosResponse } from 'axios';
 import { useInvalidateProject } from '../../../project/hooks/query/use-get-project';
-import { useNavigate } from 'react-router-dom';
 
 const applyGenerate = async (projectId: string, taskGenerate: TasksGenerate) => {
   const data = await tsmAxios.post(`/projects/${projectId}/apply-generate`, taskGenerate);
@@ -15,8 +14,6 @@ const applyGenerate = async (projectId: string, taskGenerate: TasksGenerate) => 
 
 const useApplyGenerate = () => {
   const projectId = getIdProjectFromUrl();
-
-  const navigate = useNavigate();
 
   const invalidateProject = useInvalidateProject(projectId);
 
@@ -28,9 +25,7 @@ const useApplyGenerate = () => {
 
         invalidateProject();
 
-        navigate(`tsm/project/${projectId}?view=project`, {
-          replace: true,
-        });
+        window.location.replace(`tsm/project/${projectId}?view=project`);
       } else {
         toast.error('Failed to create card');
       }

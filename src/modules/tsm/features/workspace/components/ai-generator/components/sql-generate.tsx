@@ -13,6 +13,7 @@ import useGetProject from '../../project/hooks/query/use-get-project';
 import { Modal } from 'antd';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ModalAnnouncement from './modal-announment';
 
 const SQLGenerate = () => {
   const [form] = Form.useForm();
@@ -38,7 +39,7 @@ const SQLGenerate = () => {
 
       value.database = value.database ?? 'SQL';
       const { data } = await tsmAxios.get<DatabaseRAGResponse>(
-        `/projects/${projectId}/database-rag?question=${value.question}&database=${value.database}`
+        `/project/${projectId}/database-rag?question=${value.question}&database=${value.database}`
       );
 
       setStatements(data.statements);
@@ -69,8 +70,8 @@ const SQLGenerate = () => {
       <div className='grid grid-cols-12 gap-x-2'>
         <div className='col-span-2'>
           <div className={`flex items-center gap-x-2 p-2 py-3 pb-2 pt-3 shadow-md `}>
-            <div className='flex items-center justify-center flex-shrink-0 w-12 h-12 text-lg font-bold rounded'>
-              <img src={sql} className='object-cover w-full h-full rounded' alt='' />
+            <div className='flex h-12 w-12 flex-shrink-0 items-center justify-center rounded text-lg font-bold'>
+              <img src={sql} className='h-full w-full rounded object-cover' alt='' />
             </div>
             <div className='flex flex-col gap-y-1'>
               <Typography.Text className='w-[150px] truncate text-sm font-semibold '>
@@ -78,7 +79,7 @@ const SQLGenerate = () => {
               </Typography.Text>
               <Typography.Text className='w-[150px] truncate text-xs'>
                 By{' '}
-                <b className='text-transparent bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text'>
+                <b className='bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text text-transparent'>
                   TaskSmart AI
                 </b>
               </Typography.Text>
@@ -93,13 +94,13 @@ const SQLGenerate = () => {
             mode='inline'
             className='rounded-lg  bg-[#f8f9fc] '
           >
-            <Menu.Item accessKey='1' icon={<Link2 className='w-4 h-4' />} key='1'>
+            <Menu.Item accessKey='1' icon={<Link2 className='h-4 w-4' />} key='1'>
               By URI
             </Menu.Item>
-            <Menu.Item icon={<FileSymlink className='w-4 h-4' />} key='2'>
+            <Menu.Item icon={<FileSymlink className='h-4 w-4' />} key='2'>
               By SRS
             </Menu.Item>
-            <Menu.Item icon={<FileText className='w-4 h-4' />} key='3'>
+            <Menu.Item icon={<FileText className='h-4 w-4' />} key='3'>
               By SQL File
             </Menu.Item>
           </Menu>
@@ -112,7 +113,7 @@ const SQLGenerate = () => {
             statements.map((statement, index) => (
               <SQLEditor key={`statements_${index}`} statement={statement} />
             ))}
-          <div className='flex flex-col p-6 bg-white rounded-lg card-ai gap-y-10'>
+          <div className='card-ai flex flex-col gap-y-10 rounded-lg bg-white p-6'>
             <Form name='sql-query' form={form} layout='vertical' onFinish={onFinish}>
               <Form.Item
                 name='question'
@@ -125,15 +126,15 @@ const SQLGenerate = () => {
                 ]}
               >
                 <Input
-                  prefix={<img src={blink} className='absolute w-5 h-5 left-4 top-3' alt='' />}
+                  prefix={<img src={blink} className='absolute left-4 top-3 h-5 w-5' alt='' />}
                   size='large'
                   placeholder='Find all customers who have ordered more than 10 products in the last 6 months'
-                  className='py-3 pl-12 rounded-xl'
+                  className='rounded-xl py-3 pl-12'
                 />
               </Form.Item>
 
-              <div className='flex items-center justify-center float-right gap-x-2'>
-                <Form.Item className='flex flex-shrink w-full'>
+              <div className='float-right flex items-center justify-center gap-x-2'>
+                <Form.Item className='flex w-full flex-shrink'>
                   <Button
                     icon={<IconQuery />}
                     style={{
@@ -171,7 +172,7 @@ const IconQuery = () => {
       fill='currentColor'
       aria-hidden='true'
       data-slot='icon'
-      className='w-6 h-6 mr-2 -ml-1 text-gray-100'
+      className='-ml-1 mr-2 h-6 w-6 text-gray-100'
     >
       <path
         fill-rule='evenodd'
@@ -196,7 +197,7 @@ const URIView = () => {
         <div className='mx-auto my-1 mb-6 flex w-[900px] items-start justify-between gap-x-4 rounded-xl bg-white p-2'>
           <Form.Item
             name='uri'
-            className='flex-1 p-0 m-0'
+            className='m-0 flex-1 p-0'
             rules={[
               {
                 required: true,
@@ -217,7 +218,7 @@ const URIView = () => {
             style={{ backgroundColor: btnColor }}
             className='flex h-10 w-[50px] items-center justify-center rounded-lg'
           >
-            <Send className='w-4 h-4 text-white' />
+            <Send className='h-4 w-4 text-white' />
           </Button>
         </div>
       </Form>
@@ -227,42 +228,31 @@ const URIView = () => {
 const SRSView = () => {
   const [showModal, setShowModal] = useState(false);
 
-  const navigate = useNavigate();
-
-  const { data: projects } = useGetProject();
-
-  const isFileEmpty = projects?.speDocPath;
+  const { data: project } = useGetProject();
 
   useEffect(() => {
-    if (!projects?.speDocPath) {
+    if (!project?.speDocPath) {
       setShowModal(true);
     }
-  }, [projects]);
+  }, [project]);
 
   return (
-    <div className='flex items-center justify-between my-2 mb-6 gap-x-4'>
+    <div className='my-2 mb-6 flex items-center justify-between gap-x-4'>
       <Button
         type='primary'
         className='flex w-[150px] items-center justify-center'
-        icon={<Loader className='w-4 h-4' />}
+        icon={<Loader className='h-4 w-4' />}
       >
         Generate
       </Button>
 
-      <Modal
-        title='No File Found'
-        open={showModal}
-        onCancel={() => setShowModal(false)}
-        onOk={() => {
-          setShowModal(false);
-          window.open(`/tsm/project/${projects?.id}?view=setting`, '_blank');
-        }}
-        okText='Upload File'
-      >
-        <p>
-          You have not uploaded any SRS file yet. Please upload the SRS file to use this feature
-        </p>
-      </Modal>
+      <ModalAnnouncement
+        content='
+      You have not uploaded the SRS document yet. Please upload the SRS document to generate the SQL query.'
+        project={project}
+        setShowModal={setShowModal}
+        showModal={showModal}
+      />
     </div>
   );
 };

@@ -69,7 +69,7 @@ const ModalModifyMember = () => {
           <Typography.Text className='flex items-center text-xs text-black'>
             Sharing
           </Typography.Text>
-          <Tooltip title='Double 2D Thesis'>
+          <Tooltip title={project?.name}>
             <Typography.Text className='flex items-center underline '>
               <EarthIcon /> this project
             </Typography.Text>

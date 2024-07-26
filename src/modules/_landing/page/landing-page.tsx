@@ -16,6 +16,7 @@ import siginFree from '@/assets/images/try-for-free.png';
 import FeaturesItem from '../components/feature-items';
 import { useNavigate } from 'react-router-dom';
 
+import overview from '@/assets/images/overview.png';
 const LandingPage = () => {
   return (
     <body className='mt-20 px-20 py-20'>
@@ -141,6 +142,7 @@ const SectionTwo = () => {
         className='mx-auto h-[435px] w-[960px] rounded-lg bg-slate-200'
       >
         {/* Image of system here */}
+        <img src={overview} className='h-full w-full rounded-lg' alt='' />
       </motion.div>
       <motion.div
         className='flex flex-col gap-y-4'
