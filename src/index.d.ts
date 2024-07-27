@@ -316,6 +316,7 @@ type DatabaseRAGRequest = {
 type Statement = {
   statement: string;
   title: string;
+  result?: string;
 }
 
 type DatabaseRAGResponse = {

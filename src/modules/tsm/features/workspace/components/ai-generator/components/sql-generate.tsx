@@ -1,163 +1,385 @@
-import { Button, Divider, Form, Input, Menu, MenuProps, Typography } from 'antd';
+import { Button, Divider, Form, Input, message, Select, Typography } from 'antd';
 import SQLEditor from './code-editor';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useSelector } from '@/store';
-import { FileSymlink, FileText, Link2, Loader, Send } from 'lucide-react';
+import { Loader, Send, UploadCloud } from 'lucide-react';
 import { getIdProjectFromUrl } from '@/shared/components/getIdByUrl';
 import { tsmAxios } from '@/configs/axios';
-import sql from '@/assets/images/sql.png';
 import blink from '@/assets/images/blink-ai.png';
-import useSearchParam from '@/shared/hooks/use-search-param';
-import { SEARCH_PARAMS } from '@/shared/constant/search-param';
 import useGetProject from '../../project/hooks/query/use-get-project';
-import { Modal } from 'antd';
+import { Radio } from 'antd';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import ModalAnnouncement from './modal-announment';
+import Dragger from 'antd/es/upload/Dragger';
+import { UploadProps } from 'antd/lib';
+type SQLConnectType = {
+  label: string;
+  value: string;
+  before: string;
+  placeholder: string;
+};
+
+const SQLLanguage = ['MySQL', 'SQLite', 'PostgreSQL', 'Oracle', 'SQLServer'];
+
+const DatabaseConnection: { [key: string]: SQLConnectType } = {
+  MySQL: {
+    label: 'My SQL',
+    value: 'MySQL',
+    before: 'mysql+mysqlconnector://',
+    placeholder: '<username>:<password>@<host>/<database>',
+  },
+  SQLite: {
+    label: 'SQLite',
+    value: 'SQLite',
+    before: 'sqlite://',
+    placeholder: '<path>',
+  },
+};
 
 const SQLGenerate = () => {
   const [form] = Form.useForm();
 
   const { btnColor } = useSelector((state) => state.theme);
-  const staInit: Statement = {
-    statement: `CREATE TABLE boards(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  description TEXT,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE lists(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  board_id INTEGER NOT NULL,\n  position INTEGER NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (board_id) REFERENCES boards (id)\n);\n\nCREATE TABLE cards(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  description TEXT,\n  list_id INTEGER NOT NULL,\n  position INTEGER NOT NULL,\n  due_date TIMESTAMP,\n  assigned_to INTEGER,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (list_id) REFERENCES lists (id),\n  FOREIGN KEY (assigned_to) REFERENCES users (id)\n);\n\nCREATE TABLE users(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  email VARCHAR(255) NOT NULL UNIQUE,\n  password_digest VARCHAR(255) NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE board_members(\n  board_id INTEGER NOT NULL,\n  user_id INTEGER NOT NULL,\n  role VARCHAR(255) NOT NULL,\n  PRIMARY KEY (board_id, user_id),\n  FOREIGN KEY (board_id) REFERENCES boards (id),\n  FOREIGN KEY (user_id) REFERENCES users (id)\n);\n\nCREATE TABLE card_comments(\n  id SERIAL PRIMARY KEY,\n  card_id INTEGER NOT NULL,\n  user_id INTEGER NOT NULL,\n  comment TEXT NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (card_id) REFERENCES cards (id),\n  FOREIGN KEY (user_id) REFERENCES users (id)\n);\n\nCREATE TABLE card_labels(\n  id SERIAL PRIMARY KEY,\n  card_id INTEGER NOT NULL,\n  label VARCHAR(255) NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (card_id) REFERENCES cards (id)\n);\n\nCREATE TABLE card_attachments(\n  id SERIAL PRIMARY KEY,\n  card_id INTEGER NOT NULL,\n  file_name VARCHAR(255) NOT NULL,\n  file_type VARCHAR(255) NOT NULL,\n  file_size BIGINT NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  FOREIGN KEY (card_id) REFERENCES cards (id)\n);\n\nCREATE TABLE integrations(\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  type VARCHAR(255) NOT NULL,\n  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE TABLE board_integrations(\n  board_id INTEGER NOT NULL,\n  integration_id INTEGER NOT NULL,\n  PRIMARY KEY (board_id, integration_id),\n  FOREIGN KEY (board_id) REFERENCES boards (id),\n  FOREIGN KEY (integration_id) REFERENCES integrations (id)\n);`,
-    title: 'Create table',
-  };
 
-  const exampleQuery = `SELECT * FROM customers WHERE orders > 10 AND order_date > DATE_SUB(NOW(), INTERVAL 6 MONTH)`;
+  const [SQLType, setSQLType] = useState<string>('MySQL');
 
-  const [statements, setStatements] = useState<Statement[]>([staInit]);
+  const [view, setView] = useState<number>();
+
+  const [statements, setStatements] = useState<Statement[]>([]);
+
+  const [dbStructure, setDbStructure] = useState<Statement>({statement: '', title: ''});
+
+  const [connectionString, setConnectionString] = useState<string>('');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGenerateStruture, setIsGenerateStruture] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const resultDOM = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const [, setValue, view] = useSearchParam(SEARCH_PARAMS.TAB);
+  const scrollToResult = () => {
+    resultDOM.current?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+  };
+
+  const [disabledSaveButton, setDisabledSaveButton] = useState(true);
+
+  const [SQLSelectGenerate, setSQLSelectGenerate] = useState<string>('MySQL');
+  
+  const projectId = getIdProjectFromUrl();
 
   const onFinish = async (value: any) => {
     try {
       setIsSubmitting(true);
-      const projectId = getIdProjectFromUrl();
-
-      value.database = value.database ?? 'SQL';
-      const { data } = await tsmAxios.get<DatabaseRAGResponse>(
-        `/project/${projectId}/database-rag?question=${value.question}&database=${value.database}`
-      );
-
-      setStatements(data.statements);
+      if(view !== 3){
+        value.database = value.database ?? 'MySQL';
+        const { data } = await tsmAxios.post<DatabaseRAGResponse>(
+          `/projects/${projectId}/database-rag`,
+          { context: dbStructure.statement, question: value.question, database: value.database }
+        );
+        scrollToResult()
+        setStatements(data.statements);
+      }else{
+        const { data } = await tsmAxios.post<Statement>(
+          `/projects/${projectId}/database-rag-by-uri`,
+          { question: value.question, uri: `${DatabaseConnection[SQLType].before}${connectionString}` }
+        );
+        scrollToResult()
+        setStatements([data]);
+      }
+      
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const onClick: MenuProps['onClick'] = (e) => {
-    switch (e.key) {
-      case '1':
-        setValue('uri');
-        break;
-      case '2':
-        setValue('srs');
-        break;
-      case '3':
-        setValue('file');
-        break;
-
-      default:
-        break;
+  const getSQLStructureGenerate = async () => {
+    setIsGenerateStruture(true);
+    try {
+      const { data } = await tsmAxios.get<{statement: string, database: string}>(
+        `/projects/${projectId}/generate-structure?database=${SQLSelectGenerate}`
+      );
+      setDbStructure({ ...dbStructure, statement: data.statement });
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsGenerateStruture(false);
     }
+  }
+
+  const saveDbStructure = async () => {
+    setIsSaving(true);
+    try {
+      await tsmAxios.post(`/projects/${projectId}/save-db-structure`, {statement: dbStructure.statement});
+      message.success('Save successfully');
+    } catch (error) {
+      console.log(error);
+    } finally{
+      setIsSaving(false);
+    }
+  }
+
+  const connectSQLDB = async () => {
+    setIsConnecting(true);
+    try {
+      const {data} =  await tsmAxios.post<{schema: string}>(`/projects/${projectId}/get-structure-by-uri`, {uri: `${DatabaseConnection[SQLType].before}${connectionString}`});
+      setDbStructure({ ...dbStructure, statement: data.schema });
+    } catch (error) {
+      console.log(error);
+    } finally{
+      setIsConnecting(false);
+    }
+  }
+
+  useEffect(() => {
+    if (!dbStructure.statement) {
+      setDisabledSaveButton(true);
+    } else if ('#Enter your SQL Structure here'.includes(dbStructure.statement.trim())) {
+      setDisabledSaveButton(true);
+    } else {
+      setDisabledSaveButton(false);
+    }
+  }, [dbStructure]);
+
+  useEffect(() => {
+    const getDbStructureAsync = async () => {
+      try {
+        const {data} = await tsmAxios.get<{statement: string}>(`/projects/${projectId}/get-db-structure`);
+        setDbStructure({ ...dbStructure, statement: data.statement });
+      } catch (error) {
+        console.log(error);
+      } 
+    }
+    getDbStructureAsync()
+  }, []);
+
+  useEffect(() => {
+    if(view === 3){
+      setDbStructure({ ...dbStructure, statement: '' });
+    }
+  }, [view]);
+
+  const props: UploadProps = {
+    name: 'file',
+    multiple: false,
+    beforeUpload: async (e) => {
+      const formData = new FormData();
+      formData.append(`file`, e as File);
+      const { data } = await tsmAxios.post<{result: string}>(`/pyhelper/file-handler`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setDbStructure({ ...dbStructure, statement: data.result });
+      return false;
+    },
+    listType: 'text',
   };
 
   return (
-    <section className='flex h-[calc(100vh-170px)] w-full flex-col gap-y-6  rounded bg-[#f8f9fc] p-6'>
-      <div className='grid grid-cols-12 gap-x-2'>
-        <div className='col-span-2'>
-          <div className={`flex items-center gap-x-2 p-2 py-3 pb-2 pt-3 shadow-md `}>
-            <div className='flex h-12 w-12 flex-shrink-0 items-center justify-center rounded text-lg font-bold'>
-              <img src={sql} className='h-full w-full rounded object-cover' alt='' />
-            </div>
-            <div className='flex flex-col gap-y-1'>
-              <Typography.Text className='w-[150px] truncate text-sm font-semibold '>
-                SQL Generate Tool
-              </Typography.Text>
-              <Typography.Text className='w-[150px] truncate text-xs'>
-                By{' '}
-                <b className='bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text text-transparent'>
-                  TaskSmart AI
-                </b>
-              </Typography.Text>
+    <section ref={containerRef} className='flex h-[calc(100vh-170px)] w-full flex-col overflow-scroll rounded bg-[#f8f9fc] px-6 py-3'>
+      <div>
+        <div className='text-xl text-black'>Database Structure:</div>
+        <div className='grid grid-cols-12 gap-x-2'>
+          <div className='flex flex-col col-span-6 pr-2 mx-2 gap-y-2 '>
+            {/* {view === 'uri' && <URIView />}
+          {view === 'srs' && <SRSView />} */}
+
+            <SQLEditor
+              className='max-h-[300px] min-h-[120px] overflow-scroll'
+              statement={dbStructure}
+              setStatement={setDbStructure}
+            />
+            <div className='flex justify-end w-full'>
+              <Button
+                type='primary'
+                className='flex items-center rounded-xl'
+                disabled={view === 3 || disabledSaveButton}
+                loading={isSaving}
+                onClick={saveDbStructure}
+              >
+                Save
+              </Button>
             </div>
           </div>
-          <Divider />
-          <Menu
-            defaultSelectedKeys={['1']}
-            onClick={onClick}
-            defaultValue={view}
-            activeKey='1'
-            mode='inline'
-            className='rounded-lg  bg-[#f8f9fc] '
-          >
-            <Menu.Item accessKey='1' icon={<Link2 className='h-4 w-4' />} key='1'>
-              By URI
-            </Menu.Item>
-            <Menu.Item icon={<FileSymlink className='h-4 w-4' />} key='2'>
-              By SRS
-            </Menu.Item>
-            <Menu.Item icon={<FileText className='h-4 w-4' />} key='3'>
-              By SQL File
-            </Menu.Item>
-          </Menu>
-        </div>
-        <div className='col-span-10 mx-2 flex h-[calc(100vh-200px)] flex-col gap-y-4 overflow-y-scroll pr-2'>
-          {view === 'uri' && <URIView />}
-          {view === 'srs' && <SRSView />}
-
-          {statements.length > 0 &&
-            statements.map((statement, index) => (
-              <SQLEditor key={`statements_${index}`} statement={statement} />
-            ))}
-          <div className='card-ai flex flex-col gap-y-10 rounded-lg bg-white p-6'>
-            <Form name='sql-query' form={form} layout='vertical' onFinish={onFinish}>
-              <Form.Item
-                name='question'
-                label='Write here what you want from your document:'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input your question!',
-                  },
-                ]}
+          <div className='flex flex-col col-span-6 gap-2 text-black'>
+            <span>Or you can get the database based on the following ways</span>
+            <div>
+              <Radio.Group
+                className='flex w-full'
+                onChange={(e) => {
+                  setView(e.target.value);
+                }}
               >
-                <Input
-                  prefix={<img src={blink} className='absolute left-4 top-3 h-5 w-5' alt='' />}
-                  size='large'
-                  placeholder='Find all customers who have ordered more than 10 products in the last 6 months'
-                  className='rounded-xl py-3 pl-12'
-                />
-              </Form.Item>
-
-              <div className='float-right flex items-center justify-center gap-x-2'>
-                <Form.Item className='flex w-full flex-shrink'>
+                <Radio.Button className='w-full text-center' value={1}>
+                  Upload file (.sql)
+                </Radio.Button>
+                <Radio.Button className='w-full text-center' value={2}>
+                  Generate by SRS
+                </Radio.Button>
+                <Radio.Button className='w-full text-center' value={3}>
+                  Connect to database
+                </Radio.Button>
+              </Radio.Group>
+            </div>
+            <div className='mt-4 max-h-[200px]'>
+              {view === 1 && (
+                <Dragger
+                  {...props}
+                  style={{
+                    backgroundColor: '#eff4f8',
+                  }}
+                >
+                  <div className='flex justify-center gap-5'>
+                    <div className='ant-upload-drag-icon'>
+                      <div
+                        style={{
+                          borderColor: btnColor,
+                        }}
+                        className='flex items-center justify-center w-20 h-20 mx-auto bg-transparent border-2 border-dashed rounded-lg'
+                      >
+                        <UploadCloud
+                          size={24}
+                          className=''
+                          style={{
+                            color: btnColor,
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className='flex flex-col py-4 text-left gap-y-4'>
+                      <Typography.Text
+                        className='block font-semibold '
+                        style={{
+                          color: btnColor,
+                        }}
+                      >
+                        Select files on your computer
+                      </Typography.Text>
+                      <Typography.Text className='block text-slate-400'>
+                        Or transfer files by dragging and dropping them into the area
+                      </Typography.Text>
+                    </div>
+                  </div>
+                </Dragger>
+              )}
+              {view === 2 && (
+                <div className='flex items-center justify-center w-full h-full'>
+                  <Select
+                      value={SQLSelectGenerate}
+                      onChange={(e) => {
+                        setSQLSelectGenerate(e);
+                      }}
+                      className='ml-2 min-w-[120px]'
+                    >
+                      {SQLLanguage.map((item) => {
+                        return (
+                          <Select.Option value={item} key={`select_sql_generate`}>
+                            {item}
+                          </Select.Option>
+                        );
+                      })}
+                    </Select>
                   <Button
-                    icon={<IconQuery />}
+                    loading={isGenerateStruture}
                     style={{
                       backgroundColor: btnColor,
                       color: '#fff',
-                      width: '100%',
                     }}
-                    size='large'
-                    htmlType='submit'
-                    loading={isSubmitting}
-                    className='flex items-center rounded-xl'
-                    disabled={isSubmitting}
+                    onClick={getSQLStructureGenerate}
                   >
-                    Generate SQL
+                    Generate database structure
                   </Button>
-                </Form.Item>
-              </div>
-            </Form>
-          </div>
+                </div>
+              )}
+              {view === 3 && (
+                <div className='flex flex-col w-full gap-4'>
+                  <div>
+                    <span>SQL Type: </span>
+                    <Select
+                      value={DatabaseConnection[SQLType].value}
+                      onChange={(e) => {
+                        setSQLType(e);
+                      }}
+                      className='ml-2'
+                    >
+                      {Object.values(DatabaseConnection).map((item) => {
+                        return (
+                          <Select.Option value={item.value} key={item.value}>
+                            {item.label}
+                          </Select.Option>
+                        );
+                      })}
+                    </Select>
+                  </div>
 
-          <SQLEditor statement={{ statement: exampleQuery, title: 'Result' }} />
+                  <Input.Search
+                    className='w-full text-[10px]'
+                    addonBefore={DatabaseConnection[SQLType].before}
+                    placeholder={DatabaseConnection[SQLType].placeholder}
+                    allowClear
+                    value={connectionString}
+                    onChange={(e) => setConnectionString(e.target.value)}
+                    onSearch={connectSQLDB}
+                    enterButton='Connect'
+                    loading={isConnecting}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
+
+      <Divider className='m-0 my-4' />
+      <div className='flex flex-col p-6 bg-white rounded-lg card-ai gap-y-10'>
+        <Form name='sql-query' form={form} layout='vertical' onFinish={onFinish}>
+          <Form.Item
+            name='question'
+            label='Write here what you want from your document:'
+            rules={[
+              {
+                required: true,
+                message: 'Please input your question!',
+              },
+            ]}
+          >
+            <Input
+              prefix={<img src={blink} className='absolute w-5 h-5 left-4 top-3' alt='' />}
+              size='large'
+              placeholder='Find all customers who have ordered more than 10 products in the last 6 months'
+              className='py-3 pl-12 rounded-xl'
+            />
+          </Form.Item>
+
+          <div className='float-right flex h-[auto] items-center justify-center'>
+            <Form.Item className='flex flex-shrink w-full'>
+              <Button
+                icon={<IconQuery />}
+                style={{
+                  backgroundColor: btnColor,
+                  color: '#fff',
+                  width: '100%',
+                }}
+                size='large'
+                htmlType='submit'
+                loading={isSubmitting}
+                className='flex items-center rounded-xl'
+                disabled={isSubmitting}
+              >
+                Generate SQL
+              </Button>
+            </Form.Item>
+          </div>
+        </Form>
+      </div>
+      <Divider />
+      <div className='w-full text-black'>
+        <div className='text-xl'>Result:</div>
+        {statements.map((statement, index) => (
+          <SQLEditor key={index} statement={statement} uri={connectionString?`${DatabaseConnection[SQLType].before}${connectionString}`:''} />
+        ))}
+      </div>
+      <div ref={resultDOM} className='h-8'></div>
     </section>
   );
 };
@@ -172,7 +394,7 @@ const IconQuery = () => {
       fill='currentColor'
       aria-hidden='true'
       data-slot='icon'
-      className='-ml-1 mr-2 h-6 w-6 text-gray-100'
+      className='w-6 h-6 mr-2 -ml-1 text-gray-100'
     >
       <path
         fill-rule='evenodd'
@@ -197,7 +419,7 @@ const URIView = () => {
         <div className='mx-auto my-1 mb-6 flex w-[900px] items-start justify-between gap-x-4 rounded-xl bg-white p-2'>
           <Form.Item
             name='uri'
-            className='m-0 flex-1 p-0'
+            className='flex-1 p-0 m-0'
             rules={[
               {
                 required: true,
@@ -218,7 +440,7 @@ const URIView = () => {
             style={{ backgroundColor: btnColor }}
             className='flex h-10 w-[50px] items-center justify-center rounded-lg'
           >
-            <Send className='h-4 w-4 text-white' />
+            <Send className='w-4 h-4 text-white' />
           </Button>
         </div>
       </Form>
@@ -237,11 +459,11 @@ const SRSView = () => {
   }, [project]);
 
   return (
-    <div className='my-2 mb-6 flex items-center justify-between gap-x-4'>
+    <div className='flex items-center justify-between my-2 mb-6 gap-x-4'>
       <Button
         type='primary'
         className='flex w-[150px] items-center justify-center'
-        icon={<Loader className='h-4 w-4' />}
+        icon={<Loader className='w-4 h-4' />}
       >
         Generate
       </Button>
