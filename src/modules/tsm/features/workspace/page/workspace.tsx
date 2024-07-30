@@ -6,6 +6,7 @@ import useGetProfile from '@/modules/tsm/components/hooks/use-profile';
 import useGetWorkspace from '../hooks/query/use-get-workspace';
 import { useNavigate } from 'react-router-dom';
 import { listColor } from '@/shared/data';
+import useGetRecentActivity from '../hooks/query/use-get-recent-activity';
 
 /**
  *
@@ -32,6 +33,7 @@ const Workspace = () => {
   const { data: workspaces } = useGetWorkspaces();
   const { data: workspace, isPending } = useGetWorkspace();
   const { data: profile } = useGetProfile();
+  const { data: recentActivities } = useGetRecentActivity();
 
   const items: MenuItem[] = [
     {
@@ -63,14 +65,19 @@ const Workspace = () => {
   ];
 
   const onClick: MenuProps['onClick'] = (e) => {
-    if (e.key === 'all') return;
-    navigate(`../../../tsm/workspaces/${e.key}`);
+    if (e.key === 'all') {
+      navigate('../../tsm/home');
+    } else {
+      navigate(`../../../tsm/workspaces/${e.key}`);
+    }
   };
   return (
-    <div className='mb-10 flex h-screen flex-col gap-y-2 overflow-y-scroll'>
+    <div className='mb-10 flex flex-col gap-y-2'>
       <Typography.Title level={3}>Recent viewed</Typography.Title>
       <div className='grid grid-cols-4 gap-6'>
-        {profile?.projects.slice(0, 2).map((item) => <ProjectItem key={item.id} project={item} />)}
+        {recentActivities?.map((item) => (
+          <ProjectItem key={item.id} project={item} type='RECENT' recent={item.lastAccessed} />
+        ))}
       </div>
       <Divider className='my-[4px]' />
       <Typography.Title level={3}>Your workspace</Typography.Title>
@@ -94,9 +101,9 @@ const Workspace = () => {
             </div>
           </div>
         ) : (
-          <div className='col-span-3 '>
+          <div className='col-span-3 h-[calc(100vh-350px)] overflow-y-scroll'>
             <Typography.Title level={4}>All projects</Typography.Title>
-            <div className='grid grid-cols-2 gap-4 '>
+            <div className='grid grid-cols-2 gap-4'>
               {profile?.projects.map((item) => <ProjectItem key={item.id} project={item} />)}
             </div>
           </div>

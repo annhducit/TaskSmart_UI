@@ -90,9 +90,7 @@ const Sidebar = ({
       case 'workspaces':
         navigate('../../../tsm/workspaces');
         break;
-      case 'mail':
-        navigate('../../../tsm/mail');
-        break;
+
       case 'template':
         navigate('../../../tsm/template');
         break;
@@ -107,16 +105,7 @@ const Sidebar = ({
       label: 'Home',
       icon: <Home className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
     },
-    {
-      key: 'workspaces',
-      label: 'General',
-      icon: <SwatchBook className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
-    },
-    {
-      key: 'mail',
-      label: 'Mail',
-      icon: <Mail className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
-    },
+
     {
       type: 'divider',
     },

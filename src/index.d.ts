@@ -58,6 +58,7 @@ type Project = {
   inviteCode: string;
   listCards: ListCard[];
   users: UserRelation[];
+  lastAccessed: string;
 };
 
 type UserGeneral = {
