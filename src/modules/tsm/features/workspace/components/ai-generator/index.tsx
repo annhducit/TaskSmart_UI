@@ -11,7 +11,7 @@ const AIFeature = () => {
   const items: TabsProps['items'] = [
     {
       key: '1',
-      label: 'AI Generate',
+      label: 'Task Generate',
       children: <TaskGenerate />,
     },
     {

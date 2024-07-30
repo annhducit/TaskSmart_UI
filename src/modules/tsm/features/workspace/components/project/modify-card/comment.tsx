@@ -42,7 +42,7 @@ const CommentCard = ({
   const textColor = getTextColor(color);
 
   return (
-    <div className='flex flex-col gap-2 mt-5'>
+    <div className='mt-5 flex flex-col gap-2'>
       <div className='flex items-center gap-x-2'>
         <MessageCircle color={color} className='mt-[2px] h-5 w-5 opacity-40' />
         <Typography.Text className='text-base font-semibold'>Comment</Typography.Text>

@@ -1,27 +1,25 @@
-import { Button, Divider, Form, Input, message, Select, Typography } from 'antd';
+import { Button, Divider, Form, Input, Select, Typography } from 'antd';
 import SQLEditor from './code-editor';
 import { useRef, useState } from 'react';
 import { useSelector } from '@/store';
-import { Loader, Send, UploadCloud } from 'lucide-react';
+import { Save, UploadCloud } from 'lucide-react';
 import { getIdProjectFromUrl } from '@/shared/components/getIdByUrl';
 import { tsmAxios } from '@/configs/axios';
 import blink from '@/assets/images/blink-ai.png';
-import useGetProject from '../../project/hooks/query/use-get-project';
 import { Radio } from 'antd';
 import { useEffect } from 'react';
-import ModalAnnouncement from './modal-announment';
 import Dragger from 'antd/es/upload/Dragger';
 import { UploadProps } from 'antd/lib';
-type SQLConnectType = {
-  label: string;
-  value: string;
-  before: string;
-  placeholder: string;
-};
+import { scrollToResult } from '@/utils/scroll-to-result';
+import { useDatabaseRag } from '../hook/mutation/use-database-rag';
+import { useDatabaseRagURI } from '../hook/mutation/use-database-rag-uri';
+import useSaveDbStructure from '../hook/mutation/use-save-db-structure';
+import useConnectDb from '../hook/mutation/use-connect-db';
+import useUploadSqlFile from '../hook/mutation/use-upload-sql-file';
 
 const SQLLanguage = ['MySQL', 'SQLite', 'PostgreSQL', 'Oracle', 'SQLServer'];
 
-const DatabaseConnection: { [key: string]: SQLConnectType } = {
+const DatabaseConnection: { [key: string]: TSM_SQLConnectType } = {
   MySQL: {
     label: 'My SQL',
     value: 'MySQL',
@@ -39,98 +37,89 @@ const DatabaseConnection: { [key: string]: SQLConnectType } = {
 const SQLGenerate = () => {
   const [form] = Form.useForm();
 
-  const { btnColor } = useSelector((state) => state.theme);
-
-  const [SQLType, setSQLType] = useState<string>('MySQL');
-
-  const [view, setView] = useState<number>();
-
-  const [statements, setStatements] = useState<Statement[]>([]);
-
-  const [dbStructure, setDbStructure] = useState<Statement>({statement: '', title: ''});
-
-  const [connectionString, setConnectionString] = useState<string>('');
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isGenerateStruture, setIsGenerateStruture] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [isConnecting, setIsConnecting] = useState(false);
-  const resultDOM = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const scrollToResult = () => {
-    resultDOM.current?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
-  };
-
-  const [disabledSaveButton, setDisabledSaveButton] = useState(true);
-
+  const [dbStructure, setDbStructure] = useState<Statement>({ statement: '', title: '' });
   const [SQLSelectGenerate, setSQLSelectGenerate] = useState<string>('MySQL');
-  
+  const [isGenerateStructure, setIsGenerateStructure] = useState(false);
+  const [connectionString, setConnectionString] = useState<string>('');
+  const [disabledSaveButton, setDisabledSaveButton] = useState(true);
+  const [statements, setStatements] = useState<Statement[]>([]);
+  const [SQLType, setSQLType] = useState<string>('MySQL');
+  const containerRef = useRef<HTMLDivElement>(null);
+  const resultDOM = useRef<HTMLDivElement>(null);
+  const [view, setView] = useState<number>(2);
+
   const projectId = getIdProjectFromUrl();
+  const { btnColor } = useSelector((state) => state.theme);
+  /**
+   *
+   * Tanstack/react-query
+   */
+  const { mutate: databaseRag, isPending: isLoadingDBR } = useDatabaseRag();
+  const { mutate: databaseRagURI, isPending: isLoadingDBR_URI } = useDatabaseRagURI();
+  const { mutate: saveDBStructure, isPending: isLoadingSaveDB } = useSaveDbStructure();
+  const { mutate: connectDb, isPending: isLoadingConnectDb } = useConnectDb();
+  const { mutate: uploadSqlFile } = useUploadSqlFile();
 
   const onFinish = async (value: any) => {
     try {
-      setIsSubmitting(true);
-      if(view !== 3){
+      if (view !== 3) {
         value.database = value.database ?? 'MySQL';
-        const { data } = await tsmAxios.post<DatabaseRAGResponse>(
-          `/projects/${projectId}/database-rag`,
-          { context: dbStructure.statement, question: value.question, database: value.database }
+        databaseRag(
+          { projectId, context: dbStructure.statement, question: value.question },
+          {
+            onSuccess: (data) => {
+              scrollToResult({ resultDOM });
+              setStatements(data.statements);
+            },
+          }
         );
-        scrollToResult()
-        setStatements(data.statements);
-      }else{
-        const { data } = await tsmAxios.post<Statement>(
-          `/projects/${projectId}/database-rag-by-uri`,
-          { question: value.question, uri: `${DatabaseConnection[SQLType].before}${connectionString}` }
+      } else {
+        databaseRagURI(
+          {
+            projectId,
+            uri: `${DatabaseConnection[SQLType].before}${connectionString}`,
+            question: value.question,
+          },
+          {
+            onSuccess: (data) => {
+              scrollToResult({ resultDOM });
+              setStatements([data]);
+            },
+          }
         );
-        scrollToResult()
-        setStatements([data]);
       }
-      
     } finally {
-      setIsSubmitting(false);
     }
   };
 
+  const saveDbStructure = async () => {
+    saveDBStructure({ projectId, statement: dbStructure.statement });
+  };
+
+  const connectSQL_DB = async () => {
+    connectDb(
+      { projectId, uri: `${DatabaseConnection[SQLType].before}${connectionString}` },
+      {
+        onSuccess: (data) => {
+          setDbStructure({ ...dbStructure, statement: data.schema });
+        },
+      }
+    );
+  };
+
   const getSQLStructureGenerate = async () => {
-    setIsGenerateStruture(true);
+    setIsGenerateStructure(true);
     try {
-      const { data } = await tsmAxios.get<{statement: string, database: string}>(
+      const { data } = await tsmAxios.get<{ statement: string; database: string }>(
         `/projects/${projectId}/generate-structure?database=${SQLSelectGenerate}`
       );
       setDbStructure({ ...dbStructure, statement: data.statement });
-      console.log(data);
     } catch (error) {
       console.log(error);
     } finally {
-      setIsGenerateStruture(false);
+      setIsGenerateStructure(false);
     }
-  }
-
-  const saveDbStructure = async () => {
-    setIsSaving(true);
-    try {
-      await tsmAxios.post(`/projects/${projectId}/save-db-structure`, {statement: dbStructure.statement});
-      message.success('Save successfully');
-    } catch (error) {
-      console.log(error);
-    } finally{
-      setIsSaving(false);
-    }
-  }
-
-  const connectSQLDB = async () => {
-    setIsConnecting(true);
-    try {
-      const {data} =  await tsmAxios.post<{schema: string}>(`/projects/${projectId}/get-structure-by-uri`, {uri: `${DatabaseConnection[SQLType].before}${connectionString}`});
-      setDbStructure({ ...dbStructure, statement: data.schema });
-    } catch (error) {
-      console.log(error);
-    } finally{
-      setIsConnecting(false);
-    }
-  }
+  };
 
   useEffect(() => {
     if (!dbStructure.statement) {
@@ -145,17 +134,19 @@ const SQLGenerate = () => {
   useEffect(() => {
     const getDbStructureAsync = async () => {
       try {
-        const {data} = await tsmAxios.get<{statement: string}>(`/projects/${projectId}/get-db-structure`);
+        const { data } = await tsmAxios.get<{ statement: string }>(
+          `/projects/${projectId}/get-db-structure`
+        );
         setDbStructure({ ...dbStructure, statement: data.statement });
       } catch (error) {
         console.log(error);
-      } 
-    }
-    getDbStructureAsync()
+      }
+    };
+    getDbStructureAsync();
   }, []);
 
   useEffect(() => {
-    if(view === 3){
+    if (view === 3) {
       setDbStructure({ ...dbStructure, statement: '' });
     }
   }, [view]);
@@ -163,49 +154,58 @@ const SQLGenerate = () => {
   const props: UploadProps = {
     name: 'file',
     multiple: false,
+    accept: '.sql',
     beforeUpload: async (e) => {
-      const formData = new FormData();
-      formData.append(`file`, e as File);
-      const { data } = await tsmAxios.post<{result: string}>(`/pyhelper/file-handler`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      uploadSqlFile(e, {
+        onSuccess: (data) => {
+          setDbStructure({ ...dbStructure, statement: data.result });
+        },
       });
-      setDbStructure({ ...dbStructure, statement: data.result });
       return false;
     },
     listType: 'text',
   };
 
   return (
-    <section ref={containerRef} className='flex h-[calc(100vh-170px)] w-full flex-col overflow-scroll rounded bg-[#f8f9fc] px-6 py-3'>
+    <section
+      ref={containerRef}
+      className='flex h-[calc(100vh-170px)] w-full flex-col overflow-y-scroll rounded bg-[#f8f9fc] px-6 py-3'
+    >
       <div>
         <div className='text-xl text-black'>Database Structure:</div>
-        <div className='grid grid-cols-12 gap-x-2'>
-          <div className='flex flex-col col-span-6 pr-2 mx-2 gap-y-2 '>
-            {/* {view === 'uri' && <URIView />}
-          {view === 'srs' && <SRSView />} */}
-
+        <div className='grid grid-cols-2 gap-x-2'>
+          <div className='col-span-1 mx-2 flex flex-col gap-y-2'>
             <SQLEditor
-              className='max-h-[300px] min-h-[120px] overflow-scroll'
+              className='max-h-[300px] min-h-[120px] overflow-y-scroll'
               statement={dbStructure}
               setStatement={setDbStructure}
             />
-            <div className='flex justify-end w-full'>
+            <div className='my-2 flex w-full justify-end'>
               <Button
-                type='primary'
-                className='flex items-center rounded-xl'
+                type='text'
+                style={{
+                  backgroundColor: btnColor,
+                  color: '#fff',
+                }}
+                className='flex items-center'
                 disabled={view === 3 || disabledSaveButton}
-                loading={isSaving}
+                loading={isLoadingSaveDB}
+                icon={<Save size={16} />}
                 onClick={saveDbStructure}
               >
                 Save
               </Button>
             </div>
           </div>
-          <div className='flex flex-col col-span-6 gap-2 text-black'>
-            <span>Or you can get the database based on the following ways</span>
+
+          <div className='col-span-1 flex flex-col gap-2 border border-y-0 border-r-0 border-solid border-l-slate-200 pl-3 text-black'>
+            <Typography.Text>
+              Or you can get the database based on the following ways:
+            </Typography.Text>
             <div>
               <Radio.Group
                 className='flex w-full'
+                defaultValue={2}
                 onChange={(e) => {
                   setView(e.target.value);
                 }}
@@ -221,7 +221,7 @@ const SQLGenerate = () => {
                 </Radio.Button>
               </Radio.Group>
             </div>
-            <div className='mt-4 max-h-[200px]'>
+            <div className='mt-4 max-h-[250px]'>
               {view === 1 && (
                 <Dragger
                   {...props}
@@ -229,13 +229,13 @@ const SQLGenerate = () => {
                     backgroundColor: '#eff4f8',
                   }}
                 >
-                  <div className='flex justify-center gap-5'>
+                  <div className='flex items-center justify-center gap-5'>
                     <div className='ant-upload-drag-icon'>
                       <div
                         style={{
                           borderColor: btnColor,
                         }}
-                        className='flex items-center justify-center w-20 h-20 mx-auto bg-transparent border-2 border-dashed rounded-lg'
+                        className='mx-auto flex h-16 w-16 items-center justify-center rounded-lg border-2 border-dashed bg-transparent'
                       >
                         <UploadCloud
                           size={24}
@@ -246,7 +246,7 @@ const SQLGenerate = () => {
                         />
                       </div>
                     </div>
-                    <div className='flex flex-col py-4 text-left gap-y-4'>
+                    <div className='flex flex-col gap-y-4 py-3 text-left'>
                       <Typography.Text
                         className='block font-semibold '
                         style={{
@@ -263,36 +263,41 @@ const SQLGenerate = () => {
                 </Dragger>
               )}
               {view === 2 && (
-                <div className='flex items-center justify-center w-full h-full'>
-                  <Select
-                      value={SQLSelectGenerate}
-                      onChange={(e) => {
-                        setSQLSelectGenerate(e);
-                      }}
-                      className='ml-2 min-w-[120px]'
-                    >
-                      {SQLLanguage.map((item) => {
-                        return (
-                          <Select.Option value={item} key={`select_sql_generate`}>
-                            {item}
-                          </Select.Option>
-                        );
-                      })}
-                    </Select>
+                <div className='my-4 flex h-full w-full items-center justify-end gap-x-4'>
                   <Button
-                    loading={isGenerateStruture}
+                    loading={isGenerateStructure}
+                    size='large'
+                    icon={<IconQuery />}
                     style={{
                       backgroundColor: btnColor,
                       color: '#fff',
                     }}
+                    className='flex items-center rounded-xl text-center'
                     onClick={getSQLStructureGenerate}
                   >
-                    Generate database structure
+                    Generate DB Structure
                   </Button>
+                  <Select
+                    value={SQLSelectGenerate}
+                    onChange={(e) => {
+                      setSQLSelectGenerate(e);
+                    }}
+                    size='large'
+                    allowClear
+                    className='min-w-[200px]'
+                  >
+                    {SQLLanguage.map((item) => {
+                      return (
+                        <Select.Option value={item} key={`select_sql_generate`}>
+                          {item}
+                        </Select.Option>
+                      );
+                    })}
+                  </Select>
                 </div>
               )}
               {view === 3 && (
-                <div className='flex flex-col w-full gap-4'>
+                <div className='flex w-full flex-col gap-4'>
                   <div>
                     <span>SQL Type: </span>
                     <Select
@@ -300,7 +305,7 @@ const SQLGenerate = () => {
                       onChange={(e) => {
                         setSQLType(e);
                       }}
-                      className='ml-2'
+                      className='ml-2 w-[150px]'
                     >
                       {Object.values(DatabaseConnection).map((item) => {
                         return (
@@ -313,15 +318,15 @@ const SQLGenerate = () => {
                   </div>
 
                   <Input.Search
-                    className='w-full text-[10px]'
+                    className='my-4 w-full text-xs'
                     addonBefore={DatabaseConnection[SQLType].before}
                     placeholder={DatabaseConnection[SQLType].placeholder}
                     allowClear
                     value={connectionString}
                     onChange={(e) => setConnectionString(e.target.value)}
-                    onSearch={connectSQLDB}
+                    onSearch={connectSQL_DB}
                     enterButton='Connect'
-                    loading={isConnecting}
+                    loading={isLoadingConnectDb}
                   />
                 </div>
               )}
@@ -331,7 +336,7 @@ const SQLGenerate = () => {
       </div>
 
       <Divider className='m-0 my-4' />
-      <div className='flex flex-col p-6 bg-white rounded-lg card-ai gap-y-10'>
+      <div className='card-ai flex flex-col gap-y-10 rounded-lg bg-white p-6'>
         <Form name='sql-query' form={form} layout='vertical' onFinish={onFinish}>
           <Form.Item
             name='question'
@@ -344,15 +349,16 @@ const SQLGenerate = () => {
             ]}
           >
             <Input
-              prefix={<img src={blink} className='absolute w-5 h-5 left-4 top-3' alt='' />}
+              prefix={<img src={blink} className='absolute left-4 top-3 h-5 w-5' alt='' />}
               size='large'
+              allowClear
               placeholder='Find all customers who have ordered more than 10 products in the last 6 months'
-              className='py-3 pl-12 rounded-xl'
+              className='rounded-xl py-3 pl-12'
             />
           </Form.Item>
 
           <div className='float-right flex h-[auto] items-center justify-center'>
-            <Form.Item className='flex flex-shrink w-full'>
+            <Form.Item className='flex w-full flex-shrink'>
               <Button
                 icon={<IconQuery />}
                 style={{
@@ -362,9 +368,9 @@ const SQLGenerate = () => {
                 }}
                 size='large'
                 htmlType='submit'
-                loading={isSubmitting}
+                loading={isLoadingDBR || isLoadingDBR_URI}
                 className='flex items-center rounded-xl'
-                disabled={isSubmitting}
+                disabled={isLoadingDBR || isLoadingDBR_URI}
               >
                 Generate SQL
               </Button>
@@ -374,12 +380,20 @@ const SQLGenerate = () => {
       </div>
       <Divider />
       <div className='w-full text-black'>
-        <div className='text-xl'>Result:</div>
         {statements.map((statement, index) => (
-          <SQLEditor key={index} statement={statement} uri={connectionString?`${DatabaseConnection[SQLType].before}${connectionString}`:''} />
+          <div key={index}>
+            <Typography.Text className='text-lg'>Result:</Typography.Text>
+            <SQLEditor
+              key={index}
+              statement={statement}
+              uri={
+                connectionString ? `${DatabaseConnection[SQLType].before}${connectionString}` : ''
+              }
+            />
+          </div>
         ))}
       </div>
-      <div ref={resultDOM} className='h-8'></div>
+      <div ref={resultDOM} className='h-60' />
     </section>
   );
 };
@@ -394,7 +408,7 @@ const IconQuery = () => {
       fill='currentColor'
       aria-hidden='true'
       data-slot='icon'
-      className='w-6 h-6 mr-2 -ml-1 text-gray-100'
+      className='-ml-1 mr-2 h-6 w-6 text-gray-100'
     >
       <path
         fill-rule='evenodd'
@@ -402,79 +416,5 @@ const IconQuery = () => {
         clip-rule='evenodd'
       ></path>
     </svg>
-  );
-};
-
-const URIView = () => {
-  const [form] = Form.useForm();
-  const btnColor = useSelector((state) => state.theme.btnColor);
-
-  const onFinish = (value: string) => {
-    console.log(value);
-  };
-  return (
-    <div className='flex flex-col gap-y-1'>
-      <Typography.Text className='text-xs'>Enter the URI of the SQL Database:</Typography.Text>
-      <Form layout='horizontal' form={form} onFinish={onFinish}>
-        <div className='mx-auto my-1 mb-6 flex w-[900px] items-start justify-between gap-x-4 rounded-xl bg-white p-2'>
-          <Form.Item
-            name='uri'
-            className='flex-1 p-0 m-0'
-            rules={[
-              {
-                required: true,
-                message: 'Please input your URI!',
-              },
-            ]}
-          >
-            <Input
-              size='large'
-              className='border-none outline-none'
-              placeholder='mysql+mysqlconnector://<Username>:<Password>@<Host>/<Database Name>'
-            />
-          </Form.Item>
-
-          <Button
-            type='text'
-            htmlType='submit'
-            style={{ backgroundColor: btnColor }}
-            className='flex h-10 w-[50px] items-center justify-center rounded-lg'
-          >
-            <Send className='w-4 h-4 text-white' />
-          </Button>
-        </div>
-      </Form>
-    </div>
-  );
-};
-const SRSView = () => {
-  const [showModal, setShowModal] = useState(false);
-
-  const { data: project } = useGetProject();
-
-  useEffect(() => {
-    if (!project?.speDocPath) {
-      setShowModal(true);
-    }
-  }, [project]);
-
-  return (
-    <div className='flex items-center justify-between my-2 mb-6 gap-x-4'>
-      <Button
-        type='primary'
-        className='flex w-[150px] items-center justify-center'
-        icon={<Loader className='w-4 h-4' />}
-      >
-        Generate
-      </Button>
-
-      <ModalAnnouncement
-        content='
-      You have not uploaded the SRS document yet. Please upload the SRS document to generate the SQL query.'
-        project={project}
-        setShowModal={setShowModal}
-        showModal={showModal}
-      />
-    </div>
   );
 };

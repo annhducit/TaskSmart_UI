@@ -6,7 +6,12 @@
 type EStatus = 'ToDo' | 'InProgress' | 'Done' | 'InReview' | 'Approved' | 'NotSure' | 'none';
 type ELevel = 'Highest' | 'High' | 'Medium' | 'Low' | 'Lowest' | 'NotSure' | 'none';
 type LoadingState = 'idle' | 'loading' | 'succeeded' | 'failed';
-
+type TSM_SQLConnectType = {
+  label: string;
+  value: string;
+  before: string;
+  placeholder: string;
+};
 type BaseResponseType<T> = {
   message: string;
   status: number;
@@ -121,6 +126,7 @@ type Card = {
   risk: ELevel;
   effort: ELevel;
   estimate: Date | string | null;
+  startTime: Date | string | null;
   listCardId?: string;
   checkLists: CheckListGroup[];
   attachments: Attachment[];
@@ -317,9 +323,9 @@ type Statement = {
   statement: string;
   title: string;
   result?: string;
-}
+};
 
 type DatabaseRAGResponse = {
   statements: Statement[];
   database: string;
-}
+};

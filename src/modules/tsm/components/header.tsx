@@ -6,13 +6,13 @@ import {
   AlarmClock,
   Bell,
   ChevronDown,
-  CirclePlus,
   FolderKanban,
   HelpCircle,
   LogOut,
   MessageCircle,
   NotepadText,
   Palette,
+  Plus,
   SearchIcon,
   Settings,
   Sparkles,
@@ -263,12 +263,12 @@ const Header = () => {
               <Button
                 style={{
                   backgroundColor: btnColor,
-                  border: `1px solid ${btnColor}`,
+                  color: 'white',
                 }}
-                icon={<CirclePlus className='h-4 w-4 font-bold text-white' />}
-                className='flex h-[28px] items-center rounded border border-solid border-[#33607e]  text-sm font-semibold text-white'
+                icon={<Plus className='h-4 w-4 font-bold text-white' />}
+                className='flex items-center rounded border border-solid border-[#33607e] text-sm font-semibold text-white'
               >
-                Create new
+                New
               </Button>
             </Popover>
             <Tooltip placement='leftTop' title='Notepad'>

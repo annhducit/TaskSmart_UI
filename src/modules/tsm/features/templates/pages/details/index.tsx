@@ -27,7 +27,7 @@ import { TaskCard } from '../../../workspace/components/project/move-card';
 import ModifyCard from '../../../workspace/components/project/modify-card/modify-card';
 import { useSelector } from '@/store';
 type Context = 'ADMIN' | 'USER';
-const TemplateDetail = ({ context = 'USER' }: { context: Context }) => {
+const TemplateDetail = ({ context = 'USER' }: { context?: Context }) => {
   const { data: template, isLoading: isLoadingDT } = useGetTemplate();
   const { data: templates, isLoading } = useGetTemplates();
 

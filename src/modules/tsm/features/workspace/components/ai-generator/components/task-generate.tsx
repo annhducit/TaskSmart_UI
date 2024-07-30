@@ -25,7 +25,7 @@ import useCollapse from '@/shared/hooks/use-collapse';
 import useApplyGenerate from '../hook/mutation/use-apply-generate';
 import blink from '@/assets/images/blink.png';
 import LoadingSkeletonHome from '@/shared/components/skeleton/loading-skeleton-task';
-import ModalAnnouncement from './modal-announment';
+import ModalAnnouncement from './modal-announcement';
 import { useSelector } from '@/store';
 const TaskGenerate = () => {
   const [taskGenerate, setTaskGenerate] = useState<TasksGenerate>({ listCards: [] });
@@ -100,7 +100,7 @@ const TaskGenerate = () => {
 
   return (
     <>
-      <div className='inline-block flex min-h-screen flex-col px-6'>
+      <div className='flex min-h-screen flex-col px-6'>
         {taskGenerate.listCards.length > 0 ? (
           <div>
             <div className='flex items-start justify-start gap-x-3'>

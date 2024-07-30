@@ -10,7 +10,6 @@ import DashboardLayout from './_layouts/DashboardLayout';
 import UserInformation from '@/shared/components/auth/user-information';
 import SignInNavigate from '@/shared/components/auth/signin-navigate';
 import AdminLayout from './_layouts/AdminLayout';
-import CheckRole from '@/shared/components/auth/check-role';
 import { OAuthGitHubCallBack, OAuthGoogleCallBack } from './_layouts/OAuthCallback';
 
 const SignInFeature = lazy(() => import('@/modules/sign-in'));

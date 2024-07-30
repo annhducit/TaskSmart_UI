@@ -2,7 +2,7 @@ import { tsmAxios } from '@/configs/axios';
 import { useQuery } from '@tanstack/react-query';
 
 const searchTemplate = async (query: string) => {
-  const { data } = await tsmAxios.get<TSMTemplate[]>(`/templates/search?keyword=${query}`);
+  const { data } = await tsmAxios.get<TSMTemplate[]>(`/templates/search-only?query=${query}`);
   return data;
 };
 

@@ -38,6 +38,7 @@ const ColumnContainer = ({ column, cards, updateColumn, deleteColumn, createCard
     attachments: [],
     comments: [],
     implementers: [],
+    startTime: new Date(),
   };
 
   const [cardCreation, setCardCreation] = useState<Card>(cardUndefine);

@@ -249,11 +249,6 @@ const items: TabsProps['items'] = [
         AI Generator
       </Typography.Text>
     ),
-    // label: (
-    //   <Typography.Text className='text-transparent bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text'>
-    //     AI Generator
-    //   </Typography.Text>
-    // ),
 
     icon: <BrainCircuit size='15' className='translate-x-[6px] translate-y-[2px]' />,
     children: <AIGenerator />,
@@ -264,10 +259,4 @@ const items: TabsProps['items'] = [
     icon: <Settings size='15' className='translate-x-[6px] translate-y-[2px]' />,
     children: <SettingFeature />,
   },
-  // {
-  //   key: 'sql',
-  //   label: 'SQL Generator',
-  //   icon: <FolderKanban size='15' className='translate-x-[6px] translate-y-[2px]' />,
-  //   children: <ProjectFeature />,
-  // },
 ];

@@ -44,7 +44,7 @@ import Tooltip from '@/shared/components/tooltip';
 import { useDispatch } from '@/store';
 import { setTheme } from '@/store/theme';
 import { Tag, Typography } from 'antd';
-import { Check, Info, X } from 'lucide-react';
+import { Check, Info } from 'lucide-react';
 import { useState } from 'react';
 
 const ChangeTheme = () => {

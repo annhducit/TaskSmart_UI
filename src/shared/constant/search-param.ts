@@ -50,6 +50,7 @@ export enum SEARCH_PARAMS_VALUE {
   MODIFY_CATEGORY = 'modify-category',
   BACKGROUND = 'background',
   SEARCH_ALL = 'search-all',
+  CREATE_EVENT = 'create-event',
 
   PROFILE = 'profile',
   CARD = 'card',

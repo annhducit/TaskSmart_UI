@@ -41,7 +41,7 @@ export default function ProjectSetting() {
 
   const { btnColor } = useSelector((state) => state.theme);
   return (
-    <div className='mx-6  flex h-[calc(100vh-130px)]  flex-col gap-y-6 overflow-y-scroll rounded  bg-[#f8f9fc] p-6 text-black'>
+    <div className='mx-4 flex h-[calc(100vh-130px)]  flex-col gap-y-6 overflow-y-scroll rounded  bg-[#f8f9fc] p-6 text-black'>
       <div className='flex justify-between px-[100px]'>
         <div className='flex justify-start'>
           <div>
@@ -65,7 +65,7 @@ export default function ProjectSetting() {
               </Typography.Text>
               <Tooltip title='Rename'>
                 <Pencil
-                  className='transition-all cursor-pointer hover:opacity-25'
+                  className='cursor-pointer transition-all hover:opacity-25'
                   style={{
                     color: btnColor,
                   }}
@@ -73,7 +73,7 @@ export default function ProjectSetting() {
                 />
               </Tooltip>
             </div>
-            <div className='flex items-center ml-3 text-sm text-2xl align-middle'>
+            <div className='ml-3 flex items-center align-middle text-2xl text-sm'>
               <Component size={13} color={btnColor} />
               <span className='ml-2'>{project?.workspace.name}</span>
             </div>
@@ -82,7 +82,7 @@ export default function ProjectSetting() {
 
         <div>
           <Button
-            icon={<Share2 className='w-4 h-4 color-white' />}
+            icon={<Share2 className='color-white h-4 w-4' />}
             type='text'
             className='flex items-center text-white'
             style={{
@@ -102,19 +102,19 @@ export default function ProjectSetting() {
         }}
       />
 
-      <div className='px-[100px]'>
+      <div className='px-24'>
         <div className='text-xl font-semibold'>Project Settings</div>
         <div className='mt-3 align-middle'>
-          <div className='flex items-center my-3 font-semibold gap-x-2'>
+          <div className='my-3 flex items-center gap-x-2 font-semibold'>
             <Info size={15} color={btnColor} />
             <Typography.Text className='text-sm'>Description</Typography.Text>
           </div>
           <div>
             <Input.TextArea className='h-[100px]' defaultValue={project?.description} />
-            <div className='flex justify-end w-full'>
+            <div className='flex w-full justify-end'>
               <Button
-                icon={<Save className='w-4 h-4' />}
-                className='flex items-center my-2 text-white'
+                icon={<Save className='h-4 w-4' />}
+                className='my-2 flex items-center text-white'
                 type='text'
                 size='middle'
                 style={{
@@ -137,7 +137,7 @@ export default function ProjectSetting() {
 
         <div className='mt-3 align-middle'>
           <div className='flex items-center justify-between'>
-            <div className='flex items-center my-3 font-semibold gap-x-2'>
+            <div className='my-3 flex items-center gap-x-2 font-semibold'>
               <FileInput size={15} color={btnColor} />
               <Typography.Text className='text-sm'>Project document</Typography.Text>
             </div>
@@ -145,7 +145,7 @@ export default function ProjectSetting() {
               <div className='flex items-center gap-x-2'>
                 <Tooltip title='View file'>
                   <Button
-                    icon={<Eye className='w-4 h-4' />}
+                    icon={<Eye className='h-4 w-4' />}
                     type='primary'
                     size='small'
                     className='flex items-center text-white'
@@ -179,7 +179,7 @@ export default function ProjectSetting() {
         />
 
         <div className='mt-3 align-middle'>
-          <div className='flex items-center my-3 font-semibold gap-x-2'>
+          <div className='my-3 flex items-center gap-x-2 font-semibold'>
             <Image size={15} color={btnColor} />
             <Typography.Text className='text-sm'>Background</Typography.Text>
           </div>
@@ -262,7 +262,7 @@ const UploadDocument = ({ project }: { project: Project | undefined }) => {
                 style={{
                   borderColor: btnColor,
                 }}
-                className='flex items-center justify-center w-20 h-20 mx-auto bg-transparent border-2 border-dashed rounded-lg'
+                className='mx-auto flex h-20 w-20 items-center justify-center rounded-lg border-2 border-dashed bg-transparent'
               >
                 <UploadCloud
                   size={24}
@@ -273,7 +273,7 @@ const UploadDocument = ({ project }: { project: Project | undefined }) => {
                 />
               </div>
             </div>
-            <div className='flex flex-col py-4 text-left gap-y-4'>
+            <div className='flex flex-col gap-y-4 py-4 text-left'>
               <Typography.Text
                 className='block font-semibold '
                 style={{
@@ -288,7 +288,7 @@ const UploadDocument = ({ project }: { project: Project | undefined }) => {
             </div>
           </div>
         </Dragger>
-        <div className='flex items-center ml-auto gap-x-2'>
+        <div className='ml-auto flex items-center gap-x-2'>
           <Button danger>Cancel</Button>
           <Button
             icon={<UploadIcon size={14} />}
@@ -341,8 +341,8 @@ const UpdateBackground = () => {
 
   return (
     <>
-      <div className='flex flex-col items-center w-full gap-x-6 gap-y-2'>
-        <div className='relative flex justify-center w-full'>
+      <div className='flex w-full flex-col items-center gap-x-6 gap-y-2'>
+        <div className='relative flex w-full justify-center'>
           <div
             style={{
               backgroundImage: `url(${backgroundUnsplash ? backgroundUnsplash.urls.regular : project?.backgroundUnsplash?.urls.regular})`,
@@ -353,12 +353,12 @@ const UpdateBackground = () => {
             className='h-[150px] w-[222px] rounded'
           >
             <div className='mx-auto mt-2 h-[110px] w-[167px] rounded'>
-              <img src={dashboard} alt='dashboard' className='w-full h-full rounded' />
+              <img src={dashboard} alt='dashboard' className='h-full w-full rounded' />
             </div>
           </div>
         </div>
 
-        <div className='flex flex-col mt-3 gap-y-1'>
+        <div className='mt-3 flex flex-col gap-y-1'>
           <div className='flex items-center gap-x-2'>
             {listBackground?.map((item) => (
               <div
@@ -376,7 +376,7 @@ const UpdateBackground = () => {
                   }`}
                 />
                 {item.id === backgroundUnsplash?.id && (
-                  <Check className='absolute w-5 h-5 text-white right-11 top-4' />
+                  <Check className='absolute right-11 top-4 h-5 w-5 text-white' />
                 )}
               </div>
             ))}
@@ -393,7 +393,7 @@ const UpdateBackground = () => {
                 className={`relative h-[45px] w-[76px] cursor-pointer rounded transition-all hover:brightness-125`}
               >
                 {item.color === background && (
-                  <Check className='absolute w-4 h-4 text-white right-7 top-3' />
+                  <Check className='absolute right-7 top-3 h-4 w-4 text-white' />
                 )}
               </div>
             ))}
@@ -417,7 +417,7 @@ const UpdateBackground = () => {
                     height: '45px',
                   }}
                 >
-                  <Ellipsis className='w-5 h-5 ' />
+                  <Ellipsis className='h-5 w-5 ' />
                 </Button>
               </Popover>
             </Tooltip>
@@ -426,7 +426,7 @@ const UpdateBackground = () => {
         <Button
           onClick={handleUpdateBackground}
           type='text'
-          icon={<Save className='w-4 h-4' />}
+          icon={<Save className='h-4 w-4' />}
           style={{
             backgroundColor: btnColor,
             color: '#fff',

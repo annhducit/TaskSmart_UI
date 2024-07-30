@@ -19,4 +19,4 @@ const useGetSQLStructureGenerate = (projectId: string) => {
   return { data, isLoading, refetch };
 };
 
-export default useGetPdf;
+export default useGetSQLStructureGenerate;

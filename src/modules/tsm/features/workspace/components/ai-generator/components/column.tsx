@@ -67,7 +67,7 @@ const ColumnContainerAI = ({ column, cards, updateColumn, deleteColumn, createCa
     <div
       ref={setNodeRef}
       style={style}
-      className='flex max-h-[520px] w-[275px] cursor-move flex-col gap-y-2 rounded-xl bg-white p-2 shadow-lg'
+      className='flex max-h-[480px] w-[275px] cursor-move flex-col gap-y-2 rounded-xl bg-white p-2 shadow-lg'
     >
       <div {...attributes} {...listeners} className='flex items-center justify-between'>
         <div>

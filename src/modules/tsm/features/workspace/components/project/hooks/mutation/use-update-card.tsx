@@ -24,6 +24,7 @@ const useUpdateCard = () => {
     onSuccess() {
       invalidateCard();
       invalidateProject();
+
       toast.success('Card updated successfully');
     },
   });

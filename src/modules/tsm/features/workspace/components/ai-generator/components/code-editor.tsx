@@ -1,33 +1,30 @@
 import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs';
 import 'prismjs/components/prism-sql';
-import './index.css';
 import { useEffect, useState } from 'react';
-import { Button, message, Select, Space, Typography } from 'antd';
+import { App, Button, message, Select, Typography } from 'antd';
 
-/**
- * Import the theme css
- */
-import 'prismjs/themes/prism.css'; // Default theme
-import 'prismjs/themes/prism-tomorrow.css'; // Tomorrow theme
-import 'prismjs/themes/prism-okaidia.css'; // Okaidia theme
-import 'prismjs/themes/prism-solarizedlight.css'; // Solarized Light theme
-import 'prismjs/themes/prism-coy.css'; // Coy theme
-import 'prismjs/themes/prism-twilight.css'; // Twilight theme
-import 'prismjs/themes/prism-dark.css'; // Dark theme
-import 'prismjs/themes/prism-funky.css'; // Funky theme
-import { CheckIcon, FileCode2, Play, Trash } from 'lucide-react';
+import './index.css';
+import 'prismjs/themes/prism.css';
+import 'prismjs/themes/prism-tomorrow.css';
+import 'prismjs/themes/prism-okaidia.css';
+import 'prismjs/themes/prism-solarizedlight.css';
+import 'prismjs/themes/prism-coy.css';
+import 'prismjs/themes/prism-twilight.css';
+import 'prismjs/themes/prism-dark.css';
+import 'prismjs/themes/prism-funky.css';
+
+import { CheckIcon, FileCode2, Play } from 'lucide-react';
 import Tooltip from '@/shared/components/tooltip';
 import { cn } from '@/shared/router/cn';
 import { tsmAxios } from '@/configs/axios';
-import { d } from 'node_modules/@tanstack/react-query-devtools/build/modern/devtools-9h89nHJX';
 
 const SqlEditor = ({
   statement,
   className,
   setStatement,
   disabled,
-  uri
+  uri,
 }: {
   statement: Statement;
   className?: string;
@@ -35,6 +32,8 @@ const SqlEditor = ({
   disabled?: boolean;
   uri?: string;
 }) => {
+  const { modal } = App.useApp();
+
   const [theme, setTheme] = useState<string>('prism');
   const [code, setCode] = useState<string>(statement.statement);
   const [result, setResult] = useState<string>('');
@@ -53,11 +52,15 @@ const SqlEditor = ({
     setCode(statement.statement);
   }, [statement]);
 
-  useEffect(() => {setResult(statement.result || '')}, [statement]);
+  useEffect(() => {
+    setResult(statement.result || '');
+  }, [statement]);
 
   const editorStyle = {
     fontFamily: '"Fira code", "Fira Mono", monospace',
     fontSize: 14,
+    border: '1px solid transparent',
+
     backgroundColor:
       theme === 'prism-tomorrow'
         ? '#2d2d2d'
@@ -88,17 +91,30 @@ const SqlEditor = ({
                   : '#000',
   };
 
-  const runStatement = async () => {
-    try {
-      if (!uri) return;
-      const { data } = await tsmAxios.post<{result: string}>(
-        `/pyhelper/run-statement`,
-        {statement: code, uri},
-      );
-      message.info(data.result);
-    } catch (error) {
-      console.log(error);
-    } 
+  const runStatement = () => {
+    if (modal) {
+      modal.confirm({
+        title: 'Run Statement',
+        content:
+          'Are you sure you want to run this statement? We don’t responsibility for any data loss or damage.',
+
+        okText: 'Yes',
+        cancelText: 'No',
+        onOk: async () => {
+          try {
+            if (!uri) return;
+            const { data } = await tsmAxios.post<{ result: string }>(`/pyhelper/run-statement`, {
+              statement: code,
+              uri,
+            });
+            message.info(data.result);
+          } catch (error) {
+            console.log(error);
+          }
+        },
+        onCancel: () => {},
+      });
+    }
   };
 
   return (
@@ -107,7 +123,12 @@ const SqlEditor = ({
         <Typography.Text className='block'>{statement.title}</Typography.Text>{' '}
         <div className='flex items-center justify-end gap-x-2'>
           <Typography.Text className='block'>Theme</Typography.Text>
-          <Select onChange={handleThemeChange} size='small' className='w-[200px]' defaultValue='prism'>
+          <Select
+            onChange={handleThemeChange}
+            size='small'
+            className='w-[120px]'
+            defaultValue='prism'
+          >
             <Select.Option value='prism'>Default</Select.Option>
             <Select.Option value='prism-tomorrow'>Tomorrow</Select.Option>
             <Select.Option value='prism-okaidia'>Okaidia</Select.Option>
@@ -118,23 +139,26 @@ const SqlEditor = ({
           </Select>
         </div>
       </div>
-      <div className={`${theme} ${className} relative`}>
+      <div className={`${theme} ${className} relative rounded`}>
         <Editor
           value={code}
           onValueChange={setCodeChange}
-          className={`card-ai rounded-lg p-4 h-full`}
+          className={`overflow-hidden rounded p-4`}
           highlight={(code) => highlight(code, languages.sql, 'sql')}
           padding={10}
           style={editorStyle}
           disabled={disabled}
+          textareaClassName='border-none outline-none'
         />
         <div className='absolute right-2 top-2'>
-          { uri && <RunStatementButton onClick={runStatement} /> }
+          {uri && <RunStatementButton onClick={runStatement} />}
           <CopyUrlButton link={code} />
         </div>
       </div>
       {result && (
-        <div><span>Result: {result}</span></div>
+        <div>
+          <span>Result: {result}</span>
+        </div>
       )}
     </div>
   );
@@ -177,8 +201,7 @@ function CopyUrlButton(props: Props) {
   );
 }
 
-function RunStatementButton({ className, onClick }: { className?: string, onClick?: () => void }) {
-
+function RunStatementButton({ className, onClick }: { className?: string; onClick?: () => void }) {
   return (
     <Tooltip title={'Run statement'} className='mr-2'>
       <Button
