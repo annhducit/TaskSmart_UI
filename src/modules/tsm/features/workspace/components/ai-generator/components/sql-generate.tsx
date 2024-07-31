@@ -16,6 +16,7 @@ import { useDatabaseRagURI } from '../hook/mutation/use-database-rag-uri';
 import useSaveDbStructure from '../hook/mutation/use-save-db-structure';
 import useConnectDb from '../hook/mutation/use-connect-db';
 import useUploadSqlFile from '../hook/mutation/use-upload-sql-file';
+import { toast } from 'sonner';
 
 const SQLLanguage = ['MySQL', 'SQLite', 'PostgreSQL', 'Oracle', 'SQLServer'];
 
@@ -71,6 +72,9 @@ const SQLGenerate = () => {
               scrollToResult({ resultDOM });
               setStatements(data.statements);
             },
+            onError: (error) => {
+              toast.error(error.message);
+            },
           }
         );
       } else {
@@ -84,6 +88,10 @@ const SQLGenerate = () => {
             onSuccess: (data) => {
               scrollToResult({ resultDOM });
               setStatements([data]);
+            },
+
+            onError: (error) => {
+              toast.error(error.message);
             },
           }
         );
@@ -103,6 +111,9 @@ const SQLGenerate = () => {
         onSuccess: (data) => {
           setDbStructure({ ...dbStructure, statement: data.schema });
         },
+        onError: (error) => {
+          toast.error(error.message);
+        },
       }
     );
   };
@@ -113,9 +124,12 @@ const SQLGenerate = () => {
       const { data } = await tsmAxios.get<{ statement: string; database: string }>(
         `/projects/${projectId}/generate-structure?database=${SQLSelectGenerate}`
       );
+      console.log(data);
       setDbStructure({ ...dbStructure, statement: data.statement });
     } catch (error) {
-      console.log(error);
+      if (typeof error === 'object' && error !== null && 'response' in error) {
+        toast.error((error as any).response.data.message);
+      }
     } finally {
       setIsGenerateStructure(false);
     }
@@ -139,7 +153,9 @@ const SQLGenerate = () => {
         );
         setDbStructure({ ...dbStructure, statement: data.statement });
       } catch (error) {
-        console.log(error);
+        if (typeof error === 'object' && error !== null && 'response' in error) {
+          toast.error((error as any).response.data.message);
+        }
       }
     };
     getDbStructureAsync();
@@ -159,6 +175,9 @@ const SQLGenerate = () => {
       uploadSqlFile(e, {
         onSuccess: (data) => {
           setDbStructure({ ...dbStructure, statement: data.result });
+        },
+        onError: (error) => {
+          toast.error(error.message);
         },
       });
       return false;

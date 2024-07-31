@@ -22,9 +22,10 @@ const useUpdateEmail = () => {
         invalidateProfile();
         onClose();
         toast.success('Update email success');
-      } else {
-        toast.error('Update email failed');
       }
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 };

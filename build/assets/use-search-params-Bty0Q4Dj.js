@@ -1,0 +1,1 @@
+import{bX as u,r as o}from"./index-bcifMYEQ.js";const S=()=>{const[s,t]=u(),n=o.useCallback(r=>s.get(r),[s]),m=o.useCallback((r,h)=>{t(l=>{const a=new URLSearchParams(l);return Object.entries(r).forEach(([c,e])=>{e==null?a.delete(c):a.set(c,e.toString())}),a},h)},[t]);return{get:n,set:m}};export{S as u};

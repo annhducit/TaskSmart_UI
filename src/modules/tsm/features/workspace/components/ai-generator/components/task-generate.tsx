@@ -1,8 +1,7 @@
-import { App, Button, Input, message, Space } from 'antd';
+import { App, Button, Input, Space } from 'antd';
 import { useMemo, useState } from 'react';
 import { tsmAxios } from '@/configs/axios';
 import useGetProject from '../../project/hooks/query/use-get-project';
-import { AxiosError } from 'axios';
 import {
   DndContext,
   DragEndEvent,
@@ -27,6 +26,7 @@ import blink from '@/assets/images/blink.png';
 import LoadingSkeletonHome from '@/shared/components/skeleton/loading-skeleton-task';
 import ModalAnnouncement from './modal-announcement';
 import { useSelector } from '@/store';
+import { toast } from 'sonner';
 const TaskGenerate = () => {
   const [taskGenerate, setTaskGenerate] = useState<TasksGenerate>({ listCards: [] });
   const { data: project } = useGetProject();
@@ -47,21 +47,17 @@ const TaskGenerate = () => {
     }
 
     const generateAsync = async () => {
-      setLoading(true);
       try {
         const res = await tsmAxios.get(`/projects/${project?.id}/generate-task`);
         if (res.status >= 200 && res.status < 300) {
+          setLoading(true);
           setTaskGenerate(res.data as TasksGenerate);
           setLoading(false);
         }
       } catch (error) {
         setLoading(false);
-        const errorAxios = error as AxiosError;
-        if (errorAxios.response?.status == 404) {
-          const data = errorAxios.response?.data as TsmError;
-          message.error(data.message);
-        } else {
-          return;
+        if (typeof error === 'object' && error !== null && 'response' in error) {
+          toast.error((error as any).response.data.message || 'An error occurred');
         }
       }
     };

@@ -14,7 +14,7 @@ const useSaveDbStructure = () => {
   return useMutation({
     mutationFn: saveDbStructure,
     onSuccess: () => {
-      toast.success('Save db structure success');
+      toast.success('Save DB structure success');
     },
   });
 };

@@ -36,6 +36,9 @@ const useUpdateItemChecked = () => {
       invalidateCard();
       toast.success('Checklist item updated successfully');
     },
+    onError: (error) => {
+      toast.error(error.message);
+    },
   });
 };
 

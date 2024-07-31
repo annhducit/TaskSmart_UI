@@ -26,8 +26,8 @@ export const useUploadProfileImage = () => {
       onClose();
       toast.success('Upload image success');
     },
-    onError: (_error) => {
-      toast.error('Upload image failed');
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 };

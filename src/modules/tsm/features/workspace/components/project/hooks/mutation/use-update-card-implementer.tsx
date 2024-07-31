@@ -29,6 +29,9 @@ const useUpdateCardImplementer = () => {
       invalidateCard();
       invalidateProject();
     },
+    onError: (error) => {
+      toast.error(error.message);
+    },
   });
 };
 

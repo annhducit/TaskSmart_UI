@@ -74,7 +74,7 @@ const Workspace = () => {
   return (
     <div className='mb-10 flex flex-col gap-y-2'>
       <Typography.Title level={3}>Recent viewed</Typography.Title>
-      <div className='grid grid-cols-4 gap-6'>
+      <div className='grid grid-cols-4 gap-4'>
         {recentActivities?.map((item) => (
           <ProjectItem key={item.id} project={item} type='RECENT' recent={item.lastAccessed} />
         ))}
@@ -82,7 +82,7 @@ const Workspace = () => {
       <Divider className='my-[4px]' />
       <Typography.Title level={3}>Your workspace</Typography.Title>
       <div className='grid grid-cols-4 gap-x-6'>
-        <div className='col-span-1 h-[330px] overflow-y-scroll'>
+        <div className='col-span-1 h-[calc(100vh-200px)] overflow-y-scroll'>
           <Menu
             mode='inline'
             onClick={onClick}
@@ -101,7 +101,7 @@ const Workspace = () => {
             </div>
           </div>
         ) : (
-          <div className='col-span-3 h-[calc(100vh-350px)] overflow-y-scroll'>
+          <div className='col-span-3 h-[calc(100vh-200px)] overflow-y-scroll'>
             <Typography.Title level={4}>All projects</Typography.Title>
             <div className='grid grid-cols-2 gap-4'>
               {profile?.projects.map((item) => <ProjectItem key={item.id} project={item} />)}

@@ -3,11 +3,11 @@ import { Check, Ellipsis } from 'lucide-react';
 import { useState } from 'react';
 
 import dashboard from '@/assets/svgs/dashboard.svg';
-import { useSelector } from '@/store';
 import useCreateProject from '../project/hooks/mutation/use-create-project';
 import useGetBackground from '../../hooks/query/use-get-background';
 import { listColor } from '@/shared/data';
 import SubBackgroundModal from './sub-background';
+import useGetWorkspaces from '../../hooks/query/use-get-workspaces';
 
 /**
  * @description Project background component
@@ -32,8 +32,7 @@ const BackgroundReview = () => {
   const [form] = Form.useForm<TSMProjectRequest>();
   const { mutate: createProject, isPending } = useCreateProject();
 
-  const userAuthenticated = useSelector((state) => state.user.data);
-  const userWorkspaces = [userAuthenticated.personalWorkSpace, ...userAuthenticated.workspaces];
+  const { data: workspaces } = useGetWorkspaces();
 
   const handleChangeBackground = (value: UnsplashResponse) => {
     setBackgroundUnsplash(value);
@@ -161,7 +160,7 @@ const BackgroundReview = () => {
           <Select
             className='w-full'
             allowClear
-            options={userWorkspaces.map((item) => ({ value: item.id, label: item.name }))}
+            options={workspaces?.map((item) => ({ value: item.id, label: item.name }))}
           />
         </Form.Item>
       </div>

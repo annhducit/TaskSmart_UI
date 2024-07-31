@@ -1,0 +1,2 @@
+const __vite__fileDeps=["assets/landing-page-CV3W_LEq.js","assets/index-bcifMYEQ.js","assets/index-i_XtQaoV.css","assets/arrow-right-BonmXGU5.js"],__vite__mapDeps=i=>i.map(i=>__vite__fileDeps[i]);
+import{r as e,_ as t,e as s,f as r,j as a}from"./index-bcifMYEQ.js";const o=e.lazy(()=>t(()=>import("./landing-page-CV3W_LEq.js"),__vite__mapDeps([0,1,2,3]))),n=s([{index:!0,element:a.jsx(o,{})}]),i=()=>r(n);export{i as default};

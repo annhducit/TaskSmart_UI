@@ -23,6 +23,9 @@ const useUpdateListCard = () => {
         toast.error('Failed to update list card');
       }
     },
+    onError: (error) => {
+      toast.error(error.message);
+    },
   });
 };
 export default useUpdateListCard;

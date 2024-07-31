@@ -27,6 +27,9 @@ const useUpdateCard = () => {
 
       toast.success('Card updated successfully');
     },
+    onError: (error) => {
+      toast.error(error.message);
+    },
   });
 };
 

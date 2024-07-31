@@ -28,9 +28,10 @@ const useUpdateBackground = () => {
         toast.success('Background updated successfully');
         invalidateProject();
         onClose();
-      } else {
-        toast.error('Failed to update background');
       }
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 };

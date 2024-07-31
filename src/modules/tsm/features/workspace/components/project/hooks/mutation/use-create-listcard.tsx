@@ -22,9 +22,10 @@ const useCreateListCard = () => {
       if (isStatusCodeValid(data.status)) {
         toast.success('List card created successfully');
         invalideProject();
-      } else {
-        toast.error('Failed to create list card');
       }
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 };

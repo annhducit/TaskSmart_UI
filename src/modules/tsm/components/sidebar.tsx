@@ -1,15 +1,7 @@
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Button, Menu, Typography } from 'antd';
-import {
-  FolderKanban,
-  Home,
-  LayoutTemplate,
-  Mail,
-  Rocket,
-  SquarePlus,
-  SwatchBook,
-} from 'lucide-react';
+import { FolderKanban, Home, LayoutTemplate, Rocket, SquarePlus } from 'lucide-react';
 
 import Tooltip from '../../../shared/components/tooltip';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +14,7 @@ import useGetCategories from '@/modules/tsm/components/hooks/use-get-categories'
 import useGetPath from '../../../shared/hooks/use-get-path';
 import { useSelector } from '@/store';
 import { listColor } from '@/shared/data';
+import useGetWorkspaces from '../features/workspace/hooks/query/use-get-workspaces';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -71,6 +64,8 @@ const Sidebar = ({
   const { data: categories } = useGetCategories();
 
   const { data } = useGetProfile();
+  const { data: workspaces } = useGetWorkspaces();
+
   const { path } = useGetPath();
 
   const isProject = path.includes('project');
@@ -156,7 +151,7 @@ const Sidebar = ({
       key: 'workspace',
       label: 'Team Workspace',
       icon: <Rocket className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
-      children: data?.workspaces?.map((workspace) => ({
+      children: workspaces?.map((workspace) => ({
         key: workspace.id,
         label: workspace.name,
         icon: <FolderKanban className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,

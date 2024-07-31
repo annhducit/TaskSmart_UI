@@ -19,6 +19,9 @@ const useEditNote = () => {
         invalidateNote();
       }
     },
+    onError: (error) => {
+      toast.error(error.message);
+    },
   });
 };
 

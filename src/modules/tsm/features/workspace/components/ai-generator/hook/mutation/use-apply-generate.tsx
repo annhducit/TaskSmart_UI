@@ -26,9 +26,10 @@ const useApplyGenerate = () => {
         invalidateProject();
 
         window.location.replace(`tsm/project/${projectId}?view=project`);
-      } else {
-        toast.error('Failed to create card');
       }
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 };

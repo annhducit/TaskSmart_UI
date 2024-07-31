@@ -18,10 +18,10 @@ const useEditWorkspace = () => {
     onSuccess(data) {
       if (isStatusCodeValid(data.status)) {
         toast.success('Workspace updated successfully');
-      } else {
-        toast.error('Failed to update workspace');
-        //  Add query invalidation here
       }
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 };

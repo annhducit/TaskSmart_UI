@@ -24,6 +24,9 @@ const useCreateChecklistItem = () => {
       invalidateCard();
       toast.success('Checklist group deleted successfully');
     },
+    onError: (error) => {
+      toast.error(error.message);
+    },
   });
 };
 

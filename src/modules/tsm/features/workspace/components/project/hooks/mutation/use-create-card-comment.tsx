@@ -21,6 +21,9 @@ const useCreateCardComment = () => {
       invalidateCard();
       toast.success('Comment created successfully');
     },
+    onError: (error) => {
+      toast.error(error.message);
+    },
   });
 };
 

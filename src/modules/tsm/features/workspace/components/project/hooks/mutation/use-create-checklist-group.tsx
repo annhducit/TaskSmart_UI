@@ -23,6 +23,9 @@ const useCreateCheckListGroup = () => {
       invalidateCard();
       toast.success('Checklist group created successfully');
     },
+    onError: (error) => {
+      toast.error(error.message);
+    },
   });
 };
 

@@ -15,9 +15,10 @@ export function useVerifyEmail() {
     onSuccess: (data) => {
       if (data.status === 201) {
         toast.success('Email verified successfully');
-      } else {
-        toast.error('Email verification failed');
       }
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 }

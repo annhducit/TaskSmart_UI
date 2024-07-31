@@ -22,8 +22,8 @@ const useUpdateProfile = () => {
         invalidateProfile();
       }
     },
-    onError: () => {
-      toast.error('Username already exists');
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 };
