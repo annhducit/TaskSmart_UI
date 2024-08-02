@@ -161,11 +161,16 @@ function renderEventContent(eventContent: EventContentArg) {
             }
           />
         </Tooltip>
-        <div className='item-center flex gap-x-2'>
-          <Typography.Text className='text-left text-xs font-semibold' style={{ color: textColor }}>
-            {eventContent.event.title}
-          </Typography.Text>
-        </div>
+        <Tooltip title={eventContent.event.title}>
+          <div className='item-center flex gap-x-2'>
+            <Typography.Text
+              className='w-[130px] truncate text-left text-xs font-semibold'
+              style={{ color: textColor }}
+            >
+              {eventContent.event.title}
+            </Typography.Text>
+          </div>
+        </Tooltip>
       </div>
     </>
   );

@@ -79,7 +79,6 @@ const TemplateDetail = ({ context = 'USER' }: { context?: Context }) => {
         <div className='mb-6 flex items-center gap-x-4'>
           <span className='h-7 w-[6px] bg-primary-default'></span>
           <Typography.Text className='block text-lg font-semibold'>
-            {' '}
             About this template
           </Typography.Text>
         </div>

@@ -8,6 +8,8 @@ import useGetBackground from '../../hooks/query/use-get-background';
 import { listColor } from '@/shared/data';
 import SubBackgroundModal from './sub-background';
 import useGetWorkspaces from '../../hooks/query/use-get-workspaces';
+import useGetProject from '../project/hooks/query/use-get-project';
+import useGetProfile from '@/modules/tsm/components/hooks/use-profile';
 
 /**
  * @description Project background component
@@ -33,6 +35,8 @@ const BackgroundReview = () => {
   const { mutate: createProject, isPending } = useCreateProject();
 
   const { data: workspaces } = useGetWorkspaces();
+  const { data: project } = useGetProject();
+  const { data: profile } = useGetProfile();
 
   const handleChangeBackground = (value: UnsplashResponse) => {
     setBackgroundUnsplash(value);
@@ -161,6 +165,9 @@ const BackgroundReview = () => {
             className='w-full'
             allowClear
             options={workspaces?.map((item) => ({ value: item.id, label: item.name }))}
+            defaultValue={
+              project?.workspace.id ? project.workspace.id : profile?.personalWorkSpace.id
+            }
           />
         </Form.Item>
       </div>

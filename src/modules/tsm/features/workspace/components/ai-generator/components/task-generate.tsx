@@ -48,9 +48,9 @@ const TaskGenerate = () => {
 
     const generateAsync = async () => {
       try {
+        setLoading(true);
         const res = await tsmAxios.get(`/projects/${project?.id}/generate-task`);
         if (res.status >= 200 && res.status < 300) {
-          setLoading(true);
           setTaskGenerate(res.data as TasksGenerate);
           setLoading(false);
         }

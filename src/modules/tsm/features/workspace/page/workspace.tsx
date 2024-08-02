@@ -33,7 +33,7 @@ const Workspace = () => {
   const { data: workspaces } = useGetWorkspaces();
   const { data: workspace, isPending } = useGetWorkspace();
   const { data: profile } = useGetProfile();
-  const { data: recentActivities } = useGetRecentActivity();
+  const { data: recentActivities, isLoading } = useGetRecentActivity();
 
   const items: MenuItem[] = [
     {
@@ -78,6 +78,7 @@ const Workspace = () => {
         {recentActivities?.map((item) => (
           <ProjectItem key={item.id} project={item} type='RECENT' recent={item.lastAccessed} />
         ))}
+        {isLoading && <Spin />}
       </div>
       <Divider className='my-[4px]' />
       <Typography.Title level={3}>Your workspace</Typography.Title>

@@ -15,7 +15,6 @@ import {
   Settings,
   Ellipsis,
   FolderKanban,
-  PanelsTopLeft,
   Search,
   User,
   UserPlus,
@@ -33,7 +32,6 @@ const ProjectFeature = lazy(() => import('../tsm/features/workspace/components/p
 const CalendarFeature = lazy(
   () => import('../tsm/features/workspace/components//calendar-timeline')
 );
-const OverviewFeature = lazy(() => import('../tsm/features/workspace/components//overview'));
 const SettingFeature = lazy(() => import('../tsm/features/workspace/components/settings'));
 /**
  *
@@ -224,12 +222,12 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
 };
 
 const items: TabsProps['items'] = [
-  {
-    key: 'overview',
-    label: 'Overview',
-    icon: <PanelsTopLeft size='15' className='translate-x-[6px] translate-y-[2px]' />,
-    children: <OverviewFeature />,
-  },
+  // {
+  //   key: 'overview',
+  //   label: 'Overview',
+  //   icon: <PanelsTopLeft size='15' className='translate-x-[6px] translate-y-[2px]' />,
+  //   children: <OverviewFeature />,
+  // },
   {
     key: 'project',
     label: 'Project',
@@ -255,7 +253,7 @@ const items: TabsProps['items'] = [
   },
   {
     key: 'setting',
-    label: 'Setting',
+    label: 'Settings',
     icon: <Settings size='15' className='translate-x-[6px] translate-y-[2px]' />,
     children: <SettingFeature />,
   },
