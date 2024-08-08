@@ -223,7 +223,7 @@ const ProjectContent = () => {
   useEffect(() => {
     const listCardIterator: Card[] = [];
     template?.project.listCards.forEach((listCard) => {
-      listCard.cards.forEach((card) => {
+      listCard?.cards?.forEach((card) => {
         listCardIterator.push({ ...card, listCardId: listCard.id });
       });
     });

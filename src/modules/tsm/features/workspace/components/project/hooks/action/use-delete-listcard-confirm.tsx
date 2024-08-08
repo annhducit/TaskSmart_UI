@@ -9,7 +9,7 @@ export default function useRemoveListCardConfirm() {
   const handleDeleteItem = async (itemId: string) => {
     const instance = modal.confirm({
       title: 'Remove List Card',
-      content: 'Are you sure you want to remove this this card?',
+      content: 'Are you sure you want to remove this this list scard?',
       cancelText: 'Cancel',
       okText: 'Remove',
       okType: 'danger',

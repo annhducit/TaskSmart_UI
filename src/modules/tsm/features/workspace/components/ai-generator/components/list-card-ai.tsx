@@ -96,7 +96,7 @@ const ListCardAI = ({ listCard }: { listCard: Partial<ListCard> }) => {
             Add Card
           </Button>
         </Popover>
-        <Tooltip title='Remove card'>
+        <Tooltip title='Remove list card'>
           <div className='cursor-pointer rounded px-1 transition-all hover:bg-[#091E4224]'>
             <Trash2
               //   onClick={

@@ -34,6 +34,7 @@ import {
   EyeOff,
   Minus,
   ChevronDown,
+  Trash2,
 } from 'lucide-react';
 import Activity from './activity';
 import CommentCard from './comment';
@@ -49,6 +50,7 @@ import useUpdateCardImplementer from '../hooks/mutation/use-update-card-implemen
 import dayjs from 'dayjs';
 import { getTextColor } from '@/utils/customText';
 import { Badge } from '@/shared/components/badge';
+import useRemoveListCardConfirm from '../hooks/action/use-delete-card-confirm';
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
 const ModifyCard = ({ members }: { members: UserRelation[] }) => {
@@ -157,10 +159,27 @@ const ModifyCardModal = ({ members }: { members: UserRelation[] }) => {
     },
   ];
 
+  const deleteCard = useRemoveListCardConfirm();
   const textColor = getTextColor(card?.color as string);
   return (
     <>
+    <div className='relative'>
       <Dialog.CloseButton onClose={handleClose} color={textColor} />
+      <Tooltip title='Remove card'>
+              <div className='cursor-pointer absolute right-14 top-6 rounded px-1 transition-all hover:bg-[#091E4224]'>
+                <Trash2
+                  onClick={
+                  
+                   () =>
+                      deleteCard(card?.id as string)
+                   
+                  }
+                  className='w-4 h-4 mt-1'
+                  color='red'
+                />
+              </div>
+            </Tooltip>
+      </div>
 
       <div className='w-[auto]'>
         <div
@@ -262,7 +281,7 @@ const OverviewCardTab = ({
     <div className='flex min-h-[400px] w-full flex-col justify-between pb-5'>
       <div className='flex-col px-0 py-0'>
         <div className='flex items-center justify-between gap-x-1'>
-          <div className='mt-1 flex flex-col gap-y-3'>
+          <div className='flex flex-col mt-1 gap-y-3'>
             <Typography.Text className='text-xs font-semibold'>Status</Typography.Text>
             <Dropdown
               placement='bottom'
@@ -276,12 +295,12 @@ const OverviewCardTab = ({
             >
               <Space className='gap-x-10' size='large'>
                 {getLabel(card.status, EStatusArray)}
-                <ChevronDown className='mt-1 h-4 w-4 opacity-40' />
+                <ChevronDown className='w-4 h-4 mt-1 opacity-40' />
               </Space>
             </Dropdown>
           </div>
 
-          <div className='mt-1 flex flex-col gap-y-3'>
+          <div className='flex flex-col mt-1 gap-y-3'>
             <Typography.Text className='text-xs font-semibold'>Priority</Typography.Text>
             <Dropdown
               placement='bottom'
@@ -295,12 +314,12 @@ const OverviewCardTab = ({
             >
               <Space className='gap-x-10' size='large'>
                 {getLabel(card.priority, ELevelArray)}
-                <ChevronDown className='mt-1 h-4 w-4 opacity-40' />
+                <ChevronDown className='w-4 h-4 mt-1 opacity-40' />
               </Space>
             </Dropdown>
           </div>
 
-          <div className='mt-1 flex flex-col gap-y-3'>
+          <div className='flex flex-col mt-1 gap-y-3'>
             <Typography.Text className='text-xs font-semibold'>Risk</Typography.Text>
             <Dropdown
               placement='bottom'
@@ -314,12 +333,12 @@ const OverviewCardTab = ({
             >
               <Space className='gap-x-10' size='large'>
                 {getLabel(card.risk, ELevelArray)}
-                <ChevronDown className='mt-1 h-4 w-4 opacity-40' />
+                <ChevronDown className='w-4 h-4 mt-1 opacity-40' />
               </Space>
             </Dropdown>
           </div>
 
-          <div className='mt-1 flex flex-col gap-y-3'>
+          <div className='flex flex-col mt-1 gap-y-3'>
             <Typography.Text className='text-xs font-semibold'>Effort</Typography.Text>
             <Dropdown
               placement='bottom'
@@ -333,12 +352,12 @@ const OverviewCardTab = ({
             >
               <Space className='gap-x-10' size='large'>
                 {getLabel(card.effort, ELevelArray)}
-                <ChevronDown className='mt-1 h-4 w-4 opacity-40' />
+                <ChevronDown className='w-4 h-4 mt-1 opacity-40' />
               </Space>
             </Dropdown>
           </div>
         </div>
-        <div className='mt-4 flex items-center justify-start gap-x-4'>
+        <div className='flex items-center justify-start mt-4 gap-x-4'>
           <div className='flex flex-col gap-y-1'>
             <Typography.Text className='text-xs font-semibold'>Start time</Typography.Text>
             <DatePicker
@@ -465,7 +484,7 @@ const AttachmentTab = (props: { card: Card; color: string }) => {
 
   return (
     <div className='flex min-h-[400px] w-full flex-col px-0 py-0'>
-      <div className='mt-6 w-full'>
+      <div className='w-full mt-6'>
         <div className='flex items-center justify-center'>
           <Upload multiple {...uploadProp}>
             <Button icon={<UploadIcon />}>Upload</Button>
@@ -485,10 +504,10 @@ const ActivityTab = () => {
       <div className='flex flex-col gap-y-4'>
         <div className='flex items-center justify-between'>
           <div className='flex items-center gap-x-4'>
-            <List className='mt-1 h-5 w-5 opacity-40' />
+            <List className='w-5 h-5 mt-1 opacity-40' />
             <Typography.Text className='text-base font-semibold'>Recent activities</Typography.Text>
           </div>
-          <Button icon={<EyeOff className='mt-1 h-3 w-3' />} className='w-[90px]' type='default'>
+          <Button icon={<EyeOff className='w-3 h-3 mt-1' />} className='w-[90px]' type='default'>
             Hide
           </Button>
         </div>
@@ -515,7 +534,7 @@ const AttachmentFile = ({ data }: { data: Attachment[] }) => {
           allowClear
           type='text'
           defaultValue={text}
-          className='h-7 w-full cursor-pointer rounded-xl border-none px-3 text-base font-bold transition-all'
+          className='w-full px-3 text-base font-bold transition-all border-none cursor-pointer h-7 rounded-xl'
         />
       ),
     },
@@ -528,7 +547,7 @@ const AttachmentFile = ({ data }: { data: Attachment[] }) => {
           allowClear
           type='text'
           defaultValue={text}
-          className='h-7 w-full cursor-pointer rounded-xl border-none px-3 text-sm font-bold transition-all'
+          className='w-full px-3 text-sm font-bold transition-all border-none cursor-pointer h-7 rounded-xl'
         />
       ),
     },
@@ -537,7 +556,7 @@ const AttachmentFile = ({ data }: { data: Attachment[] }) => {
       key: 'action',
       width: 100,
       render: (_, record) => (
-        <Space className='flex w-full justify-end'>
+        <Space className='flex justify-end w-full'>
           <Eye
             className={`${record.type !== 'image' ? 'invisible' : ''} h-3 w-3`}
             onClick={() =>
@@ -547,15 +566,15 @@ const AttachmentFile = ({ data }: { data: Attachment[] }) => {
               })
             }
           />
-          <Download className='h-3 w-3' />
-          <Trash className='h-3 w-3' />
+          <Download className='w-3 h-3' />
+          <Trash className='w-3 h-3' />
         </Space>
       ),
     },
   ];
 
   return (
-    <div className='mt-2 flex w-full gap-y-1'>
+    <div className='flex w-full mt-2 gap-y-1'>
       {/* Table of file */}
       <ConfigProvider
         theme={{
@@ -618,7 +637,7 @@ const ColorAndMembers = ({
   };
 
   return (
-    <div className='flex items-center justify-end gap-x-6 py-1'>
+    <div className='flex items-center justify-end py-1 gap-x-6'>
       <div className='flex gap-y-1'>
         <Typography.Text className='mr-1 text-sm font-semibold'>Color:</Typography.Text>
         <ColorPicker
@@ -690,7 +709,7 @@ const MemberInviteCard = ({
   }, [impls]);
 
   return (
-    <div className='flex flex-col gap-y-1 rounded-none p-0'>
+    <div className='flex flex-col p-0 rounded-none gap-y-1'>
       <span>Implementers:</span>
       {impls.map((member) => (
         <div
@@ -709,7 +728,7 @@ const MemberInviteCard = ({
               onClick={() => {
                 setImpls((prev) => prev.filter((impl) => impl.userId !== member.userId));
               }}
-              className='h-3 w-3 cursor-pointer hover:h-4 hover:w-4'
+              className='w-3 h-3 cursor-pointer hover:h-4 hover:w-4'
             ></Minus>
           </div>
         </div>
@@ -732,7 +751,7 @@ const MemberInviteCard = ({
               onClick={() => {
                 setImpls((prev) => [...prev, member]);
               }}
-              className='h-3 w-3 cursor-pointer hover:h-4 hover:w-4'
+              className='w-3 h-3 cursor-pointer hover:h-4 hover:w-4'
             ></Plus>
           </div>
         </div>

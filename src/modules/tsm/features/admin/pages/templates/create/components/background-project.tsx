@@ -19,7 +19,7 @@ const BackgroundProject = ({
     const fetchBackground = async () => {
       try {
         const { data } = await tsmAxios.get<UnsplashResponse[]>(
-          'unsplash/photos?page=1&per_page=6'
+          'unsplash/photos?page=1&per_page=5'
         );
         setListBackground(data);
       } catch (error) {
@@ -31,7 +31,7 @@ const BackgroundProject = ({
 
   const fetchBackgroundWithoutQuery = async () => {
     try {
-      const response = await tsmAxios.get<UnsplashResponse[]>('unsplash/photos?page=1&per_page=6');
+      const response = await tsmAxios.get<UnsplashResponse[]>('unsplash/photos?page=1&per_page=5');
       setListBackground((res) => [...res, ...response.data]);
     } catch (error) {
       console.log(error);
@@ -41,7 +41,7 @@ const BackgroundProject = ({
   const fetchBackground = async (query: string) => {
     try {
       const response = await tsmAxios.get<UnsplashResponse[]>(
-        `unsplash/photos?query=${query}&page=${page}&per_page=6`
+        `unsplash/photos?query=${query}&page=${page}&per_page=5`
       );
       if (page === 1) setListBackground(response.data);
       else setListBackground((res) => [...res, ...response.data]);
@@ -83,7 +83,7 @@ const BackgroundProject = ({
     setBackgroundImage(backgroundUnsplash.urls.regular);
     setTemplate((prev) => ({
       ...prev,
-      imageUnsplashId: 'wrsa2XI8OhM',
+      imageUnsplashId: backgroundUnsplash.id,
       project: {
         ...prev.project,
         background: backgroundUnsplash.id,
@@ -116,16 +116,16 @@ const BackgroundProject = ({
         </Form>
 
         <List
-          className='w-full'
+          className='w-full '
           grid={{
             gutter: 16,
-            column: 6,
+            column: 5,
           }}
           loadMore={loadMore}
           dataSource={listBackground}
           renderItem={(item) => (
             <div
-              className='relative h-52 w-full cursor-pointer hover:brightness-125'
+              className='relative h-[100px] w-full px-3 mb-3 cursor-pointer hover:brightness-125'
               onClick={() => setBackground(item)}
             >
               <img
