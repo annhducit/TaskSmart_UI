@@ -96,10 +96,10 @@ const TaskGenerate = () => {
 
   return (
     <>
-      <div className='flex flex-col min-h-screen px-6'>
+      <div className='flex min-h-screen flex-col px-6'>
         {taskGenerate.listCards.length > 0 ? (
           <div>
-            <div className='flex items-start justify-start gap-x-3'>
+            <div className='flex items-start justify-start gap-x-3 overflow-x-scroll'>
               <TaskGenerateHandler taskGenerate={taskGenerate} setTaskGenerate={setTaskGenerate} />
             </div>
           </div>
@@ -108,11 +108,11 @@ const TaskGenerate = () => {
             {!loading && (
               <button
                 onClick={generateTask}
-                className='relative border-none cursor-pointer btn-generate-ai'
+                className='btn-generate-ai relative cursor-pointer border-none'
               >
                 Generate Task
                 <span className='absolute left-4 top-3'>
-                  <img src={blink} className='w-5 h-5' />
+                  <img src={blink} className='h-5 w-5' />
                 </span>
               </button>
             )}
@@ -121,12 +121,12 @@ const TaskGenerate = () => {
         )}
 
         {taskGenerate.listCards.length > 0 && (
-          <div className='flex items-center justify-end float-right w-full mt-2'>
+          <div className='float-right mt-2 flex w-full items-center justify-end'>
             <Space>
               <Button
                 type='default'
-                className='flex items-center text-white rounded'
-                icon={<Save className='w-4 h-4' />}
+                className='flex items-center rounded text-white'
+                icon={<Save className='h-4 w-4' />}
                 style={{ backgroundColor: btnColor }}
                 loading={isPending}
                 onClick={saveListCardToProject}
@@ -219,7 +219,7 @@ const TaskGenerateHandler = ({
   const deleteCard = (id: string) => {
     setCards((prev) => prev.filter((card) => card.id !== id));
     migrateListCard(cards.filter((card) => card.id !== id));
-  }
+  };
 
   const setColumnsMoved = (columns: ListCardGenerate[]) => {
     setColumns(columns);
@@ -262,21 +262,21 @@ const TaskGenerateHandler = ({
                   placeholder='Enter list title'
                   allowClear
                   size='large'
-                  className='text-sm font-semibold rounded '
+                  className='rounded text-sm font-semibold '
                   value={listCard.name}
                   onChange={(e) => {
                     setListCard((prev) => ({ ...prev, name: e.target.value }));
                   }}
                 />
-                <div className='flex items-center ml-auto gap-x-2'>
+                <div className='ml-auto flex items-center gap-x-2'>
                   <Button
                     onClick={handleAddListCard}
                     type='primary'
-                    className='text-xs font-semibold rounded '
+                    className='rounded text-xs font-semibold '
                   >
                     Add list
                   </Button>
-                  <Button type='default' className='w-16 text-xs font-semibold rounded'>
+                  <Button type='default' className='w-16 rounded text-xs font-semibold'>
                     Cancel
                   </Button>
                 </div>
@@ -284,7 +284,7 @@ const TaskGenerateHandler = ({
             }
           >
             <Button
-              icon={<Plus className='w-4 h-4 opacity-65' />}
+              icon={<Plus className='h-4 w-4 opacity-65' />}
               size='large'
               className='flex w-[275px] items-center rounded-xl border-none bg-[#ffffff3d] text-sm font-semibold text-white'
             >
@@ -301,12 +301,14 @@ const TaskGenerateHandler = ({
               cards={cards.filter((card) => card.listCardId === activeColumn.id)}
             />
           )}
-          {activeTask && <TaskCardAI card={activeTask} deleteTask={
-            () => {
-              deleteCard(activeTask.id);
-              
-            }
-          } />}
+          {activeTask && (
+            <TaskCardAI
+              card={activeTask}
+              deleteTask={() => {
+                deleteCard(activeTask.id);
+              }}
+            />
+          )}
         </DragOverlay>,
         document.body
       )}

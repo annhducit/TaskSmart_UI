@@ -106,6 +106,40 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
   const handleOpenChange = (open: boolean) => {
     setVisible(open);
   };
+
+  const items: TabsProps['items'] = [
+    {
+      key: 'project',
+      label: 'Project',
+      icon: <FolderKanban size='15' className='translate-x-[6px] translate-y-[2px]' />,
+      children: <ProjectFeature />,
+      className: 'overflow-x-scroll overflow-y-hidden h-[calc(100vh-140px)] ',
+    },
+    {
+      key: 'calendar',
+      label: 'Calendar',
+      icon: <CalendarDays size='15' className='translate-x-[6px] translate-y-[2px]' />,
+      children: <CalendarFeature />,
+    },
+    {
+      key: 'ai-generator',
+      label: (
+        <Typography.Text className='bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text text-transparent'>
+          AI Generator
+        </Typography.Text>
+      ),
+
+      icon: <BrainCircuit size='15' className='translate-x-[6px] translate-y-[2px]' />,
+      children: <AIGenerator />,
+    },
+    {
+      key: 'setting',
+      label: 'Settings',
+      icon: <Settings size='15' className='translate-x-[6px] translate-y-[2px]' />,
+      children: <SettingFeature />,
+    },
+  ];
+
   const tabList = items?.map((item) => ({
     ...item,
     children: item.children ? (
@@ -220,41 +254,3 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
     </>
   );
 };
-
-const items: TabsProps['items'] = [
-  // {
-  //   key: 'overview',
-  //   label: 'Overview',
-  //   icon: <PanelsTopLeft size='15' className='translate-x-[6px] translate-y-[2px]' />,
-  //   children: <OverviewFeature />,
-  // },
-  {
-    key: 'project',
-    label: 'Project',
-    icon: <FolderKanban size='15' className='translate-x-[6px] translate-y-[2px]' />,
-    children: <ProjectFeature />,
-  },
-  {
-    key: 'calendar',
-    label: 'Calendar',
-    icon: <CalendarDays size='15' className='translate-x-[6px] translate-y-[2px]' />,
-    children: <CalendarFeature />,
-  },
-  {
-    key: 'ai-generator',
-    label: (
-      <Typography.Text className='bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text text-transparent'>
-        AI Generator
-      </Typography.Text>
-    ),
-
-    icon: <BrainCircuit size='15' className='translate-x-[6px] translate-y-[2px]' />,
-    children: <AIGenerator />,
-  },
-  {
-    key: 'setting',
-    label: 'Settings',
-    icon: <Settings size='15' className='translate-x-[6px] translate-y-[2px]' />,
-    children: <SettingFeature />,
-  },
-];

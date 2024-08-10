@@ -138,8 +138,14 @@ html *::-webkit-scrollbar-track {
   border-radius: 0;
   background-color: rgba(0, 0, 0, 0);
 }
+
 html *::-webkit-scrollbar:horizontal {
-  height: 8px;
+  height: 12px;
+}
+
+html *::-webkit-scrollbar-thumb:horizontal {
+  border-radius: 2px;
+  background-color: #fff6;
 }
 /**
   * Custom Popover Antd
@@ -181,7 +187,7 @@ html *::-webkit-scrollbar:horizontal {
 }
 
 .custom-tabs .ant-tabs-content {
-  @apply overflow-x-scroll;
+  @apply overflow-x-scroll !important;
 }
 
 /**
@@ -395,7 +401,7 @@ Custom CSS for button generate
 }
 
 .fc-day-today .fc-daygrid-day-number {
-  padding: 2px 9px;
+  padding: 2px 6px;
   font-size: small;
   font-weight: 700;
   background-color: #007bff;

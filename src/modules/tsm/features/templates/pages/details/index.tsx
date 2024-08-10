@@ -92,7 +92,7 @@ const TemplateDetail = ({ context = 'USER' }: { context?: Context }) => {
         </Typography.Text>
       </div>
       <section
-        className='relative mx-auto h-[600px] w-[calc(100vw-400px)]  rounded-lg bg-cover bg-center bg-no-repeat'
+        className='relative mx-auto h-[650px] w-[calc(100vw-400px)]  rounded-lg bg-cover bg-center bg-no-repeat'
         style={{
           backgroundPosition: 'center',
           backgroundImage: `url(${template?.image.urls?.full})`,
@@ -109,6 +109,7 @@ const TemplateDetail = ({ context = 'USER' }: { context?: Context }) => {
                   key: 'project',
                   label: 'Project',
                   children: <ProjectContent />,
+                  className: 'overflow-x-scroll overflow-y-hidden h-[calc(100vh-140px)]',
                 },
                 {
                   key: 'Kaban',
@@ -177,13 +178,11 @@ const TemplateDetail = ({ context = 'USER' }: { context?: Context }) => {
       <div className='mb-6 flex items-center gap-x-4'>
         <span className='h-7 w-[6px] bg-primary-default'></span>
         <Typography.Text className='block text-lg font-semibold'>
-          {' '}
           Relative templates
         </Typography.Text>
       </div>
       {isLoading ? (
         <div className='flex items-center justify-center'>
-          {' '}
           <Spin />
         </div>
       ) : (

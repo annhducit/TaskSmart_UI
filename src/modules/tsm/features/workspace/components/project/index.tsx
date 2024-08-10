@@ -120,7 +120,7 @@ const Project = () => {
         {isLoading ? (
           <Loading.Page size='full' />
         ) : (
-          <div className='inline-block min-h-screen px-6 '>
+          <div className='inline-block min-h-screen px-6'>
             <div className='flex items-start gap-x-3'>
               <SortableContext items={columnsId}>
                 {columns.map((col) => (
@@ -144,7 +144,7 @@ const Project = () => {
                       placeholder='Enter list title'
                       allowClear
                       size='large'
-                      className='text-sm font-semibold rounded '
+                      className='rounded text-sm font-semibold '
                       value={listCardCreationName}
                       onChange={(e) => setListCardCreationName(e.target.value)}
                       onPressEnter={() => {
@@ -152,7 +152,7 @@ const Project = () => {
                         setListCardCreationName('');
                       }}
                     />
-                    <div className='flex items-center ml-auto gap-x-2'>
+                    <div className='ml-auto flex items-center gap-x-2'>
                       <Button
                         onClick={() => {
                           createListCard();
@@ -163,13 +163,13 @@ const Project = () => {
                           backgroundColor: btnColor,
                           color: '#fff',
                         }}
-                        className='text-xs font-semibold text-white rounded'
+                        className='rounded text-xs font-semibold text-white'
                       >
                         Add list
                       </Button>
                       <Button
                         type='default'
-                        className='w-16 text-xs font-semibold rounded'
+                        className='w-16 rounded text-xs font-semibold'
                         onClick={() => handleOpenChange(false)}
                       >
                         Cancel
@@ -179,7 +179,7 @@ const Project = () => {
                 }
               >
                 <Button
-                  icon={<Plus className='w-4 h-4 opacity-65' />}
+                  icon={<Plus className='h-4 w-4 opacity-65' />}
                   size='large'
                   className='flex w-[275px] items-center rounded-xl border-none bg-[#ffffff3d] text-sm font-semibold text-white'
                 >

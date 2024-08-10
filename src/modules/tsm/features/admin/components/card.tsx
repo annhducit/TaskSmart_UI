@@ -13,7 +13,7 @@ interface Props {
 }
 
 function TaskCard({ card }: Props) {
-  const searhParams = useSearchParams();
+  const searchParams = useSearchParams();
 
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
     id: card.id,
@@ -48,7 +48,7 @@ function TaskCard({ card }: Props) {
         {...attributes}
         {...listeners}
         onClick={() =>
-          searhParams.set({
+          searchParams.set({
             [SEARCH_PARAMS.DIALOG]: SEARCH_PARAMS_VALUE.CARD,
             [SEARCH_PARAMS.ID]: card.id,
           })
@@ -56,12 +56,12 @@ function TaskCard({ card }: Props) {
         className='flex cursor-pointer flex-col rounded-lg border border-solid border-slate-300 shadow-lg transition-all hover:border-[2px] hover:border-primary-default'
       >
         <div
-          className='h-[115px] w-full rounded-t-[6px]'
+          className='h-[70px]  w-full rounded-t-[6px]'
           style={{
             backgroundColor: `#${defaultCardColor}`,
           }}
         />
-        <div className='flex items-center justify-between p-2 bg-white rounded-b-xl'>
+        <div className='flex items-center justify-between rounded-b-xl bg-white p-2'>
           <div className='flex flex-col gap-y-1'>
             <div className='flex flex-col gap-y-1'>
               <Typography.Text className='w-[140px] truncate text-xs font-semibold'>
@@ -74,12 +74,12 @@ function TaskCard({ card }: Props) {
                   placement='bottom'
                 >
                   <div className='flex items-center rounded-sm  p-1 transition-all hover:bg-[#091E4224]'>
-                    <Text className='w-3 h-3 text-slate-500' />
+                    <Text className='h-3 w-3 text-slate-500' />
                   </div>
                 </Tooltip>
                 <Tooltip color='black' title='Followed' placement='bottom'>
                   <div className='flex items-center rounded-sm p-1 transition-all hover:bg-[#091E4224]'>
-                    <Rss className='w-3 h-3 text-slate-500' />
+                    <Rss className='h-3 w-3 text-slate-500' />
                   </div>
                 </Tooltip>
                 <Tooltip
@@ -89,7 +89,7 @@ function TaskCard({ card }: Props) {
                   placement='bottom'
                 >
                   <div className='flex items-center rounded-sm p-[2px] transition-all hover:bg-[#091E4224]'>
-                    <Paperclip className='w-3 h-3 text-slate-500' />
+                    <Paperclip className='h-3 w-3 text-slate-500' />
                     <Typography.Text className='ml-[1px] text-xs'>3</Typography.Text>
                   </div>
                 </Tooltip>

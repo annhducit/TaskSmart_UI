@@ -86,11 +86,6 @@ const CreateTemplate: React.FC = () => {
     } else {
       next();
     }
-    // form.validateFields().then((values) => {
-    //   setTemplate((prev) => ({ ...prev, ...values }));
-
-    //   next();
-    // });
   };
 
   const steps = [
@@ -135,7 +130,7 @@ const CreateTemplate: React.FC = () => {
             <BackgroundProject setTemplate={setTemplate} setBackgroundImage={setBackground} />
           </div>
           <section
-            className='relative mx-auto my-4 h-[600px]  w-[calc(100vw-400px)] rounded-lg bg-cover bg-center bg-no-repeat'
+            className='relative mx-auto my-4 h-[650px] w-[calc(100vw-400px)] rounded-lg bg-cover bg-center bg-no-repeat'
             style={{
               backgroundPosition: 'center',
               backgroundImage: `url(${background})`,
@@ -152,6 +147,7 @@ const CreateTemplate: React.FC = () => {
                       key: 'project',
                       label: 'Project',
                       children: <CreateContent template={template} setTemplate={setTemplate} />,
+                      className: 'overflow-x-scroll overflow-y-hidden h-[calc(100vh-140px)]',
                     },
                     {
                       key: 'Kaban',
