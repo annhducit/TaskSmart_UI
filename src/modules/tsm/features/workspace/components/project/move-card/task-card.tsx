@@ -64,7 +64,7 @@ function TaskCard({ card }: Props) {
                 backgroundColor: `#${card.color || defaultCardColor}`,
               }}
             />
-            <div className='flex items-center justify-between rounded-b-xl bg-white p-2'>
+            <div className='flex items-center justify-between p-2 bg-white rounded-b-xl'>
               <div className='flex flex-col gap-y-1'>
                 <div className='flex flex-col gap-y-1'>
                   <Typography.Text className='w-[140px] truncate text-xs font-semibold'>
@@ -78,12 +78,12 @@ function TaskCard({ card }: Props) {
                       placement='bottom'
                     >
                       <div className='flex items-center rounded-sm  p-1 transition-all hover:bg-[#091E4224]'>
-                        <Text className='h-3 w-3 text-slate-500' />
+                        <Text className='w-3 h-3 text-slate-500' />
                       </div>
                     </Tooltip>
                     <Tooltip color='black' title='Followed' placement='bottom'>
                       <div className='flex items-center rounded-sm p-1 transition-all hover:bg-[#091E4224]'>
-                        <Rss className='h-3 w-3 text-slate-500' />
+                        <Rss className='w-3 h-3 text-slate-500' />
                       </div>
                     </Tooltip>
                     <Tooltip
@@ -93,7 +93,7 @@ function TaskCard({ card }: Props) {
                       placement='bottom'
                     >
                       <div className='flex items-center rounded-sm p-[2px] transition-all hover:bg-[#091E4224]'>
-                        <Paperclip className='h-3 w-3 text-slate-500' />
+                        <Paperclip className='w-3 h-3 text-slate-500' />
                         <Typography.Text className='ml-[1px] text-xs'>3</Typography.Text>
                       </div>
                     </Tooltip>
@@ -117,10 +117,13 @@ function TaskCard({ card }: Props) {
                 </div>
                 <Tooltip title='Remove card'>
                   <div
-                    onClick={() => removeCard(card.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeCard(card.id);
+                    }}
                     className='flex items-center rounded-sm  p-1 transition-all hover:bg-[#091E4224]'
                   >
-                    <Trash className='h-3 w-3 text-red-500 opacity-70' />
+                    <Trash className='w-3 h-3 text-red-500 opacity-70' />
                   </div>
                 </Tooltip>
               </div>
