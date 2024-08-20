@@ -17,7 +17,7 @@ import dayjs from 'dayjs';
 import { DB_DATE_TIME_FORMAT } from '@/shared/constant/date';
 import useGetProject from '../project/hooks/query/use-get-project';
 import useCreateCard from '../project/hooks/mutation/use-create-card';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { EventContext } from '.';
 
 import { green, presetPalettes, red, gold, blue } from '@ant-design/colors';
@@ -27,6 +27,7 @@ import { Badge } from '@/shared/components/badge';
 const CreateNewEvent = () => {
   const [form] = Form.useForm();
   const { onClose } = useDialogContext();
+  const [color, setColor] = useState<string>('#4096ff');
 
   const event = useContext(EventContext);
 
@@ -45,7 +46,8 @@ const CreateNewEvent = () => {
           startTime: dayjs(event?.start).format(DB_DATE_TIME_FORMAT),
           estimate: value.estimate,
           description: '',
-          color: value.color,
+          color: color,
+          status: value.status,
         },
       },
       {
@@ -86,6 +88,8 @@ const CreateNewEvent = () => {
             <ColorPicker
               defaultValue={'#4096ff'}
               presets={presets}
+              value={color}
+              onChange={(color) => setColor(color.toHexString())}
               panelRender={customPanelRender}
               allowClear
             />
@@ -136,7 +140,6 @@ const CreateNewEvent = () => {
                 label: status.label,
                 value: status.key,
               }))}
-              labelInValue
               defaultValue={{ value: 'none' }}
               allowClear
             />

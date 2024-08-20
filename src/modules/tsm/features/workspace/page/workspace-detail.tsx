@@ -1,5 +1,5 @@
-import { Button, Card, Divider, Form, Input, Select, Spin, Tag, Typography } from 'antd';
-import { LockKeyhole, PlusCircle } from 'lucide-react';
+import { Button, Divider, Form, Input, Select, Spin, Tag, Typography } from 'antd';
+import { LockKeyhole, PlusCircle, Share2 } from 'lucide-react';
 import ProjectItem from '../components/project/project-item';
 import useSearchParam from '@/shared/hooks/use-search-param';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
@@ -14,10 +14,14 @@ import useGetCategories from '@/modules/tsm/components/hooks/use-get-categories'
 import { listColor } from '@/shared/data';
 import SearchParam from '@/shared/components/search-param';
 import useSearchProject from '../components/project/hooks/query/use-search-project';
+import { useSelector } from '@/store';
+import ModifyMemberWorkspace from '../components/modify-member-workspace';
 
 const WorkspaceDetail = () => {
   const { data: workspace, isPending } = useGetWorkspace();
   const [, , keyword] = useSearchParam(SEARCH_PARAMS.KEYWORD);
+
+  const [, setModal] = useSearchParam(SEARCH_PARAMS.MODAL);
 
   const { data: result, isPending: isLoading } = useSearchProject(keyword as string);
 
@@ -30,60 +34,55 @@ const WorkspaceDetail = () => {
   const handleChange = (value: { value: string; label: string }) => console.log(value);
 
   const colorRadom = listColor[Math.floor(Math.random() * listColor.length)].color;
+  const btnColor = useSelector((state) => state.theme.btnColor);
   return (
     <>
       <div className='flex flex-col'>
-        <div className='flex items-center gap-x-5'>
-          <div
-            style={{
-              backgroundColor: colorRadom,
-            }}
-            className='flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-xl text-2xl font-bold text-white'
-          >
-            {workspace?.name.charAt(0).toUpperCase()}
-          </div>
-          <div className='flex flex-col'>
+        <div className='flex items-center justify-between'>
+          <div className='flex items-center gap-x-5'>
+            <div
+              style={{
+                backgroundColor: colorRadom,
+              }}
+              className='flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-xl text-2xl font-bold text-white'
+            >
+              {workspace?.name.charAt(0).toUpperCase()}
+            </div>
+
             {isPending ? (
               <Spin size='small' />
             ) : (
               <>
-                <Typography.Title level={3}>{workspace?.name}</Typography.Title>
-                <div className='flex items-center gap-x-4'>
-                  <Tag color='gold'>Premium</Tag>
-                  <div className='flex items-center'>
-                    <LockKeyhole color='red' className='mr-1 h-4 w-4' />
-                    <Tag color='red'>{workspace?.type}</Tag>
+                <div className='flex items-center justify-between'>
+                  <div>
+                    <Typography.Title level={3}>{workspace?.name}</Typography.Title>
+                    <div className='flex items-center gap-x-4'>
+                      <Tag color='gold'>Premium</Tag>
+                      <div className='flex items-center'>
+                        <LockKeyhole color='red' className='mr-1 h-4 w-4' />
+                        <Tag color='red'>{workspace?.type}</Tag>
+                      </div>
+                    </div>
                   </div>
+                  <div></div>
                 </div>
               </>
             )}
           </div>
+          <Button
+            icon={<Share2 className='color-white h-4 w-4' />}
+            type='text'
+            className='flex items-center text-white'
+            style={{
+              backgroundColor: btnColor,
+            }}
+            onClick={() => setModal(SEARCH_PARAMS_VALUE.ADD_MEMBER_WORKSPACE)}
+          >
+            Share
+          </Button>
         </div>
         <Divider />
-        <div>
-          <Typography.Title level={5}>
-            <b>Recent activities</b>
-          </Typography.Title>
-          <div className='grid grid-cols-3 gap-4'>
-            <Card title='Recent Activities' className='rounded-lg' bordered={true}>
-              <p>Card content</p>
-              <p>Card content</p>
-              <p>Card content</p>
-            </Card>
 
-            <Card title='Docs' className='rounded-lg' bordered={true}>
-              <p>Card content</p>
-              <p>Card content</p>
-              <p>Card content</p>
-            </Card>
-            <Card title='Resources' className='rounded-lg' bordered={true}>
-              <p>Card content</p>
-              <p>Card content</p>
-              <p>Card content</p>
-            </Card>
-          </div>
-        </div>
-        <Divider />
         <div>
           <Typography.Title level={5} className='mb-6'>
             <b> Project</b>
@@ -176,6 +175,7 @@ const WorkspaceDetail = () => {
       </div>
       <ModalAddProject />
       <ModalAddWorkspace />
+      <ModifyMemberWorkspace />
     </>
   );
 };

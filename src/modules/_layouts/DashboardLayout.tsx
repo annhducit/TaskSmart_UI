@@ -24,7 +24,7 @@ import { TabsProps } from 'antd/lib';
 import Setting from '../tsm/features/workspace/components/project/modify-card/popover/setting';
 import useCollapse from '@/shared/hooks/use-collapse';
 import useGetProject from '../tsm/features/workspace/components/project/hooks/query/use-get-project';
-import { ModifyMember } from '../tsm/features/workspace/components/project/modify-member';
+import { ModifyMemberProject } from '../tsm/features/workspace/components/project/modify-member';
 import { useSelector } from '@/store';
 
 const AIGenerator = lazy(() => import('../tsm/features/workspace/components/ai-generator'));
@@ -209,7 +209,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
                 backgroundColor: btnColor,
                 color: 'white',
               }}
-              onClick={() => setModal(SEARCH_PARAMS_VALUE.ADD_MEMBER)}
+              onClick={() => setModal(SEARCH_PARAMS_VALUE.ADD_MEMBER_PROJECT)}
               icon={<UserPlus size='14' className='text-white' />}
             >
               Share
@@ -250,7 +250,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
           </div>
         </div>
       </section>
-      <ModifyMember />
+      <ModifyMemberProject />
     </>
   );
 };

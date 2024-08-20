@@ -1,3 +1,3 @@
-import ModifyMember from './modify-member';
+import ModifyMemberProject from './modify-member-project';
 
-export { ModifyMember };
+export { ModifyMemberProject };

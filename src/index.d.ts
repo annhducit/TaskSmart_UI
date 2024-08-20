@@ -6,6 +6,7 @@
 type EStatus = 'ToDo' | 'InProgress' | 'Done' | 'InReview' | 'Approved' | 'NotSure' | 'none';
 type ELevel = 'Highest' | 'High' | 'Medium' | 'Low' | 'Lowest' | 'NotSure' | 'none';
 type LoadingState = 'idle' | 'loading' | 'succeeded' | 'failed';
+type RolePermission = 'Owner' | 'Member';
 type TSM_SQLConnectType = {
   label: string;
   value: string;
@@ -37,6 +38,7 @@ type Workspace = {
   projects: Project[];
   type: string;
   backgroundUnsplash: string;
+  inviteCode: string;
 };
 
 type TsmError = {
@@ -75,6 +77,7 @@ type UserRelation = {
   username: string;
   email: string;
   profileImagePath: string;
+  role: RolePermission;
 };
 
 type Role = 'ADMIN' | 'USER';

@@ -4,26 +4,25 @@ import { useDialogContext } from '@/shared/components/dialog/provider';
 import Tooltip from '@/shared/components/tooltip';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
 import useCollapse from '@/shared/hooks/use-collapse';
-import { Avatar, Button, Divider, Input, Switch, Tag, Typography } from 'antd';
+import { Avatar, Button, Divider, Switch, Tag, Typography } from 'antd';
 import { ChevronDown, ChevronRight, User } from 'lucide-react';
 import useGetProject from '../hooks/query/use-get-project';
-import { useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import useGetInviteProject from '@/modules/tsm/features/invite/hooks/mutation/use-invite-project';
 import { getIdProjectFromUrl } from '@/shared/components/getIdByUrl';
 
-const ModifyMember = () => {
+const ProjectContext = createContext<Project>({} as Project);
+export default function ModifyMemberProject() {
   return (
     <Dialog.Param
       paramKey={SEARCH_PARAMS.MODAL}
       size='xs'
-      paramValue={SEARCH_PARAMS_VALUE.ADD_MEMBER}
+      paramValue={SEARCH_PARAMS_VALUE.ADD_MEMBER_PROJECT}
     >
       <ModalModifyMember />
     </Dialog.Param>
   );
-};
-
-export default ModifyMember;
+}
 
 const ModalModifyMember = () => {
   const { onClose } = useDialogContext();
@@ -78,22 +77,6 @@ const ModalModifyMember = () => {
             with all views
           </Typography.Text>
         </div>
-        <div className='flex items-center'>
-          <Input
-            size='large'
-            allowClear
-            type='text'
-            placeholder='Invite by name or email'
-            className='w-full rounded-bl-lg rounded-br-none rounded-tl-lg rounded-tr-none border border-solid border-slate-200'
-          />
-          <Button
-            type='primary'
-            size='large'
-            className='rounded-bl-none rounded-br-lg rounded-tl-none rounded-tr-lg text-white'
-          >
-            Invite
-          </Button>
-        </div>
 
         <div className='flex items-center justify-between'>
           {project?.inviteCode && <CopyUrlButton link={link} />}
@@ -120,10 +103,12 @@ const ModalModifyMember = () => {
         </div>
         <Typography.Text className='text-sm font-semibold'>Share with</Typography.Text>
 
-        <div className='mt-1 flex flex-col gap-3'>
-          <MemberAlready type='WORKSPACE' />
-          <MemberAlready type='PERSON' />
-        </div>
+        <ProjectContext.Provider value={project as Project}>
+          <div className='mt-1 flex flex-col gap-3'>
+            <MemberAlready type='WORKSPACE' />
+            <MemberAlready type='PERSON' />
+          </div>
+        </ProjectContext.Provider>
       </div>
     </>
   );
@@ -164,6 +149,10 @@ const MemberAlready = (props: { type?: MemberType }) => {
   const handleViewMemberDetail = () => {
     setVisible(!visible);
   };
+
+  const project = useContext(ProjectContext);
+
+  const ownerName = project?.users?.find((user) => user.role === 'Owner')?.name;
   return (
     <>
       {props.type === 'WORKSPACE' && (
@@ -181,14 +170,16 @@ const MemberAlready = (props: { type?: MemberType }) => {
             <Avatar size='small' style={{ backgroundColor: 'blue' }}>
               G
             </Avatar>
-            <Typography.Text className='text-xs font-semibold'>Graduate Thesis</Typography.Text>
+            <Typography.Text className='text-xs font-semibold'>
+              {project?.workspace?.name}
+            </Typography.Text>
             <Tag color='green'>Workspace</Tag>
           </div>
           <div>
             <div className='flex items-center gap-x-2'>
-              <Tooltip title='Anh Đức'>
+              <Tooltip title={ownerName}>
                 <Avatar size='small' style={{ backgroundColor: '#b660e0' }}>
-                  Đ
+                  {ownerName?.charAt(0)}
                 </Avatar>
               </Tooltip>
               <Tooltip title={`${checked ? 'Make private' : 'Make public'}`}>
@@ -222,16 +213,17 @@ const MemberAlready = (props: { type?: MemberType }) => {
           </div>
           <div>
             <div className='flex items-center'>
-              <Tooltip title='Anh Đức'>
-                <Avatar size='small' style={{ backgroundColor: '#1090e0' }}>
-                  Đ
-                </Avatar>
-              </Tooltip>
-              <Tooltip title='Đức Duy'>
-                <Avatar size='small' style={{ backgroundColor: '#ee5e99' }}>
-                  D
-                </Avatar>
-              </Tooltip>
+              {project?.users?.map((member) => (
+                <Tooltip key={member.userId} title={member.name}>
+                  <Avatar
+                    size='small'
+                    src={`http://localhost:8888/api/image/${member.profileImagePath}`}
+                    className={`${member.profileImagePath ? '' : 'bg-blue-500'}`}
+                  >
+                    {member.name.charAt(0)}
+                  </Avatar>
+                </Tooltip>
+              ))}
             </div>
           </div>
         </div>
@@ -251,26 +243,27 @@ const Members = () => {
     even.stopPropagation();
     setChecked(checked);
   };
+
+  const project = useContext(ProjectContext);
+
   return (
     <>
       <Divider className='my-[1px] mb-2' />
       <Typography.Text className='text-sm font-semibold'>1 invited person</Typography.Text>
-      <div className='flex items-center justify-between'>
-        <div className='flex items-center gap-x-2'>
-          <Avatar size='small' style={{ backgroundColor: '#d29034' }}>
-            Đ
-          </Avatar>
-          <Typography.Text className='text-xs font-semibold'>Me</Typography.Text>
-          <Tag color='blue'>Workspace Owner</Tag>
-        </div>
-        <div>
-          <Switch
-            size='small'
-            onChange={(value, even) => {
-              handleChangeSwitch(value, even);
-            }}
-          />
-        </div>
+      <div className='flex flex-col gap-y-2'>
+        {project?.users?.map((user) => (
+          <div key={user.userId} className='flex items-center justify-between'>
+            <div className='flex items-center gap-x-2'>
+              <Avatar size='small' src={`http://localhost:8888/api/image/${user.profileImagePath}`}>
+                {user.name.charAt(0)}
+              </Avatar>
+              <Typography.Text className='text-xs font-semibold'>{user.name}</Typography.Text>
+              <Tag color={user.role === 'Owner' ? 'blue' : 'green'}>
+                {user.role === 'Owner' ? 'Workspace Owner' : 'Member'}
+              </Tag>
+            </div>
+          </div>
+        ))}
       </div>
     </>
   );
