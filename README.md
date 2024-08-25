@@ -1,30 +1,38 @@
-# React + TypeScript + Vite
+#  Ứng Dụng Mô Hình Ngôn Ngữ Lớn Để Khởi Tạo Danh Mục Công Việc và Lệnh SQL Dựa Trên Đặc Tả
+## Mục Lục
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+1. [Mô Tả](#Mô-tả)
+2. [Cách Cài Đặt](#cách-cài-đặt)
+    1. [Clone dự án về máy](#1-clone-dự-án-về-máy)
+    2. [Di chuyển terminal đến thư mục vừa clone về](#2-di-chuyển-terminal-đến-thư-mục-vừa-clone-về)
+    3. [Cài đặt các gói cần thiết](#3_cài_đặt_các_gói_cần_thiết)
+    4. [Chạy dự án](#4-chạy-dự-án)
+    5. [Truy cập giao diện](#5-truy-cập-giao-diện)
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Cài Đặt Môi Trường - Backend
+Clone dự án backend tại:
+https://github.com/hducduy21/TaskSmart
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Cách Cài Đặt Dự án
 
-- Configure the top-level `parserOptions` property like this:
+1. **Clone dự án về máy:**
+     ```bash
+       https://github.com/annhducit/TaskSmart_UI.git
+2. **Di chuyển terminal đến thư mục vừa clone về**
+   
+3. **Cài đặt các gói cần thiết:**
+Sử dụng thư viện npm-install để cài đặt các gói cần thiết để có thể chạy được dự án:
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+    ```bash
+       npm install
+4. **Chạy dự án:**
+Tiến hành chạy dự án:
+    ```bash
+       npm run dev
+      
+       
+6. **Truy cập giao diện**
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+  - Truy cập http://localhost:3000/ để vào giao diện hệ thống TaskSmart
