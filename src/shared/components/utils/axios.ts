@@ -19,6 +19,6 @@ export const axiosSuccessResponse = (response: AxiosResponse) => {
   }
 };
 
-export const setNPPAxiosToken = (accessToken?: string) => {
+export const setTSMAxiosToken = (accessToken?: string) => {
   tsmAxios.defaults.headers.common['Authorization'] = !accessToken ? null : `Bearer ${accessToken}`;
 };

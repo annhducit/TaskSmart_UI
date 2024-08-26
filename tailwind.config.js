@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 
-import plugin from 'tailwindcss/plugin'
+import plugin from 'tailwindcss/plugin';
 
 export default {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
@@ -23,7 +23,7 @@ export default {
             display: 'none',
           },
         },
-      })
+      });
     }),
   ],
   theme: {
@@ -39,6 +39,7 @@ export default {
           700: '#002348',
           800: '#001730',
           900: '#000c18',
+          default: '#0089ED',
         },
         secondary: {
           100: '#f8edcf',
@@ -102,15 +103,15 @@ export default {
         scene: {
           'deep-purple': '#7f77f1',
           'royal-blue': '#6985ff',
-          'blue': '#1090e0',
+          blue: '#1090e0',
           'light-teal': '#0f9d9f',
-          'green': '#3db88b',
-          'orange': '#e16b16',
-          'pink': '#ee5e99',
-          'purple': '#b660e0',
+          green: '#3db88b',
+          orange: '#e16b16',
+          pink: '#ee5e99',
+          purple: '#b660e0',
         },
       },
-      
+
       keyframes: {
         'animated-gradient': {
           '0%': { backgroundPosition: '0% 50%' },
@@ -118,7 +119,8 @@ export default {
           '100%': { backgroundPosition: '0% 50%' },
         },
       },
-      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      fontFamily:
+        "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
       backgroundSize: {
         '400%': '400%',
       },
@@ -127,4 +129,4 @@ export default {
       },
     },
   },
-}
+};

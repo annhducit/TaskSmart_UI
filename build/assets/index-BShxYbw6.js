@@ -1,0 +1,2 @@
+const __vite__fileDeps=["assets/index-C3Yzw8ce.js","assets/index-bcifMYEQ.js","assets/index-i_XtQaoV.css","assets/Table-DqxhufFh.js","assets/index-DMQ_vExv.js","assets/index-DazJ7QXT.js"],__vite__mapDeps=i=>i.map(i=>__vite__fileDeps[i]);
+import{f as e,r as t,_ as r,e as o,j as s}from"./index-bcifMYEQ.js";const a=t.lazy(()=>r(()=>import("./index-C3Yzw8ce.js"),__vite__mapDeps([0,1,2,3,4,5]))),u=o([{index:!0,element:s.jsx(a,{})}]);function n(){return e(u)}export{n as default};

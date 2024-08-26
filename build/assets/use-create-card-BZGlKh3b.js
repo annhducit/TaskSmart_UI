@@ -1,0 +1,1 @@
+import{q as o,d as c,i as n,A as r,t as u,v as d}from"./index-bcifMYEQ.js";const i=async(t,a,s)=>await u.post(`/projects/${t}/${a}`,s),m=()=>{const t=o(),a=d(t);return c({mutationFn:({columnId:s,card:e})=>i(t,s,e),onSuccess(s){n(s.status)&&(r.success("Card created successfully"),a())},onError:s=>{r.error(s.message)}})};export{m as u};

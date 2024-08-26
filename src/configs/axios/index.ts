@@ -1,3 +1,3 @@
-import tsmAxios from "./tsm";
+import tsmAxios from './tsm';
 
 export { tsmAxios };

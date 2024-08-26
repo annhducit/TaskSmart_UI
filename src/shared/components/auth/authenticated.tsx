@@ -1,3 +1,4 @@
+import { useSelector } from '@/store';
 import { type FC, type ReactNode } from 'react';
 
 type Props = {
@@ -7,10 +8,7 @@ type Props = {
 
 const Authenticated: FC<Props> = (props) => {
   const { children, fallback } = props;
-  /**
-   * useSelector((store) => store.auth.data.accessToken);
-   */
-  const accessToken = ''
+  const accessToken = useSelector((store) => store.auth?.data?.accessToken);
 
   if (!accessToken) {
     return fallback;
