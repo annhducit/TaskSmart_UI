@@ -234,16 +234,6 @@ const MemberAlready = (props: { type?: MemberType }) => {
 };
 
 const Members = () => {
-  const [_checked, setChecked] = useState<boolean>(false);
-
-  const handleChangeSwitch = (
-    checked: boolean,
-    even: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    even.stopPropagation();
-    setChecked(checked);
-  };
-
   const project = useContext(ProjectContext);
 
   return (
