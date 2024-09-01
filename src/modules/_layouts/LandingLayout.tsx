@@ -4,8 +4,8 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import Header from '../_landing/components/header';
 import Footer from '../_landing/components/footer';
 import useGetProfile from '../tsm/components/hooks/use-profile';
-import { useDispatch, useSelector } from '@/store';
-import { forceSignOut } from '@/store/auth';
+import { useDispatch, useSelector } from '@/stores';
+import { forceSignOut } from '@/stores/auth';
 import { toast } from 'sonner';
 import userImageDefault from '@/assets/images/user.png';
 

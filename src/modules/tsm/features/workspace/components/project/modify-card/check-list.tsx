@@ -7,7 +7,7 @@ import useDeleteCheckListGroup from '../hooks/action/use-delete-checklist-group'
 import useCreateChecklistItem from '../hooks/mutation/use-create-checklist-item';
 import useDeleteItemChecked from '../hooks/action/use-delete-item-checked';
 import useUpdateItemChecked from '../hooks/mutation/use-update-item-checked';
-import { getTextColor } from '@/utils/customText';
+import { getTextColor } from '@/utils/custom-text-color';
 
 const CheckList = ({
   list,
@@ -86,11 +86,11 @@ const CheckList = ({
     <div className='mt-5 flex flex-col gap-2'>
       <div className='flex items-center gap-x-2'>
         <SquareCheckBig color={color} className='mt-[2px] h-5 w-5 opacity-40' />
-        <Typography.Text className='text-base font-semibold '>Check list</Typography.Text>
+        <Typography.Text className='text-base font-semibold'>Check list</Typography.Text>
       </div>
       <div className='flex flex-col gap-y-4 px-6'>
         {list.map((item, index) => (
-          <div key={index} className='flex flex-col gap-y-2 '>
+          <div key={index} className='flex flex-col gap-y-2'>
             <div className='flex items-center justify-between hover:text-base'>
               <div className='flex items-center gap-x-2'>
                 <List color={color} className='mt-[2px] h-5 w-5 opacity-40' />
@@ -207,7 +207,7 @@ const CheckList = ({
               onClick={() => setVisible(false)}
               type='default'
               danger
-              className='0 w-[90px]  text-white'
+              className='0 w-[90px] text-white'
             >
               Cancel
             </Button>
@@ -238,7 +238,7 @@ const CheckListItem = ({
   deleteItem: (listId: string, itemId: string) => void;
 }) => {
   return (
-    <div className='flex flex-col gap-y-2 '>
+    <div className='flex flex-col gap-y-2'>
       <div className='flex items-center gap-x-5 hover:text-base'>
         <ConfigProvider
           theme={{

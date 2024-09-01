@@ -1,5 +1,6 @@
 import React from 'react';
-import { Tooltip as AntTooltip, TooltipProps } from 'antd';
+import type { TooltipProps } from 'antd';
+import { Tooltip as AntTooltip } from 'antd';
 
 export default function Tooltip(
   props: {

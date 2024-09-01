@@ -1,5 +1,5 @@
 import { tsmAxios } from '@/configs/axios';
-import { AuthType } from '@/modules/sign-up';
+import type { AuthType } from '@/modules/sign-up';
 import { useMutation } from '@tanstack/react-query';
 import { useInvalidateProfile } from './use-profile';
 import { toast } from 'sonner';

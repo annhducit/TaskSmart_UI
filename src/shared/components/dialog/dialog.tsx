@@ -1,5 +1,7 @@
-import { VariantProps, cva } from 'class-variance-authority';
-import { Modal, ModalProps } from 'antd';
+import type { VariantProps } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
+import type { ModalProps } from 'antd';
+import { Modal } from 'antd';
 import { useDialogContext } from './provider';
 
 const dialogVars = cva(undefined, {

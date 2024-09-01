@@ -14,7 +14,7 @@ import useGetCategories from '@/modules/tsm/components/hooks/use-get-categories'
 import { listColor } from '@/shared/data';
 import SearchParam from '@/shared/components/search-param';
 import useSearchProject from '../components/project/hooks/query/use-search-project';
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 import ModifyMemberWorkspace from '../components/modify-member-workspace';
 
 const WorkspaceDetail = () => {
@@ -30,8 +30,6 @@ const WorkspaceDetail = () => {
   const showModal = () => {
     setDialog(SEARCH_PARAMS_VALUE.PROJECT);
   };
-
-  const handleChange = (value: { value: string; label: string }) => console.log(value);
 
   const colorRadom = listColor[Math.floor(Math.random() * listColor.length)].color;
   const btnColor = useSelector((state) => state.theme.btnColor);
@@ -99,7 +97,6 @@ const WorkspaceDetail = () => {
                     value: '1',
                     label: 'Most recent activity',
                   }}
-                  onChange={handleChange}
                   options={[
                     {
                       value: '1',
@@ -126,7 +123,6 @@ const WorkspaceDetail = () => {
                   showSearch
                   style={{ width: 230 }}
                   placeholder='Filter by collection'
-                  onChange={handleChange}
                   options={[
                     {
                       value: '1',

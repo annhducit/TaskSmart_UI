@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import { isStatusCodeValid } from '@/shared/components/status';
 import { toast } from 'sonner';
 
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { useInvalidateProject } from '../../../project/hooks/query/use-get-project';
 
 const applyGenerate = async (projectId: string, taskGenerate: TasksGenerate) => {

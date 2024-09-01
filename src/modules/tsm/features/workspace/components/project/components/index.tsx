@@ -10,7 +10,7 @@ import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import useGetPdf from '../hooks/query/use-get-pdf';
 import { useEffect, useState } from 'react';
 import Loading from '@/shared/components/loading';
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 
 export default function ViewDoc() {
   const { projectId } = useParams();

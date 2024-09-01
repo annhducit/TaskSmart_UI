@@ -1,5 +1,5 @@
 import { cn } from '@/shared/router/cn';
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 import type { VariantProps } from 'class-variance-authority';
 import { cva } from 'class-variance-authority';
 import { LoaderCircle } from 'lucide-react';

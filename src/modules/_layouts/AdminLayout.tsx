@@ -20,11 +20,11 @@ const AdminLayout = () => {
           type='primary'
           size='small'
           onClick={toggleCollapsed}
-          className={`absolute ${collapsed ? 'left-16  right-0 text-white' : 'hidden'} top-14 z-50 w-8`}
+          className={`absolute ${collapsed ? 'left-16 right-0 text-white' : 'hidden'} top-14 z-50 w-8`}
         >
           {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined color='white' />}
         </Button>
-        <div className='flex w-0 flex-1 flex-col overflow-hidden '>
+        <div className='flex w-0 flex-1 flex-col overflow-hidden'>
           <HeaderAdmin />
           <div className='h-screen overflow-scroll bg-[#f9fafb] p-6'>
             <Outlet />

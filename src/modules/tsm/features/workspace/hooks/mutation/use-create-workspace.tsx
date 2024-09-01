@@ -3,7 +3,7 @@ import { useInvalidateProfile } from '@/modules/tsm/components/hooks/use-profile
 import { useDialogContext } from '@/shared/components/dialog/provider';
 import { isStatusCodeValid } from '@/shared/components/status';
 import { useMutation } from '@tanstack/react-query';
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { toast } from 'sonner';
 import { useInvalidateWorkspaces } from '../query/use-get-workspaces';
 

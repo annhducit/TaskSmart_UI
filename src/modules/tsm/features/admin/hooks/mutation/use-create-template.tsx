@@ -6,7 +6,6 @@ import { useInvalidateTemplates } from '../../../templates/hooks/use-get-templat
 import { useNavigate } from 'react-router-dom';
 
 const createTemplate = async (value: TSMTemplateRequest) => {
-  console.log(value)
   const data = await tsmAxios.post('/templates', value);
   return data;
 };

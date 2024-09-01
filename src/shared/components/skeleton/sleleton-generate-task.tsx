@@ -3,7 +3,7 @@ import LoadingSkeleton from './loading-skeleton';
 const SkeletonHome = () => {
   return (
     <div className='flex items-center gap-x-4'>
-      <div className='flex h-[515px] w-[280px] flex-col gap-y-2 overflow-hidden  rounded-lg bg-white/50 p-2'>
+      <div className='flex h-[515px] w-[280px] flex-col gap-y-2 overflow-hidden rounded-lg bg-white/50 p-2'>
         {/* Header */}
         <div className='flex items-center gap-x-4'>
           <LoadingSkeleton width='90%' height='20px' className='rounded-xl bg-slate-500' />
@@ -39,7 +39,7 @@ const SkeletonHome = () => {
         </div>
       </div>
 
-      <div className='flex h-[515px] w-[280px] flex-col gap-y-2 overflow-hidden  rounded-lg bg-white/50 p-2'>
+      <div className='flex h-[515px] w-[280px] flex-col gap-y-2 overflow-hidden rounded-lg bg-white/50 p-2'>
         {/* Header */}
         <div className='flex items-center gap-x-4'>
           <LoadingSkeleton width='90%' height='20px' className='rounded-xl bg-slate-500' />
@@ -75,7 +75,7 @@ const SkeletonHome = () => {
         </div>
       </div>
 
-      <div className='flex h-[515px] w-[280px] flex-col gap-y-2 overflow-hidden  rounded-lg bg-white/50 p-2'>
+      <div className='flex h-[515px] w-[280px] flex-col gap-y-2 overflow-hidden rounded-lg bg-white/50 p-2'>
         {/* Header */}
         <div className='flex items-center gap-x-4'>
           <LoadingSkeleton width='90%' height='20px' className='rounded-xl bg-slate-500' />
@@ -111,7 +111,7 @@ const SkeletonHome = () => {
         </div>
       </div>
 
-      <div className='flex h-[515px] w-[280px] flex-col gap-y-2 overflow-hidden  rounded-lg bg-white/50 p-2'>
+      <div className='flex h-[515px] w-[280px] flex-col gap-y-2 overflow-hidden rounded-lg bg-white/50 p-2'>
         {/* Header */}
         <div className='flex items-center gap-x-4'>
           <LoadingSkeleton width='90%' height='20px' className='rounded-xl bg-slate-500' />

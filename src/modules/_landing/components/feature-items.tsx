@@ -70,7 +70,7 @@ const FeaturesItem: React.FC<Props> = ({ isVisible }) => {
           className='flex w-[300px] flex-col gap-2'
         >
           <div className='flex items-center gap-x-4'>
-            <div className='h-[40px] w-[40px] '>
+            <div className='h-[40px] w-[40px]'>
               <img src={item.image} alt='' className='h-full w-full object-contain' />
             </div>
             <Typography.Title level={3} className='text-2xl font-semibold'>

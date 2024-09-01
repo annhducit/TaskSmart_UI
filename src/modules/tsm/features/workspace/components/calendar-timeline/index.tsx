@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
-import {
+import type {
   EventApi,
   DateSelectArg,
   EventClickArg,
@@ -20,7 +20,7 @@ import { DB_DATE_TIME_FORMAT } from '@/shared/constant/date';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
 import ModifyCard from '../project/modify-card/modify-card';
 import { Tooltip, Typography } from 'antd';
-import { getTextColor } from '@/utils/customText';
+import { getTextColor } from '@/utils/custom-text-color';
 import { DialogCreateEvent } from './create-event';
 import { Badge } from 'antd/lib';
 

@@ -221,7 +221,7 @@ const ListCardSection = ({ listCards }: { listCards: TSMListCardSearch[] }) => {
           <div
             key={listCard.id}
             onClick={() => handleClickViewDetail(listCard.project.id as string)}
-            className='flex cursor-pointer items-center gap-x-4 rounded px-2 transition-all hover:bg-slate-100 '
+            className='flex cursor-pointer items-center gap-x-4 rounded px-2 transition-all hover:bg-slate-100'
           >
             <div className='h-10 w-10 rounded'>
               <img
@@ -260,7 +260,7 @@ const CardSection = ({ cards }: { cards: TSMCardSearch[] }) => {
           <div
             key={card.id}
             onClick={() => handleClickViewDetail(card.project.id as string)}
-            className='flex cursor-pointer items-center gap-x-4 rounded px-2 transition-all hover:bg-slate-100 '
+            className='flex cursor-pointer items-center gap-x-4 rounded px-2 transition-all hover:bg-slate-100'
           >
             <div className='h-10 w-10 rounded'>
               <img

@@ -1,5 +1,7 @@
-import { Dropdown as DropdownAnt, MenuProps, Space } from 'antd';
-import React, { FC, MouseEventHandler } from 'react';
+import type { MenuProps } from 'antd';
+import { Dropdown as DropdownAnt, Space } from 'antd';
+import type { FC, MouseEventHandler } from 'react';
+import React from 'react';
 import { ChevronDown } from 'lucide-react';
 
 export interface DropdownProps {

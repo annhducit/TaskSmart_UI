@@ -1,9 +1,10 @@
-import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
+import type { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
 import useSearchParam from '@/shared/hooks/use-search-param';
 import { Suspense, useCallback, useMemo } from 'react';
 import DialogProvider, { type DialogContextType } from './provider';
 import Loading from '../loading';
-import Dialog, { DialogProps } from './dialog';
+import type { DialogProps } from './dialog';
+import Dialog from './dialog';
 
 type Props = DialogProps & {
   paramKey: SEARCH_PARAMS;

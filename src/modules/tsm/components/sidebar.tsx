@@ -12,7 +12,7 @@ import useGetProfile from '@/modules/tsm/components/hooks/use-profile';
 import useGetProject from '@/modules/tsm/features/workspace/components/project/hooks/query/use-get-project';
 import useGetCategories from '@/modules/tsm/components/hooks/use-get-categories';
 import useGetPath from '../../../shared/hooks/use-get-path';
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 import { listColor } from '@/shared/data';
 import useGetWorkspaces from '../features/workspace/hooks/query/use-get-workspaces';
 
@@ -85,7 +85,6 @@ const Sidebar = ({
       case 'workspaces':
         navigate('../../../tsm/workspaces');
         break;
-
       case 'template':
         navigate('../../../tsm/template');
         break;
@@ -98,33 +97,31 @@ const Sidebar = ({
     {
       key: 'home',
       label: 'Home',
-      icon: <Home className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+      icon: <Home className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
     },
-
     {
       type: 'divider',
     },
     {
       key: 'template',
       label: 'Templates',
-      icon: <LayoutTemplate className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+      icon: <LayoutTemplate className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
       children: [
         {
           key: 'template',
           label: 'All Categories',
-          icon: <LayoutTemplate className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+          icon: <LayoutTemplate className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
         },
         ...(categories?.map((item) => ({
           key: item.id,
           label: item.name,
-          icon: <LayoutTemplate className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+          icon: <LayoutTemplate className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
           onClick: () => {
             navigate(`../../../tsm/template?category=${item.id}`);
           },
         })) || []),
       ],
     },
-
     {
       type: 'divider',
     },
@@ -138,23 +135,22 @@ const Sidebar = ({
       className: `${isProject ? 'text-white font-semibold' : 'text-black'}`,
       type: 'group',
     },
-
     {
       key: 'sub10',
       style: { display: type === 'private' ? 'none' : '' },
       label: data?.personalWorkSpace?.name || 'Personal Workspace',
-      icon: <Rocket className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+      icon: <Rocket className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
 
       onClick: () => navigate(`../../../tsm/workspace/${data?.personalWorkSpace?.id}`),
     },
     {
       key: 'workspace',
       label: 'Team Workspace',
-      icon: <Rocket className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+      icon: <Rocket className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
       children: workspaces?.map((workspace) => ({
         key: workspace.id,
         label: workspace.name,
-        icon: <FolderKanban className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+        icon: <FolderKanban className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
         onClick: () => navigate(`../../../tsm/workspace/${workspace.id}`),
       })),
     },
@@ -164,7 +160,7 @@ const Sidebar = ({
     {
       key: 'sub12',
       label: 'Create Workspace',
-      icon: <SquarePlus className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+      icon: <SquarePlus className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
       onClick: handleOpenModal,
     },
     {
@@ -182,7 +178,7 @@ const Sidebar = ({
       children: data?.projects?.map((project) => ({
         key: project.id,
         label: project.name,
-        icon: <FolderKanban className='h-4 w-4' color={`${isProject ? 'white' : btnColor}`} />,
+        icon: <FolderKanban className='w-4 h-4' color={`${isProject ? 'white' : btnColor}`} />,
         onClick: () => navigate(`../../../tsm/project/${project.id}`),
       })),
     },
@@ -196,24 +192,25 @@ const Sidebar = ({
     <aside
       style={{
         width: isCollapse ? 80 : 256,
-        backgroundImage: `${isProject && `url(${project?.backgroundUnsplash?.urls?.full})`}`,
+        backgroundImage: `${isProject && `url(${project?.backgroundUnsplash?.urls?.thumb})`}`,
         backgroundPosition: 'top',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
+        contentVisibility: 'auto',
       }}
-      className={`relative z-50 flex h-[calc(100vh-40px)] flex-col ${isProject && 'bg-black/50 bg-gray-900 bg-opacity-50  text-white shadow-lg backdrop-blur-lg backdrop-filter'}`}
+      className={`relative z-50 flex h-[calc(100vh-40px)] flex-col ${isProject && 'bg-black/50 bg-gray-900 bg-opacity-50 text-white shadow-lg backdrop-blur-lg backdrop-filter'}`}
     >
       {/* Workspace item */}
       {type === 'workspace' && (
         <Tooltip title={project?.workspace.name}>
           <div
-            className={`flex items-center gap-x-2  p-2 pb-2 pt-3 shadow-lg ${isProject && 'bg-black/50 bg-gray-900 bg-opacity-50 backdrop-blur-lg backdrop-filter'}`}
+            className={`flex items-center gap-x-2 p-2 pb-2 pt-3 shadow-lg ${isProject && 'bg-black/50 bg-gray-900 bg-opacity-50 backdrop-blur-lg backdrop-filter'}`}
           >
             <div
               style={{
                 backgroundColor: colorRadom,
               }}
-              className='flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl text-lg font-bold text-white'
+              className='flex items-center justify-center flex-shrink-0 w-10 h-10 text-lg font-bold text-white rounded-xl'
             >
               {project?.workspace?.name.charAt(0).toUpperCase()}
             </div>
@@ -239,7 +236,6 @@ const Sidebar = ({
         {isCollapse ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
       </Button>
       {/* End Collapse */}
-
       <Menu
         className={`${isProject && 'custom-aside'} ${type === 'workspace' ? 'pt-2' : 'pt-0'} ${isProject ? 'h-[calc(100vh-90px)]' : 'h-[calc(100vh-40px)]'} overflow-y-scroll`}
         onClick={onClick}

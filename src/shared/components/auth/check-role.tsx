@@ -1,5 +1,6 @@
-import { useSelector } from '@/store';
-import { PropsWithChildren, useEffect } from 'react';
+import { useSelector } from '@/stores';
+import type { PropsWithChildren } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const CheckRole = (props: PropsWithChildren) => {

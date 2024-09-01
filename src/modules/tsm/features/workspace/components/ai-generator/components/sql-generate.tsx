@@ -1,7 +1,7 @@
 import { Button, Divider, Form, Input, Select, Typography } from 'antd';
 import SQLEditor from './code-editor';
 import { useRef, useState } from 'react';
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 import { Save, UploadCloud } from 'lucide-react';
 import { getIdProjectFromUrl } from '@/shared/components/getIdByUrl';
 import { tsmAxios } from '@/configs/axios';
@@ -9,7 +9,7 @@ import blink from '@/assets/images/blink-ai.png';
 import { Radio } from 'antd';
 import { useEffect } from 'react';
 import Dragger from 'antd/es/upload/Dragger';
-import { UploadProps } from 'antd/lib';
+import type { UploadProps } from 'antd/lib';
 import { scrollToResult } from '@/utils/scroll-to-result';
 import { useDatabaseRag } from '../hook/mutation/use-database-rag';
 import { useDatabaseRagURI } from '../hook/mutation/use-database-rag-uri';
@@ -124,7 +124,6 @@ const SQLGenerate = () => {
       const { data } = await tsmAxios.get<{ statement: string; database: string }>(
         `/projects/${projectId}/generate-structure?database=${SQLSelectGenerate}`
       );
-      console.log(data);
       setDbStructure({ ...dbStructure, statement: data.statement });
     } catch (error) {
       if (typeof error === 'object' && error !== null && 'response' in error) {
@@ -193,13 +192,13 @@ const SQLGenerate = () => {
       <div>
         <div className='text-xl text-black'>Database Structure:</div>
         <div className='grid grid-cols-2 gap-x-2'>
-          <div className='flex flex-col col-span-1 mx-2 gap-y-2'>
+          <div className='col-span-1 mx-2 flex flex-col gap-y-2'>
             <SQLEditor
               className='max-h-[300px] min-h-[120px] overflow-y-scroll'
               statement={dbStructure}
               setStatement={setDbStructure}
             />
-            <div className='flex justify-end w-full my-2'>
+            <div className='my-2 flex w-full justify-end'>
               <Button
                 type='text'
                 style={{
@@ -217,7 +216,7 @@ const SQLGenerate = () => {
             </div>
           </div>
 
-          <div className='flex flex-col col-span-1 gap-2 pl-3 text-black border border-r-0 border-solid border-y-0 border-l-slate-200'>
+          <div className='col-span-1 flex flex-col gap-2 border border-y-0 border-r-0 border-solid border-l-slate-200 pl-3 text-black'>
             <Typography.Text>
               Or you can get the database based on the following ways:
             </Typography.Text>
@@ -254,7 +253,7 @@ const SQLGenerate = () => {
                         style={{
                           borderColor: btnColor,
                         }}
-                        className='flex items-center justify-center w-16 h-16 mx-auto bg-transparent border-2 border-dashed rounded-lg'
+                        className='mx-auto flex h-16 w-16 items-center justify-center rounded-lg border-2 border-dashed bg-transparent'
                       >
                         <UploadCloud
                           size={24}
@@ -265,9 +264,9 @@ const SQLGenerate = () => {
                         />
                       </div>
                     </div>
-                    <div className='flex flex-col py-3 text-left gap-y-4'>
+                    <div className='flex flex-col gap-y-4 py-3 text-left'>
                       <Typography.Text
-                        className='block font-semibold '
+                        className='block font-semibold'
                         style={{
                           color: btnColor,
                         }}
@@ -282,7 +281,7 @@ const SQLGenerate = () => {
                 </Dragger>
               )}
               {view === 2 && (
-                <div className='flex items-center justify-center w-full h-full my-4 gap-x-4'>
+                <div className='my-4 flex h-full w-full items-center justify-center gap-x-4'>
                   <Select
                     value={SQLSelectGenerate}
                     onChange={(e) => {
@@ -308,7 +307,7 @@ const SQLGenerate = () => {
                       backgroundColor: btnColor,
                       color: '#fff',
                     }}
-                    className='flex items-center text-center rounded-xl'
+                    className='flex items-center rounded-xl text-center'
                     onClick={getSQLStructureGenerate}
                   >
                     Generate DB Structure
@@ -316,7 +315,7 @@ const SQLGenerate = () => {
                 </div>
               )}
               {view === 3 && (
-                <div className='flex flex-col w-full gap-4'>
+                <div className='flex w-full flex-col gap-4'>
                   <div>
                     <span>SQL Type: </span>
                     <Select
@@ -337,7 +336,7 @@ const SQLGenerate = () => {
                   </div>
 
                   <Input.Search
-                    className='w-full my-4 text-xs'
+                    className='my-4 w-full text-xs'
                     addonBefore={DatabaseConnection[SQLType].before}
                     placeholder={DatabaseConnection[SQLType].placeholder}
                     allowClear
@@ -355,7 +354,7 @@ const SQLGenerate = () => {
       </div>
 
       <Divider className='m-0 my-4' />
-      <div className='flex flex-col p-6 bg-white rounded-lg card-ai gap-y-10'>
+      <div className='card-ai flex flex-col gap-y-10 rounded-lg bg-white p-6'>
         <Form name='sql-query' form={form} layout='vertical' onFinish={onFinish}>
           <Form.Item
             name='question'
@@ -368,16 +367,16 @@ const SQLGenerate = () => {
             ]}
           >
             <Input
-              prefix={<img src={blink} className='absolute w-5 h-5 left-4 top-3' alt='' />}
+              prefix={<img src={blink} className='absolute left-4 top-3 h-5 w-5' alt='' />}
               size='large'
               allowClear
               placeholder='Find all customers who have ordered more than 10 products in the last 6 months'
-              className='py-3 pl-12 rounded-xl'
+              className='rounded-xl py-3 pl-12'
             />
           </Form.Item>
 
           <div className='float-right flex h-[auto] items-center justify-center'>
-            <Form.Item className='flex flex-shrink w-full'>
+            <Form.Item className='flex w-full flex-shrink'>
               <Button
                 icon={<IconQuery />}
                 style={{
@@ -427,7 +426,7 @@ const IconQuery = () => {
       fill='currentColor'
       aria-hidden='true'
       data-slot='icon'
-      className='w-6 h-6 mr-2 -ml-1 text-gray-100'
+      className='-ml-1 mr-2 h-6 w-6 text-gray-100'
     >
       <path
         fillRule='evenodd'

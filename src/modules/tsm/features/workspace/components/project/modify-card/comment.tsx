@@ -3,10 +3,11 @@ import { Avatar, Button, ConfigProvider, Input, List, Typography } from 'antd';
 import { MessageCircle } from 'lucide-react';
 import user from '@/assets/images/user.png';
 
-import convertDateFormat from '@/utils/dateFormat';
 import useCreateCardComment from '../hooks/mutation/use-create-card-comment';
 import useGetProfile from '@/modules/tsm/components/hooks/use-profile';
-import { getTextColor } from '@/utils/customText';
+import { getTextColor } from '@/utils/custom-text-color';
+import dayjs from 'dayjs';
+import { DATE_TIME_FORMAT } from '@/shared/constant/date';
 
 const CommentCard = ({
   color,
@@ -59,7 +60,7 @@ const CommentCard = ({
                 <div className='flex justify-between gap-x-2'>
                   <span>{item.user.name}</span>
                   <span className='text-xs font-light'>
-                    {convertDateFormat(item.createdAt) || ''}
+                    {dayjs(item.createdAt).format(DATE_TIME_FORMAT) || ''}
                   </span>
                 </div>
               }

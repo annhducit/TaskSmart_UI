@@ -1,6 +1,6 @@
 import { tsmAxios } from '@/configs/axios';
 import { Button, Divider, Form, List, Typography } from 'antd';
-import { SearchProps } from 'antd/es/input';
+import type { SearchProps } from 'antd/es/input';
 import { Input } from 'antd/lib';
 import { useEffect, useState } from 'react';
 
@@ -116,7 +116,7 @@ const BackgroundProject = ({
         </Form>
 
         <List
-          className='w-full '
+          className='w-full'
           grid={{
             gutter: 16,
             column: 5,
@@ -125,7 +125,7 @@ const BackgroundProject = ({
           dataSource={listBackground}
           renderItem={(item) => (
             <div
-              className='relative h-[100px] w-full px-3 mb-3 cursor-pointer hover:brightness-125'
+              className='relative mb-3 h-[100px] w-full cursor-pointer px-3 hover:brightness-125'
               onClick={() => setBackground(item)}
             >
               <img

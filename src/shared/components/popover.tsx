@@ -1,5 +1,6 @@
-import { FC, ReactNode } from 'react';
-import { Popover, PopoverProps } from 'antd';
+import type { FC, ReactNode } from 'react';
+import type { PopoverProps } from 'antd';
+import { Popover } from 'antd';
 
 type CustomPopoverProps = PopoverProps & {
   content: ReactNode;

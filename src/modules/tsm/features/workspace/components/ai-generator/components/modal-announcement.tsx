@@ -1,6 +1,6 @@
 import { Modal, Typography } from 'antd';
 import { FileWarning } from 'lucide-react';
-import { Dispatch, SetStateAction } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 
 interface Props {
   showModal?: boolean;

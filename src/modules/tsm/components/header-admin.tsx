@@ -1,10 +1,10 @@
 import { Button, Divider, Input, Popover, Typography } from 'antd';
 import { Bell, LogOut, Mail, Settings, User } from 'lucide-react';
 import admin from '@/assets/images/user.png';
-import { useDispatch, useSelector } from '@/store';
+import { useDispatch, useSelector } from '@/stores';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { forceSignOut } from '@/store/auth';
+import { forceSignOut } from '@/stores/auth';
 
 const HeaderAdmin = () => {
   const navigate = useNavigate();

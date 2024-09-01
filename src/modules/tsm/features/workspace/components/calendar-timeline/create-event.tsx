@@ -1,16 +1,8 @@
 import Dialog from '@/shared/components/dialog';
 import { useDialogContext } from '@/shared/components/dialog/provider';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
-import {
-  Button,
-  ColorPicker,
-  ColorPickerProps,
-  DatePicker,
-  Form,
-  Input,
-  Select,
-  Typography,
-} from 'antd';
+import type { ColorPickerProps } from 'antd';
+import { Button, ColorPicker, DatePicker, Form, Input, Select, Typography } from 'antd';
 
 import FormItem from 'antd/es/form/FormItem';
 import dayjs from 'dayjs';

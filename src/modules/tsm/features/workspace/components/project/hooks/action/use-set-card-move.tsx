@@ -1,7 +1,7 @@
 import { tsmAxios } from '@/configs/axios';
 import { getIdProjectFromUrl } from '@/shared/components/getIdByUrl';
 import { useMutation } from '@tanstack/react-query';
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { toast } from 'sonner';
 
 const moveCard = async (projectId: string, columns: ListCard[], cards: Card[]) => {

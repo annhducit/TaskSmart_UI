@@ -56,7 +56,7 @@ function TaskCard({ card }: Props) {
         className='flex cursor-pointer flex-col rounded-lg border border-solid border-slate-300 shadow-lg transition-all hover:border-[2px] hover:border-primary-default'
       >
         <div
-          className='h-[70px]  w-full rounded-t-[6px]'
+          className='h-[70px] w-full rounded-t-[6px]'
           style={{
             backgroundColor: `#${defaultCardColor}`,
           }}
@@ -73,7 +73,7 @@ function TaskCard({ card }: Props) {
                   color='black'
                   placement='bottom'
                 >
-                  <div className='flex items-center rounded-sm  p-1 transition-all hover:bg-[#091E4224]'>
+                  <div className='flex items-center rounded-sm p-1 transition-all hover:bg-[#091E4224]'>
                     <Text className='h-3 w-3 text-slate-500' />
                   </div>
                 </Tooltip>

@@ -48,7 +48,7 @@ import useGetCard from '../hooks/query/use-get-card';
 import useUpdateCard from '../hooks/mutation/use-update-card';
 import useUpdateCardImplementer from '../hooks/mutation/use-update-card-implementer';
 import dayjs from 'dayjs';
-import { getTextColor } from '@/utils/customText';
+import { getTextColor } from '@/utils/custom-text-color';
 import { Badge } from '@/shared/components/badge';
 import useRemoveCardConfirm from '../hooks/action/use-delete-card-confirm';
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
@@ -446,7 +446,6 @@ const AttachmentTab = (props: { card: Card; color: string }) => {
 
   const handleUpload = (fileList: FileType[]) => {
     if (fileList.length === 0) {
-      console.log('No files to upload');
       return;
     }
 
@@ -457,7 +456,6 @@ const AttachmentTab = (props: { card: Card; color: string }) => {
 
     const UploadAsync = async () => {
       try {
-        console.log(formData.get('files'));
         const res = await tsmAxios.post(`/cards/${props.card.id}/attachment`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
@@ -471,7 +469,6 @@ const AttachmentTab = (props: { card: Card; color: string }) => {
 
   const uploadProp: UploadProps = {
     beforeUpload: (_file, fileList) => {
-      console.log(fileList as FileType[]);
       handleUpload(fileList as FileType[]);
       return false;
     },

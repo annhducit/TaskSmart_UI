@@ -7,7 +7,7 @@ import { Button, Input, Popover, Typography } from 'antd';
 import { Ellipsis, Plus, Trash2 } from 'lucide-react';
 import Tooltip from '@/shared/components/tooltip';
 import useCollapse from '@/shared/hooks/use-collapse';
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 
 interface Props {
   column: ListCard;
@@ -24,24 +24,7 @@ const ColumnContainer = ({ column, cards, updateColumn, deleteColumn, createCard
     return cards.map((card) => card.id);
   }, [cards]);
 
-  const cardUndefine: Card = {
-    id: '',
-    name: '',
-    color: '',
-    description: '',
-    status: 'none',
-    priority: 'none',
-    risk: 'none',
-    effort: 'none',
-    estimate: new Date(),
-    checkLists: [],
-    attachments: [],
-    comments: [],
-    implementers: [],
-    startTime: new Date(),
-  };
-
-  const [cardCreation, setCardCreation] = useState<Card>(cardUndefine);
+  const [cardCreation, setCardCreation] = useState<Card>({} as Card);
   const [visible, setVisible] = useCollapse<boolean>(false);
   const setCardCreationName = (name: string) => {
     setCardCreation({ ...cardCreation, name });
@@ -110,16 +93,16 @@ const ColumnContainer = ({ column, cards, updateColumn, deleteColumn, createCard
                     <Button type='default' className='text-left text-xs'>
                       Add Card
                     </Button>
-                    <Button type='default' className='text-left text-xs '>
+                    <Button type='default' className='text-left text-xs'>
                       Add List
                     </Button>
-                    <Button type='default' className='text-left text-xs '>
+                    <Button type='default' className='text-left text-xs'>
                       Copy List
                     </Button>
-                    <Button type='default' className='text-left text-xs '>
+                    <Button type='default' className='text-left text-xs'>
                       Move List
                     </Button>
-                    <Button type='default' className='text-left text-xs '>
+                    <Button type='default' className='text-left text-xs'>
                       Archive List
                     </Button>
                   </div>

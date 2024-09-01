@@ -2,7 +2,7 @@ import { Divider, Tag, Typography } from 'antd';
 import Logo from '@/shared/components/logo';
 import { useNavigate } from 'react-router-dom';
 import { Copy, Eye } from 'lucide-react';
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 
 const TemplateItem = ({ template }: { template: TSMTemplate }) => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const TemplateItem = ({ template }: { template: TSMTemplate }) => {
       onMouseEnter={(e) => (e.currentTarget.style.boxShadow = '0px 0px 10px rgba(0,0,0,0.3)')}
       onMouseLeave={(e) => (e.currentTarget.style.boxShadow = '0px 0px 8px rgba(0,0,0,0.1)')}
     >
-      <div className='relative h-[150px]  rounded-t'>
+      <div className='relative h-[150px] rounded-t'>
         <img
           className='h-full w-full rounded-t-lg object-cover'
           src={

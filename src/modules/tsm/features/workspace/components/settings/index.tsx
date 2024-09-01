@@ -1,4 +1,5 @@
-import { Button, Divider, GetProp, Input, message, Popover, Typography, UploadProps } from 'antd';
+import type { GetProp, UploadProps } from 'antd';
+import { Button, Divider, Input, message, Popover, Typography } from 'antd';
 import useGetProject from '../project/hooks/query/use-get-project';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
 import useSearchParam from '@/shared/hooks/use-search-param';
@@ -26,7 +27,7 @@ import { useState } from 'react';
 import { listColor } from '@/shared/data';
 import dashboard from '@/assets/svgs/dashboard.svg';
 import Dragger from 'antd/es/upload/Dragger';
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 import { tsmAxios } from '@/configs/axios';
 import Tooltip from '@/shared/components/tooltip';
 import { useNavigate } from 'react-router-dom';
@@ -41,7 +42,7 @@ export default function ProjectSetting() {
 
   const { btnColor } = useSelector((state) => state.theme);
   return (
-    <div className='mx-4 flex h-[calc(100vh-130px)]  flex-col gap-y-6 overflow-y-scroll rounded  bg-[#f8f9fc] p-6 text-black'>
+    <div className='mx-4 flex h-[calc(100vh-130px)] flex-col gap-y-6 overflow-y-scroll rounded bg-[#f8f9fc] p-6 text-black'>
       <div className='flex justify-between px-[100px]'>
         <div className='flex justify-start'>
           <div>
@@ -88,7 +89,7 @@ export default function ProjectSetting() {
             style={{
               backgroundColor: btnColor,
             }}
-            onClick={() => setModal(SEARCH_PARAMS_VALUE.ADD_MEMBER)}
+            onClick={() => setModal(SEARCH_PARAMS_VALUE.ADD_MEMBER_WORKSPACE)}
           >
             Share
           </Button>
@@ -242,11 +243,11 @@ const UploadDocument = ({ project }: { project: Project | undefined }) => {
         style={{
           borderColor: btnColor,
         }}
-        className='flex w-[90%] flex-col gap-y-4  rounded-xl border-2 border-solid  bg-white p-4'
+        className='flex w-[90%] flex-col gap-y-4 rounded-xl border-2 border-solid bg-white p-4'
       >
         <div className='flex items-center justify-start'>
           <div className='flex items-center gap-x-2'>
-            <FileUp size={22} color={btnColor} className='opacity-100 ' />
+            <FileUp size={22} color={btnColor} className='opacity-100' />
             <Typography.Text className='font-bold'>Upload file</Typography.Text>
           </div>
         </div>
@@ -275,7 +276,7 @@ const UploadDocument = ({ project }: { project: Project | undefined }) => {
             </div>
             <div className='flex flex-col gap-y-4 py-4 text-left'>
               <Typography.Text
-                className='block font-semibold '
+                className='block font-semibold'
                 style={{
                   color: btnColor,
                 }}
@@ -417,7 +418,7 @@ const UpdateBackground = () => {
                     height: '45px',
                   }}
                 >
-                  <Ellipsis className='h-5 w-5 ' />
+                  <Ellipsis className='h-5 w-5' />
                 </Button>
               </Popover>
             </Tooltip>

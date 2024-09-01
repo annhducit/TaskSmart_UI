@@ -41,8 +41,8 @@ import {
   primaryAccentInput10,
 } from '@/configs/theme';
 import Tooltip from '@/shared/components/tooltip';
-import { useDispatch } from '@/store';
-import { setTheme } from '@/store/theme';
+import { useDispatch } from '@/stores';
+import { setTheme } from '@/stores/theme';
 import { Tag, Typography } from 'antd';
 import { Check, Info } from 'lucide-react';
 import { useState } from 'react';
@@ -113,7 +113,7 @@ const ThemeItem: React.FC<ThemeItemProps> = ({
 
   return (
     <div
-      className={`flex h-[38px] w-[128px] cursor-pointer items-center justify-center gap-x-2 rounded-lg  py-2 transition-all hover:shadow-md`}
+      className={`flex h-[38px] w-[128px] cursor-pointer items-center justify-center gap-x-2 rounded-lg py-2 transition-all hover:shadow-md`}
       onClick={handleClick}
       style={{
         backgroundColor: selectedTheme === color ? bgColor : 'white',

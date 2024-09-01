@@ -1,4 +1,5 @@
-import { Button, Menu, MenuProps } from 'antd';
+import type { MenuProps } from 'antd';
+import { Button, Menu } from 'antd';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { FolderKanban, Home, Layers3, LayoutPanelTop, User, Users, UserX } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -42,7 +43,7 @@ const SidebarAD = ({
       className='relative flex h-screen flex-col border-r border-solid border-slate-200 border-y-transparent border-t-transparent bg-white'
     >
       <div className='my-4 flex flex-col items-center justify-center gap-y-2 px-6'>
-        <div className='h-14 w-14 '>
+        <div className='h-14 w-14'>
           <img src={logo} alt='' className='h-full w-full' />
         </div>
         <h1 className={`text-xl font-semibold ${isCollapse ? 'hidden' : 'block'}`}>Tasksmart</h1>

@@ -5,7 +5,7 @@ import useSearchParam from '@/shared/hooks/use-search-param';
 import { useEffect } from 'react';
 import { SEARCH_PARAMS } from '@/shared/constant/search-param';
 import useGetCategory from '@/modules/tsm/components/hooks/use-get-category';
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 import useSearchTemplate from '../../admin/hooks/query/use-search-template';
 import SearchParam from '@/shared/components/search-param';
 
@@ -26,7 +26,7 @@ const Template = () => {
 
   useEffect(() => {
     refetch();
-  }, [categoryId]);
+  }, [categoryId, refetch]);
 
   const { btnColor } = useSelector((state) => state.theme);
   return (
@@ -147,7 +147,7 @@ const HighlightIcon = ({ color }: { color: string }) => {
       viewBox='0 0 24 24'
       stroke-width='1.5'
       stroke='currentColor'
-      className='size-5 '
+      className='size-5'
     >
       <path
         stroke-linecap='round'
@@ -172,7 +172,7 @@ const NewIcon = ({ color }: { color: string }) => {
       viewBox='0 0 24 24'
       stroke-width='1.5'
       stroke='currentColor'
-      className='size-5 '
+      className='size-5'
     >
       <path
         stroke-linecap='round'

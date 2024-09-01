@@ -2,7 +2,7 @@ import type { VariantProps } from 'class-variance-authority';
 import { cva } from 'class-variance-authority';
 import { cn } from '@/shared/router/cn';
 import { Spin } from 'antd';
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 
 const loadingPageVars = cva(
   'flex items-center justify-center fixed top-0 left-0 right-0 bottom-0 overflow-y-auto',

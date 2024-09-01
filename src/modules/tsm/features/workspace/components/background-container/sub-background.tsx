@@ -1,7 +1,7 @@
 import { tsmAxios } from '@/configs/axios';
 import { listColor } from '@/shared/data';
 import { Button, Divider, List, Typography } from 'antd';
-import { SearchProps } from 'antd/es/input';
+import type { SearchProps } from 'antd/es/input';
 import { Input } from 'antd/lib';
 import { Check } from 'lucide-react';
 import { useState } from 'react';

@@ -16,7 +16,6 @@ const SignInFeature = lazy(() => import('@/modules/sign-in'));
 const SignUpFeature = lazy(() => import('@/modules/sign-up'));
 const LandingFeature = lazy(() => import('@/modules/_landing'));
 const NotFoundFeature = lazy(() => import('@/modules/not-found'));
-
 const PrivateRouter = lazy(() => import('@/modules/private'));
 const AdminRouter = lazy(() => import('@/modules/tsm/features/admin'));
 
@@ -44,9 +43,7 @@ const routers = createRouters([
         element: (
           <Authenticated fallback={<AuthNavigate />}>
             <UserInformation>
-              {/* <CheckRole> */}
               <PrivateRouter />
-              {/* </CheckRole> */}
             </UserInformation>
           </Authenticated>
         ),
