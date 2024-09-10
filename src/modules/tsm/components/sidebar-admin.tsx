@@ -40,11 +40,11 @@ const SidebarAD = ({
       style={{
         width: isCollapse ? 80 : 256,
       }}
-      className='relative flex h-screen flex-col border-r border-solid border-slate-200 border-y-transparent border-t-transparent bg-white'
+      className='relative flex flex-col h-screen bg-white border-r border-solid border-slate-200 border-y-transparent border-t-transparent'
     >
-      <div className='my-4 flex flex-col items-center justify-center gap-y-2 px-6'>
+      <div className='flex flex-col items-center justify-center px-6 my-4 gap-y-2'>
         <div className='h-14 w-14'>
-          <img src={logo} alt='' className='h-full w-full' />
+          <img src={logo} alt='' className='w-full h-full' />
         </div>
         <h1 className={`text-xl font-semibold ${isCollapse ? 'hidden' : 'block'}`}>Tasksmart</h1>
       </div>
@@ -58,7 +58,7 @@ const SidebarAD = ({
       </Button>
 
       <Menu
-        className='m-0 mt-4 w-full p-0'
+        className='w-full p-0 m-0 mt-4'
         onClick={onClick}
         defaultSelectedKeys={['dashboard']}
         inlineCollapsed={isCollapse}
@@ -75,7 +75,7 @@ const items: MenuItem[] = [
   {
     key: 'dashboard',
     label: 'Dashboard',
-    icon: <Home className='mr-3 h-5 w-5 opacity-70' />,
+    icon: <Home className='w-5 h-5 mr-3 opacity-70' />,
   },
   {
     key: 'account',
@@ -85,12 +85,12 @@ const items: MenuItem[] = [
   {
     key: 'account',
     label: 'Account',
-    icon: <User className='mr-3 h-5 w-5 opacity-70' />,
+    icon: <User className='w-5 h-5 mr-3 opacity-70' />,
   },
   {
     key: 'deAccount',
     label: 'Deactivated Account',
-    icon: <UserX className='mr-3 h-5 w-5 opacity-70' />,
+    icon: <UserX className='w-5 h-5 mr-3 opacity-70' />,
   },
   {
     key: 'account',
@@ -100,12 +100,12 @@ const items: MenuItem[] = [
   {
     key: 'template',
     label: 'Template',
-    icon: <LayoutPanelTop className='mr-3 h-5 w-5 opacity-70' />,
+    icon: <LayoutPanelTop className='w-5 h-5 mr-3 opacity-70' />,
   },
   {
     key: 'category',
     label: 'Category',
-    icon: <Layers3 className='mr-3 h-5 w-5 opacity-70' />,
+    icon: <Layers3 className='w-5 h-5 mr-3 opacity-70' />,
   },
   {
     key: 'security',
@@ -115,11 +115,11 @@ const items: MenuItem[] = [
   {
     key: 'wPermission',
     label: 'WorkSpace Permission',
-    icon: <Users className='mr-3 h-5 w-5 opacity-70' />,
+    icon: <Users className='w-5 h-5 mr-3 opacity-70' />,
   },
   {
     key: 'pPermission',
     label: 'Project Permission',
-    icon: <FolderKanban className='mr-3 h-5 w-5 opacity-70' />,
+    icon: <FolderKanban className='w-5 h-5 mr-3 opacity-70' />,
   },
 ];
