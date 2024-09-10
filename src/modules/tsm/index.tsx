@@ -8,10 +8,8 @@ import ViewDoc from './features/workspace/components/project/components';
  * @author Duc Nguyen
  */
 
-const MailFeature = lazy(() => import('./features/mail'));
 const WorkspaceDetailFeature = lazy(() => import('./features/workspace'));
 const WorkspaceFeature = lazy(() => import('./features/workspace/page/workspace'));
-const ProfileMember = lazy(() => import('./features/member-profile'));
 const TemplateFeature = lazy(() => import('./features/templates'));
 const InviteFeature = lazy(() => import('./features/invite'));
 
@@ -25,17 +23,8 @@ const tsmRoutes = createRouters([
     element: <WorkspaceFeature />,
   },
   {
-    path: 'mail/*',
-    element: <MailFeature />,
-  },
-  {
     path: 'invite/*',
     element: <InviteFeature />,
-  },
-
-  {
-    path: 'profile/:memberId/*',
-    element: <ProfileMember />,
   },
   {
     path: 'template/*',

@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash';
 import { useCallback, useRef } from 'react';
 import { type NavigateOptions, useSearchParams } from 'react-router-dom';
-import { SEARCH_PARAMS } from '../constant/search-param';
+import type { SEARCH_PARAMS } from '../constant/search-param';
 
 /**
  *

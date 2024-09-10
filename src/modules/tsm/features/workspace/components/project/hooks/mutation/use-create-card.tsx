@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { isStatusCodeValid } from '@/shared/components/status';
 import { toast } from 'sonner';
 
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 
 const createCard = async (projectId: string, columnId: string, card: Partial<Card>) => {
   const data = await tsmAxios.post(`/projects/${projectId}/${columnId}`, card);

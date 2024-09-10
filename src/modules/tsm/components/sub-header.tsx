@@ -1,5 +1,5 @@
 import useGetPath from '@/shared/hooks/use-get-path';
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 import { HomeOutlined } from '@ant-design/icons';
 import { Breadcrumb, Divider } from 'antd';
 
@@ -18,7 +18,7 @@ const SubHeader = () => {
 
   return (
     <>
-      <header className='flex items-center justify-between bg-transparent  px-4 py-[6px] pl-6 backdrop:fill-transparent'>
+      <header className='flex items-center justify-between bg-transparent px-4 py-[6px] pl-6 backdrop:fill-transparent'>
         <div className='flex items-center justify-between bg-transparent'>
           <Breadcrumb className='bg-transparent'>
             <Breadcrumb.Item>

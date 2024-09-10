@@ -1,16 +1,16 @@
 import Dropdown from '@/shared/components/dropdown';
 import Logo from '@/shared/components/logo';
 import { App, Button, Popover, Typography } from 'antd';
-import { MenuProps } from 'antd/lib';
+import type { MenuProps } from 'antd/lib';
 import { Globe, LogOut, Settings } from 'lucide-react';
 
 import vnFlag from '@/assets/images/vietnam.png';
 import engFlag from '@/assets/images/english.png';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from '@/store';
+import { useDispatch, useSelector } from '@/stores';
 import useGetProfile from '@/modules/tsm/components/hooks/use-profile';
 import userImageDefault from '@/assets/images/user.png';
-import { forceSignOut } from '@/store/auth';
+import { forceSignOut } from '@/stores/auth';
 import { toast } from 'sonner';
 const Header = () => {
   const isSignedIn = useSelector((state) => state.auth.isSignedIn);

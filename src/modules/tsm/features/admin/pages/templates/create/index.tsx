@@ -2,16 +2,8 @@ import React, { useMemo, useState } from 'react';
 import { Avatar, Button, Form, Input, Select, Steps, Tabs, Tooltip, Typography } from 'antd';
 
 import { v4 as uuid } from 'uuid';
-import {
-  DndContext,
-  DragEndEvent,
-  DragOverEvent,
-  DragOverlay,
-  DragStartEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
+import type { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core';
+import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import TaskCard from '../../../components/card';
 import useGetCategories from '@/modules/tsm/components/hooks/use-get-categories';
 import { ListChecks, Pen, Plus, Search, User } from 'lucide-react';
@@ -26,7 +18,7 @@ import useCreateTemplate from '../../../hooks/mutation/use-create-template';
 import dayjs from 'dayjs';
 import { DATE_TIME_FORMAT } from '@/shared/constant/date';
 import BackgroundProject from './components/background-project';
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 
 const CreateTemplate: React.FC = () => {
   const [current, setCurrent] = useState(0);
@@ -171,7 +163,7 @@ const CreateTemplate: React.FC = () => {
                                 }
                               }}
                             >
-                              <Pen size='16' color='#fff' className='text-white ' />
+                              <Pen size='16' color='#fff' className='text-white' />
                             </div>
                           </Tooltip>
                           <input
@@ -227,7 +219,7 @@ const CreateTemplate: React.FC = () => {
       title: 'Preview',
       content: (
         <section
-          className='relative mx-auto my-4 h-[600px]  w-[calc(100vw-400px)] rounded-lg bg-cover bg-center bg-no-repeat'
+          className='relative mx-auto my-4 h-[600px] w-[calc(100vw-400px)] rounded-lg bg-cover bg-center bg-no-repeat'
           style={{
             backgroundPosition: 'center',
             backgroundImage: `url(${background})`,
@@ -420,7 +412,7 @@ const CreateContent = ({
       onDragEnd={onDragEnd}
       onDragOver={onDragOver}
     >
-      <div className='inline-block min-h-screen px-6 '>
+      <div className='inline-block min-h-screen px-6'>
         <div className='flex items-start gap-x-3'>
           <SortableContext items={columnsId}>
             {columns.map((col, index) => (
@@ -445,7 +437,7 @@ const CreateContent = ({
                   placeholder='Enter list title'
                   allowClear
                   size='large'
-                  className='rounded text-sm font-semibold '
+                  className='rounded text-sm font-semibold'
                   value={listCard.name}
                   onChange={(e) => {
                     setListCard((prev) => ({ ...prev, id: uuid(), name: e.target.value }));

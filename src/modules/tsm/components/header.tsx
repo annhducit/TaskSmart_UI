@@ -30,9 +30,9 @@ import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-par
 import { ModalAddProject, ModalAddWorkspace } from '../features/workspace/page';
 import ProfileFlyer from './profile-flyer';
 import useCollapse from '@/shared/hooks/use-collapse';
-import { useDispatch, useSelector } from '@/store';
+import { useDispatch, useSelector } from '@/stores';
 import { toast } from 'sonner';
-import { forceSignOut } from '@/store/auth';
+import { forceSignOut } from '@/stores/auth';
 import { useNavigate } from 'react-router-dom';
 import Notepad from '../features/notepad/pages';
 import useGetProject from '../features/workspace/components/project/hooks/query/use-get-project';
@@ -236,12 +236,12 @@ const Header = () => {
           </div>
           <div className='flex items-center gap-x-4'>
             <Button
-              icon={<SearchIcon className='h-4 w-4 ' />}
+              icon={<SearchIcon className='h-4 w-4' />}
               onClick={() => setDialog(SEARCH_PARAMS_VALUE.SEARCH_ALL)}
               style={{
                 backgroundColor: inpColor,
               }}
-              className='flex h-[28px] w-[390px]  items-center justify-center  border border-solid border-[#618096]  text-sm font-normal text-white'
+              className='flex h-[28px] w-[390px] items-center justify-center border border-solid border-[#618096] text-sm font-normal text-white'
             >
               Search...
             </Button>

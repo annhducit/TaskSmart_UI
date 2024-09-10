@@ -20,12 +20,12 @@ import {
   UserPlus,
   CalendarDays,
 } from 'lucide-react';
-import { TabsProps } from 'antd/lib';
+import type { TabsProps } from 'antd/lib';
 import Setting from '../tsm/features/workspace/components/project/modify-card/popover/setting';
 import useCollapse from '@/shared/hooks/use-collapse';
 import useGetProject from '../tsm/features/workspace/components/project/hooks/query/use-get-project';
 import { ModifyMemberProject } from '../tsm/features/workspace/components/project/modify-member';
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 
 const AIGenerator = lazy(() => import('../tsm/features/workspace/components/ai-generator'));
 const ProjectFeature = lazy(() => import('../tsm/features/workspace/components/project'));
@@ -52,9 +52,9 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div className='flex h-screen flex-col overflow-hidden'>
+    <div className='flex flex-col h-screen overflow-hidden'>
       <Header />
-      <div className='relative flex flex-1 flex-row'>
+      <div className='relative flex flex-row flex-1'>
         <div className='block'>
           <SidebarComponent
             typeSidebar={isProject ? 'workspace' : 'home'}
@@ -124,7 +124,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
     {
       key: 'ai-generator',
       label: (
-        <Typography.Text className='bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text text-transparent'>
+        <Typography.Text className='text-transparent bg-gradient-to-r from-fuchsia-500 to-cyan-500 bg-clip-text'>
           AI Generator
         </Typography.Text>
       ),
@@ -156,12 +156,13 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
   return (
     <>
       <section
-        className='relative h-screen w-full bg-cover bg-center bg-no-repeat object-contain'
+        className='relative object-contain w-full h-screen bg-center bg-no-repeat bg-cover'
         style={{
           backgroundPosition: 'center',
           backgroundSize: 'cover',
           backgroundImage: `url(${project?.backgroundUnsplash?.urls?.full})`,
           backgroundColor: `${project?.backgroundColor}`,
+          contentVisibility: 'auto',
         }}
       >
         <div className='absolute inset-0 bg-black bg-opacity-40' />
@@ -225,7 +226,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
                     >
                       <img
                         src={`http://localhost:8888/api/image/${user.profileImagePath}`}
-                        className='rounded-full object-cover'
+                        className='object-cover rounded-full'
                         style={{ width: '28px', height: '28px' }}
                       />
                       <Badge status='success' className='absolute -right-[2px] -top-1 z-[99999]' />
@@ -243,7 +244,7 @@ export const ProjectContainer = (props: { layoutControl: boolean }) => {
               open={visible}
               onOpenChange={handleOpenChange}
             >
-              <div className='cursor-pointer rounded px-1 transition-all hover:bg-primary-default hover:text-white'>
+              <div className='px-1 transition-all rounded cursor-pointer hover:bg-primary-default hover:text-white'>
                 <Ellipsis size='20' color='white' className='mt-1' />
               </div>
             </Popover>

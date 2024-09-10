@@ -70,7 +70,7 @@ const ModalModifyMember = () => {
             Sharing
           </Typography.Text>
           <Tooltip title={workspace?.name}>
-            <Typography.Text className='flex items-center underline '>
+            <Typography.Text className='flex items-center underline'>
               <EarthIcon /> this workspace
             </Typography.Text>
           </Tooltip>
@@ -200,7 +200,7 @@ const MemberAlready = (props: { type?: MemberType }) => {
             )}
 
             <Avatar size='small'>
-              <User className='h-4 w-4 ' />
+              <User className='h-4 w-4' />
             </Avatar>
             <Typography.Text className='text-xs font-semibold'>Person</Typography.Text>
           </div>

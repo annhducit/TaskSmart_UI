@@ -1,9 +1,9 @@
 import { tsmAxios } from '@/configs/axios';
-import { AuthType } from '@/modules/sign-up';
+import type { AuthType } from '@/modules/sign-up';
 import { isStatusCodeValid } from '@/shared/components/status';
 import { useMutation } from '@tanstack/react-query';
 import { App } from 'antd';
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 async function createAccount(data: AuthType) {

@@ -6,16 +6,8 @@ import TemplateItem from '../../components/template-item';
 import useGetTemplates from '../../hooks/use-get-templates';
 import useGetTemplate from '../../hooks/use-get-template';
 
-import {
-  DndContext,
-  DragEndEvent,
-  DragOverEvent,
-  DragOverlay,
-  DragStartEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
+import type { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core';
+import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import Loading from '@/shared/components/loading';
 import { useEffect, useMemo, useState } from 'react';
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
@@ -25,7 +17,7 @@ import useCollapse from '@/shared/hooks/use-collapse';
 import { createPortal } from 'react-dom';
 import { TaskCard } from '../../../workspace/components/project/move-card';
 import ModifyCard from '../../../workspace/components/project/modify-card/modify-card';
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 type Context = 'ADMIN' | 'USER';
 const TemplateDetail = ({ context = 'USER' }: { context?: Context }) => {
   const { data: template, isLoading: isLoadingDT } = useGetTemplate();
@@ -92,7 +84,7 @@ const TemplateDetail = ({ context = 'USER' }: { context?: Context }) => {
         </Typography.Text>
       </div>
       <section
-        className='relative mx-auto h-[650px] w-[calc(100vw-400px)]  rounded-lg bg-cover bg-center bg-no-repeat'
+        className='relative mx-auto h-[650px] w-[calc(100vw-400px)] rounded-lg bg-cover bg-center bg-no-repeat'
         style={{
           backgroundPosition: 'center',
           backgroundImage: `url(${template?.image.urls?.full})`,
@@ -248,7 +240,7 @@ const ProjectContent = () => {
         {isLoading ? (
           <Loading.Page size='full' />
         ) : (
-          <div className='inline-block min-h-screen px-6 '>
+          <div className='inline-block min-h-screen px-6'>
             <div className='flex items-start gap-x-3'>
               <SortableContext items={columnsId}>
                 {columns.map((col) => (
@@ -269,10 +261,10 @@ const ProjectContent = () => {
                       placeholder='Enter list title'
                       allowClear
                       size='large'
-                      className='rounded text-sm font-semibold '
+                      className='rounded text-sm font-semibold'
                     />
                     <div className='ml-auto flex items-center gap-x-2'>
-                      <Button type='primary' className='rounded text-xs font-semibold '>
+                      <Button type='primary' className='rounded text-xs font-semibold'>
                         Add list
                       </Button>
                       <Button type='default' className='w-16 rounded text-xs font-semibold'>

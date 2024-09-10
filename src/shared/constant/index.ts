@@ -6,7 +6,7 @@ export const MULTIPART_FORM_DATA = 'multipart/form-data';
 export const JSON_TYPE = 'application/json';
 export const JSON_UTF8_TYPE = 'application/json; charset=utf-8';
 export const FORM_URLENCODED_TYPE = 'application/x-www-form-urlencoded';
-export const DOCUMENT_FILE_SIZE = 3; 
+export const DOCUMENT_FILE_SIZE = 3;
 export const IMAGE_FILE_SIZE = 3;
 export const ACCEPT_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
 export const ACCEPT_DOCUMENT_TYPES = [

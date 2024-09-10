@@ -48,7 +48,7 @@ import useGetCard from '../hooks/query/use-get-card';
 import useUpdateCard from '../hooks/mutation/use-update-card';
 import useUpdateCardImplementer from '../hooks/mutation/use-update-card-implementer';
 import dayjs from 'dayjs';
-import { getTextColor } from '@/utils/customText';
+import { getTextColor } from '@/utils/custom-text-color';
 import { Badge } from '@/shared/components/badge';
 import useRemoveCardConfirm from '../hooks/action/use-delete-card-confirm';
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
@@ -443,10 +443,8 @@ const OverviewCardTab = ({
 
 const AttachmentTab = (props: { card: Card; color: string }) => {
   const [attachments, setAttachments] = useState<Attachment[]>(props.card.attachments);
-
   const handleUpload = (fileList: FileType[]) => {
     if (fileList.length === 0) {
-      console.log('No files to upload');
       return;
     }
 
@@ -457,7 +455,6 @@ const AttachmentTab = (props: { card: Card; color: string }) => {
 
     const UploadAsync = async () => {
       try {
-        console.log(formData.get('files'));
         const res = await tsmAxios.post(`/cards/${props.card.id}/attachment`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
@@ -471,18 +468,19 @@ const AttachmentTab = (props: { card: Card; color: string }) => {
 
   const uploadProp: UploadProps = {
     beforeUpload: (_file, fileList) => {
-      console.log(fileList as FileType[]);
       handleUpload(fileList as FileType[]);
       return false;
     },
   };
 
   return (
-    <div className='flex min-h-[400px] w-full flex-col px-0 py-0'>
-      <div className='mt-6 w-full'>
+    <div className='mb-10 flex w-full flex-col items-center justify-center px-0 py-0'>
+      <div className='flex w-full flex-col gap-y-2'>
         <div className='flex items-center justify-center'>
           <Upload multiple {...uploadProp}>
-            <Button icon={<UploadIcon />}>Upload</Button>
+            <Button icon={<UploadIcon className='h-5 w-5' />} className='flex items-center'>
+              Upload
+            </Button>
           </Upload>
         </div>
         <AttachmentFile data={attachments} />
@@ -518,18 +516,19 @@ const ActivityTab = () => {
 const AttachmentFile = ({ data }: { data: Attachment[] }) => {
   const [previewImage, setPreviewImage] = useState<PreviewImage>({ visible: false, src: '' });
 
+  console.log(data);
   const attachmentColumns: TableProps<Attachment>['columns'] = [
     {
       title: 'Title',
       dataIndex: 'title',
       key: 'title',
-      width: 150,
+      width: 300,
       render: (text) => (
         <Input
           allowClear
           type='text'
           defaultValue={text}
-          className='h-7 w-full cursor-pointer rounded-xl border-none px-3 text-base font-bold transition-all'
+          className='h-7 w-full cursor-pointer truncate rounded border-none px-3 text-sm font-bold transition-all'
         />
       ),
     },
@@ -581,11 +580,11 @@ const AttachmentFile = ({ data }: { data: Attachment[] }) => {
         }}
       >
         <Table
+          bordered
           className='w-full'
           dataSource={data}
           columns={attachmentColumns}
           pagination={false}
-          scroll={{ y: 300 }}
         />
       </ConfigProvider>
 

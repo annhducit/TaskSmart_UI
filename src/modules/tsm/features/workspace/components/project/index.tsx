@@ -2,16 +2,8 @@ import { Button, Input } from 'antd';
 import ModifyCard from './modify-card/modify-card';
 import { Plus } from 'lucide-react';
 import useCollapse from '@/shared/hooks/use-collapse';
-import {
-  DndContext,
-  DragEndEvent,
-  DragOverEvent,
-  DragOverlay,
-  DragStartEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
+import type { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core';
+import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 
 import ColumnContainer from './move-card/column-container';
 import { useMemo, useState, useEffect } from 'react';
@@ -27,7 +19,7 @@ import useSetColumnMove from './hooks/action/use-set-column-move';
 import useSetCardMove from './hooks/action/use-set-card-move';
 import Loading from '@/shared/components/loading';
 import useRemoveListCardConfirm from './hooks/action/use-delete-listcard-confirm';
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 
 const Project = () => {
   const [visible, setVisible] = useCollapse<boolean>(false);
@@ -86,7 +78,7 @@ const Project = () => {
     updateListCardMutate(listCard);
   };
 
-  const deleteListCard = (listCardId: String) => {
+  const deleteListCard = (listCardId: string) => {
     onDelete(listCardId as string);
   };
 
@@ -144,7 +136,7 @@ const Project = () => {
                       placeholder='Enter list title'
                       allowClear
                       size='large'
-                      className='rounded text-sm font-semibold '
+                      className='rounded text-sm font-semibold'
                       value={listCardCreationName}
                       onChange={(e) => setListCardCreationName(e.target.value)}
                       onPressEnter={() => {

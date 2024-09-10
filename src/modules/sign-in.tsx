@@ -1,11 +1,13 @@
-import { Button, Form, FormProps, Input, Typography } from 'antd';
+import type { FormProps } from 'antd';
+import { Button, Form, Input, Typography } from 'antd';
 import { Lock, User } from 'lucide-react';
-import { Dispatch, SetStateAction, useState } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '@/shared/hooks/use-redux';
-import { signInAction } from '@/store/auth/action';
+import { signInAction } from '@/stores/auth/action';
 import { toast } from 'sonner';
-import { OAuthConfig } from '@/configs/OAuthConfig';
+import { OAuthConfig } from '@/configs/oauth-config';
 
 /**
  * @author Duc Nguyen
@@ -91,7 +93,7 @@ const Signin = () => {
                 },
               ]}
             >
-              <Input prefix={<User className='w-4 h-4 mr-2 text-primary-default' />} size='large' />
+              <Input prefix={<User className='mr-2 h-4 w-4 text-primary-default' />} size='large' />
             </Form.Item>
             <Form.Item
               name='password'
@@ -104,7 +106,7 @@ const Signin = () => {
               ]}
             >
               <Input.Password
-                prefix={<Lock className='w-4 h-4 mr-2 text-primary-default' />}
+                prefix={<Lock className='mr-2 h-4 w-4 text-primary-default' />}
                 size='large'
                 type='password'
               />
@@ -161,8 +163,6 @@ const GithubButton = (_props: {
     const scope = 'user:email';
 
     const targetUrl = `${authUrl}?redirect_uri=${encodeURIComponent(callbackUrl)}&response_type=code&client_id=${githubClientId}&scope=${encodeURIComponent(scope)}`;
-
-    console.log(targetUrl);
 
     window.location.href = targetUrl;
   };

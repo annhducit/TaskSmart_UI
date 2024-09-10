@@ -1,4 +1,5 @@
-import { Button, Form, FormProps, Input, Select, Typography } from 'antd';
+import type { FormProps } from 'antd';
+import { Button, Form, Input, Select, Typography } from 'antd';
 import { ArrowLeft, ArrowRight, Lock, Mail, Plus, User } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -87,7 +88,7 @@ const Signup = () => {
   };
   return (
     <div
-      className={`${step === 1 ? 'top-6 w-[600px]' : 'top-10 w-[450px]'} absolute right-24  rounded-lg bg-white shadow-lg`}
+      className={`${step === 1 ? 'top-6 w-[600px]' : 'top-10 w-[450px]'} absolute right-24 rounded-lg bg-white shadow-lg`}
     >
       <div className='p-10'>
         <div className='flex flex-col gap-y-10'>
@@ -97,7 +98,7 @@ const Signup = () => {
                 <Typography.Text className='text-2xl font-semibold'>
                   Welcome to <span className='capitalize text-[#0089ED]'>TaskSmart</span>
                 </Typography.Text>
-                <Typography.Text className='text-5xl font-semibold '>Sign up</Typography.Text>
+                <Typography.Text className='text-5xl font-semibold'>Sign up</Typography.Text>
               </div>
               <div className='flex flex-col'>
                 <Typography.Text className='text-sm'>Have an Account ?</Typography.Text>

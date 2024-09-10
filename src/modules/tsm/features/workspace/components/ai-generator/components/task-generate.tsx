@@ -2,16 +2,8 @@ import { App, Button, Input, Space } from 'antd';
 import { useMemo, useState } from 'react';
 import { tsmAxios } from '@/configs/axios';
 import useGetProject from '../../project/hooks/query/use-get-project';
-import {
-  DndContext,
-  DragEndEvent,
-  DragOverEvent,
-  DragOverlay,
-  DragStartEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
+import type { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core';
+import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
 
@@ -25,7 +17,7 @@ import useApplyGenerate from '../hook/mutation/use-apply-generate';
 import blink from '@/assets/images/blink.png';
 import LoadingSkeletonHome from '@/shared/components/skeleton/loading-skeleton-task';
 import ModalAnnouncement from './modal-announcement';
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 import { toast } from 'sonner';
 const TaskGenerate = () => {
   const [taskGenerate, setTaskGenerate] = useState<TasksGenerate>({ listCards: [] });
@@ -262,7 +254,7 @@ const TaskGenerateHandler = ({
                   placeholder='Enter list title'
                   allowClear
                   size='large'
-                  className='rounded text-sm font-semibold '
+                  className='rounded text-sm font-semibold'
                   value={listCard.name}
                   onChange={(e) => {
                     setListCard((prev) => ({ ...prev, name: e.target.value }));
@@ -272,7 +264,7 @@ const TaskGenerateHandler = ({
                   <Button
                     onClick={handleAddListCard}
                     type='primary'
-                    className='rounded text-xs font-semibold '
+                    className='rounded text-xs font-semibold'
                   >
                     Add list
                   </Button>

@@ -1,4 +1,4 @@
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 import { type FC, type ReactNode } from 'react';
 
 type Props = {

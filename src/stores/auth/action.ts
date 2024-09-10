@@ -1,7 +1,7 @@
 import { tsmAxios } from '@/configs/axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AuthData } from '.';
-import { AxiosResponse } from 'axios';
+import type { AuthData } from '.';
+import type { AxiosResponse } from 'axios';
 
 export const signInAction = createAsyncThunk(
   'auth/sign-in',

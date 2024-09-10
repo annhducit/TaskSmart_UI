@@ -12,7 +12,6 @@ const Footer = () => {
             Empower your management with TaskSmart System's AI-driven insights, optimizing
             decision-making for enhanced productivity and success.
           </Typography.Text>
-          {/* <Typography.Text className=''>© 2024 TaskSmart. All rights reserved.</Typography.Text> */}
           <div className='mt-6 flex items-center gap-4'>
             <Facebook size={24} />
             <Instagram size={24} />

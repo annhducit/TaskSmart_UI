@@ -1,7 +1,7 @@
 import { tsmAxios } from '@/configs/axios';
 import { isStatusCodeValid } from '@/shared/components/status';
 import { useMutation } from '@tanstack/react-query';
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -25,7 +25,7 @@ const applyTemplate = async (
 const useApplyTemplate = () => {
   const navigate = useNavigate();
   return useMutation<
-    AxiosResponse<any>,
+    AxiosResponse,
     Error,
     { templateId: string; payload: { workspaceId: string; projectName: string } }
   >({

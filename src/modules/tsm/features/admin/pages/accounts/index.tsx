@@ -83,12 +83,12 @@ const Account = () => {
       key: 'action',
       render: (_item, record) => (
         <Space>
-          <Button icon={<Pen className='w-3 h-3 text-primary-default' />} size='small'>
+          <Button icon={<Pen className='h-3 w-3 text-primary-default' />} size='small'>
             Edit
           </Button>
           <Button
             onClick={() => onRemove(record.id as string)}
-            icon={<Trash color='red' className='w-3 h-3' />}
+            icon={<Trash color='red' className='h-3 w-3' />}
             size='small'
             type='text'
           >
@@ -106,7 +106,7 @@ const Account = () => {
 
   const { data: result, isLoading: isLoadingSearch } = useSearchUser(keyword as string);
   return (
-    <div className='flex flex-col px-6 gap-y-4'>
+    <div className='flex flex-col gap-y-4 px-6'>
       <div className='flex items-center justify-between'>
         <h1 className='text-2xl font-semibold'>Accounts</h1>
         <div className='flex items-end gap-x-4'>

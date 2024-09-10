@@ -23,7 +23,7 @@ const CreateProjectBySample = () => {
 
   return (
     <div className='flex w-[250px] flex-col gap-y-2'>
-      <Typography.Text className='block text-base font-semibold text-center'>
+      <Typography.Text className='block text-center text-base font-semibold'>
         Apply template
       </Typography.Text>
       <Form layout='vertical' onFinish={handleCreateProject} name='project' form={form}>
@@ -56,7 +56,7 @@ const CreateProjectBySample = () => {
           <Input.TextArea rows={3} placeholder='Something about your project' allowClear />
         </Form.Item>
 
-        <div className='flex items-center float-right w-full gap-x-4'>
+        <div className='float-right flex w-full items-center gap-x-4'>
           <Button loading={isLoading} className='w-full' type='primary' htmlType='submit'>
             Apply
           </Button>

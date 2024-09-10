@@ -4,7 +4,7 @@ import 'prismjs/components/prism-sql';
 import { useEffect, useState } from 'react';
 import { App, Button, message, Select, Typography } from 'antd';
 
-import './index.css';
+import '@/styles/code-editor.css';
 import 'prismjs/themes/prism.css';
 import 'prismjs/themes/prism-tomorrow.css';
 import 'prismjs/themes/prism-okaidia.css';
@@ -195,7 +195,7 @@ function CopyUrlButton(props: Props) {
         onClick={handleClick}
         disabled={isCopied}
         icon={<Icon className={cn('size-4 text-black', { 'text-green-500': isCopied })} />}
-        className={cn('z-10 flex items-center justify-center bg-white ', className)}
+        className={cn('z-10 flex items-center justify-center bg-white', className)}
       />
     </Tooltip>
   );
@@ -209,7 +209,7 @@ function RunStatementButton({ className, onClick }: { className?: string; onClic
         type='default'
         onClick={onClick}
         icon={<Play className={cn('size-4 text-black')} />}
-        className={cn('z-10 flex items-center justify-center bg-white ', className)}
+        className={cn('z-10 flex items-center justify-center bg-white', className)}
       />
     </Tooltip>
   );

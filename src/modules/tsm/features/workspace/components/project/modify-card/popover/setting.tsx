@@ -1,7 +1,7 @@
 import Dialog from '@/shared/components/dialog';
 import { useDialogContext } from '@/shared/components/dialog/provider';
 import { SEARCH_PARAMS, SEARCH_PARAMS_VALUE } from '@/shared/constant/search-param';
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 import { Button, Divider, Popover, Typography } from 'antd';
 import {
   ArchiveRestore,
@@ -185,7 +185,6 @@ const UpdateBackground = () => {
 
   const handleChangeBackgroundColor = (value: string) => {
     setBackground(value);
-    console.log(value);
   };
 
   return (

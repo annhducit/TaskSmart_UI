@@ -182,7 +182,7 @@ html *::-webkit-scrollbar-thumb:horizontal {
 .custom-tabs .ant-tabs-nav {
   @apply bg-gray-600 bg-opacity-50 backdrop-blur-sm;
   @apply backdrop-filter;
-  @apply bg-black/50 shadow-lg;
+  @apply shadow-lg bg-black/50;
   @apply px-6;
 }
 
@@ -203,7 +203,7 @@ html *::-webkit-scrollbar-thumb:horizontal {
 .custom-tabs-template .ant-tabs-nav {
   @apply bg-gray-600 bg-opacity-50 backdrop-blur-sm;
   @apply backdrop-filter;
-  @apply bg-black/50 shadow-lg;
+  @apply shadow-lg bg-black/50;
   @apply px-6;
   @apply rounded-lg;
 }

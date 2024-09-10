@@ -8,9 +8,9 @@ import locale from 'antd/locale/vi_VN';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { theme } from './configs/theme';
 import { queryClient } from './configs/query-client';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
-import { persistor, store } from './store';
+import { persistor, store } from './stores';
 import { PersistGate } from 'redux-persist/integration/react';
 import Loading from './shared/components/loading';
 

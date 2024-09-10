@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import useInviteProject from '../hooks/query/use-get-invite-project';
 import useInviteWorkspace from '../hooks/query/use-get-invite-workspace';
-import { useSelector } from '@/store';
+import { useSelector } from '@/stores';
 
 export default function InviteHandler() {
   const { projectId, inviteCode, workspaceId } = useParams<{

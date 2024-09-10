@@ -1,4 +1,5 @@
-import { Divider, Menu, MenuProps, Spin, Typography } from 'antd';
+import type { MenuProps } from 'antd';
+import { Divider, Menu, Spin, Typography } from 'antd';
 import ProjectItem from '../components/project/project-item';
 
 import useGetWorkspaces from '../hooks/query/use-get-workspaces';
@@ -97,7 +98,7 @@ const Workspace = () => {
         {workspace?.projects ? (
           <div className='col-span-3'>
             {isPending && <Spin />}
-            <div className='grid grid-cols-2 gap-4 '>
+            <div className='grid grid-cols-2 gap-4'>
               {workspace?.projects.map((item) => <ProjectItem key={item.id} project={item} />)}
             </div>
           </div>

@@ -5,9 +5,9 @@ import Loading from '../loading';
 import { useAppDispatch } from '@/shared/hooks/use-redux';
 import useUnAuthorized from '@/shared/hooks/use-un-authorized';
 import { queryClient } from '@/configs/query-client';
-import { useSelector } from '@/store';
-import { getUserInformationAction } from '@/store/user/action';
-import { clearInformation } from '@/store/user';
+import { useSelector } from '@/stores';
+import { getUserInformationAction } from '@/stores/user/action';
+import { clearInformation } from '@/stores/user';
 import { UNAUTHORIZED_CODE } from '@/shared/constant/response-code';
 import { setTSMAxiosToken } from '../utils/axios';
 

@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { tsmAxios } from '@/configs/axios';
 import Loading from '@/shared/components/loading';
-import { useDispatch } from '@/store';
-import { signInGoogleAction } from '@/store/auth/action';
+import { useDispatch } from '@/stores';
+import { signInGoogleAction } from '@/stores/auth/action';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
