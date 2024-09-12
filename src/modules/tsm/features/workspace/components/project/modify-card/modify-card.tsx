@@ -76,22 +76,7 @@ type PreviewImage = {
 const ModifyCardModal = ({ members }: { members: UserRelation[] }) => {
   const { onClose } = useDialogContext();
 
-  const [_cards, setCard] = useState<Card>({
-    id: '',
-    name: '',
-    color: '',
-    description: '',
-    status: 'none',
-    priority: 'none',
-    risk: 'none',
-    effort: 'none',
-    estimate: new Date(),
-    startTime: new Date(),
-    checkLists: [],
-    attachments: [],
-    comments: [],
-    implementers: [],
-  });
+  const [_cards, setCard] = useState<Card>({} as Card);
 
   const defaultCardColor = '1677ff';
 
@@ -516,7 +501,6 @@ const ActivityTab = () => {
 const AttachmentFile = ({ data }: { data: Attachment[] }) => {
   const [previewImage, setPreviewImage] = useState<PreviewImage>({ visible: false, src: '' });
 
-  console.log(data);
   const attachmentColumns: TableProps<Attachment>['columns'] = [
     {
       title: 'Title',
@@ -585,6 +569,7 @@ const AttachmentFile = ({ data }: { data: Attachment[] }) => {
           dataSource={data}
           columns={attachmentColumns}
           pagination={false}
+          scroll={{ y: 300 }}
         />
       </ConfigProvider>
 
