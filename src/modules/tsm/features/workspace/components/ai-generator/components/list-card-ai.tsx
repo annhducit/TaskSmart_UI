@@ -4,7 +4,7 @@ import CardAIItem from './card-ai';
 
 const ListCardAI = ({ listCard }: { listCard: Partial<ListCard> }) => {
   return (
-    <div className='flex max-h-[520px] w-[275px] cursor-move flex-col gap-y-2 rounded-xl bg-white p-2 shadow-lg'>
+    <div className='flex max-h-[520px] w-[275px] cursor-grabbing flex-col gap-y-2 rounded-xl bg-white p-2 shadow-lg'>
       <div className='flex items-center justify-between'>
         <div>
           <Input

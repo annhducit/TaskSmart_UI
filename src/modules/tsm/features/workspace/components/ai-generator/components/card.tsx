@@ -47,7 +47,7 @@ function TaskCardAI({ card, deleteTask }: Props) {
           {...attributes}
           {...listeners}
           onClick={() => searchParams.set({})}
-          className='flex cursor-pointer flex-col rounded-lg border border-solid border-slate-300 shadow-lg transition-all hover:border-[2px] hover:border-primary-default'
+          className='flex cursor-grabbing flex-col rounded-lg border border-solid border-slate-300 shadow-lg transition-all hover:border-[2px] hover:border-primary-default'
         >
           <div
             className='h-[70px] w-full rounded-t-[6px]'
@@ -55,7 +55,7 @@ function TaskCardAI({ card, deleteTask }: Props) {
               backgroundColor: `#${defaultCardColor}`,
             }}
           />
-          <div className='flex items-center justify-between p-2 bg-white rounded-b-xl'>
+          <div className='flex items-center justify-between rounded-b-xl bg-white p-2'>
             <div className='flex flex-col gap-y-1'>
               <div className='flex flex-col gap-y-1'>
                 <Typography.Text className='w-[140px] truncate text-xs font-semibold'>
@@ -68,12 +68,12 @@ function TaskCardAI({ card, deleteTask }: Props) {
                     placement='bottom'
                   >
                     <div className='flex items-center rounded-sm p-1 transition-all hover:bg-[#091E4224]'>
-                      <Text className='w-3 h-3 text-slate-500' />
+                      <Text className='h-3 w-3 text-slate-500' />
                     </div>
                   </Tooltip>
                   <Tooltip color='black' title='Followed' placement='bottom'>
                     <div className='flex items-center rounded-sm p-1 transition-all hover:bg-[#091E4224]'>
-                      <Rss className='w-3 h-3 text-slate-500' />
+                      <Rss className='h-3 w-3 text-slate-500' />
                     </div>
                   </Tooltip>
                   <Tooltip
@@ -83,7 +83,7 @@ function TaskCardAI({ card, deleteTask }: Props) {
                     placement='bottom'
                   >
                     <div className='flex items-center rounded-sm p-[2px] transition-all hover:bg-[#091E4224]'>
-                      <Paperclip className='w-3 h-3 text-slate-500' />
+                      <Paperclip className='h-3 w-3 text-slate-500' />
                       <Typography.Text className='ml-[1px] text-xs'>3</Typography.Text>
                     </div>
                   </Tooltip>
@@ -91,7 +91,7 @@ function TaskCardAI({ card, deleteTask }: Props) {
                     className='z-10 ml-2 flex items-center rounded-sm p-[2px] transition-all hover:bg-[#091E4224]'
                     onClick={() => deleteTask && deleteTask(card.id)}
                   >
-                    <Trash2 className='w-3 h-3 text-slate-500' />
+                    <Trash2 className='h-3 w-3 text-slate-500' />
                   </div>
                 </div>
               </div>

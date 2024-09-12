@@ -5,7 +5,7 @@ import { Paperclip, Rss, Text, User } from 'lucide-react';
 const CardAIItem = ({ card }: { card: Partial<Card> }) => {
   return (
     <>
-      <div className='flex cursor-pointer flex-col rounded-lg border border-solid border-slate-300 shadow-lg transition-all hover:border-[2px] hover:border-primary-default'>
+      <div className='flex cursor-grabbing flex-col rounded-lg border border-solid border-slate-300 shadow-lg transition-all hover:border-[2px] hover:border-primary-default'>
         <div
           className='h-[115px] w-full rounded-t-[6px]'
           style={{

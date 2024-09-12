@@ -26,7 +26,7 @@ const ProjectItem = ({
         backgroundImage: `url(${project?.backgroundUnsplash?.urls?.regular})`,
         backgroundColor: `${project?.backgroundColor}`,
       }}
-      className='relative flex cursor-pointer flex-col gap-y-3 rounded-lg border border-solid border-slate-200 object-cover p-4 transition-all hover:border-primary-default hover:text-primary-default'
+      className='relative flex cursor-pointer flex-col gap-y-4 rounded-lg border border-solid border-slate-200 object-cover p-4 transition-all hover:border-primary-default hover:text-primary-default'
     >
       <div className='absolute inset-0 rounded-lg bg-black opacity-50' />
       <div className='flex items-center justify-between'>

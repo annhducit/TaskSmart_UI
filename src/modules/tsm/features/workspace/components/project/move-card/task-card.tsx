@@ -56,7 +56,7 @@ function TaskCard({ card }: Props) {
                 [SEARCH_PARAMS.ID]: card.id,
               })
             }
-            className='flex cursor-pointer flex-col rounded-lg border border-solid border-slate-300 shadow-lg transition-all hover:border-[2px] hover:border-primary-default'
+            className='flex cursor-grabbing flex-col rounded-lg border border-solid border-slate-300 shadow-lg transition-all hover:border-[2px] hover:border-primary-default'
           >
             <div
               className='h-[70px] w-full rounded-t-[6px]'

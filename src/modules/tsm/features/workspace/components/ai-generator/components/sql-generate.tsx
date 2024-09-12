@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Divider, Form, Input, Select, Typography } from 'antd';
 import SQLEditor from './code-editor';
 import { useRef, useState } from 'react';
@@ -62,41 +64,38 @@ const SQLGenerate = () => {
   const { mutate: uploadSqlFile } = useUploadSqlFile();
 
   const onFinish = async (value: any) => {
-    try {
-      if (view !== 3) {
-        value.database = value.database ?? 'MySQL';
-        databaseRag(
-          { projectId, context: dbStructure.statement, question: value.question },
-          {
-            onSuccess: (data) => {
-              scrollToResult({ resultDOM });
-              setStatements(data.statements);
-            },
-            onError: (error) => {
-              toast.error(error.message);
-            },
-          }
-        );
-      } else {
-        databaseRagURI(
-          {
-            projectId,
-            uri: `${DatabaseConnection[SQLType].before}${connectionString}`,
-            question: value.question,
+    if (view !== 3) {
+      value.database = value.database ?? 'MySQL';
+      databaseRag(
+        { projectId, context: dbStructure.statement, question: value.question },
+        {
+          onSuccess: (data) => {
+            scrollToResult({ resultDOM });
+            setStatements(data.statements);
           },
-          {
-            onSuccess: (data) => {
-              scrollToResult({ resultDOM });
-              setStatements([data]);
-            },
+          onError: (error) => {
+            toast.error(error.message);
+          },
+        }
+      );
+    } else {
+      databaseRagURI(
+        {
+          projectId,
+          uri: `${DatabaseConnection[SQLType].before}${connectionString}`,
+          question: value.question,
+        },
+        {
+          onSuccess: (data) => {
+            scrollToResult({ resultDOM });
+            setStatements([data]);
+          },
 
-            onError: (error) => {
-              toast.error(error.message);
-            },
-          }
-        );
-      }
-    } finally {
+          onError: (error) => {
+            toast.error(error.message);
+          },
+        }
+      );
     }
   };
 
