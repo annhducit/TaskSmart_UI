@@ -8,7 +8,21 @@ import type { AxiosResponse } from 'axios';
 import { useInvalidateProject } from '../../../project/hooks/query/use-get-project';
 
 const applyGenerate = async (projectId: string, taskGenerate: TasksGenerate) => {
-  const data = await tsmAxios.post(`/projects/${projectId}/apply-generate`, taskGenerate);
+  const handleGen: TasksGenerateRequest = {
+    listCards: taskGenerate.listCards.map((listCard) => {
+      return {
+        ...listCard,
+        cards: listCard.cards.map((card) => {
+          return {
+            ...card,
+            startTime: card.startTime?new Date(card.startTime) : null,
+            estimate: card.estimate?new Date(card.estimate) : null,
+          };
+        }),
+      };
+    }) as ListCardGenerateRequest[],
+  }
+  const data = await tsmAxios.post(`/projects/${projectId}/apply-generate`, handleGen);
   return data;
 };
 

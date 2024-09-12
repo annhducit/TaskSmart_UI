@@ -293,10 +293,20 @@ type TasksGenerate = {
   listCards: ListCardGenerate[];
 };
 
+type TasksGenerateRequest = {
+  listCards: ListCardGenerateRequest[];
+};
+
 type ListCardGenerate = {
   id: string;
   name: string;
   cards: CardGenerate[];
+};
+
+type ListCardGenerateRequest = {
+  id: string;
+  name: string;
+  cards: CardGenerateRequest[];
 };
 
 type CardGenerate = {
@@ -304,7 +314,28 @@ type CardGenerate = {
   listCardId?: string;
   name: string;
   description: string;
+  reference?: string;
+  priority?: ELevel;
+  effort?: ELevel;
+  risk?: ELevel;
   listCardId: string;
+  startTime?: string;
+  estimate?: string;
+  checkLists: CheckListGroupGenerate[];
+};
+
+type CardGenerateRequest = {
+  id: string;
+  listCardId?: string;
+  name: string;
+  description: string;
+  reference?: string;
+  priority?: ELevel;
+  effort?: ELevel;
+  risk?: ELevel;
+  listCardId: string;
+  startTime?: Date;
+  estimate?: Date;
   checkLists: CheckListGroupGenerate[];
 };
 
