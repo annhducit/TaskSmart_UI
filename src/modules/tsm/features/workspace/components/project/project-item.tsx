@@ -26,13 +26,13 @@ const ProjectItem = ({
         backgroundImage: `url(${project?.backgroundUnsplash?.urls?.regular})`,
         backgroundColor: `${project?.backgroundColor}`,
       }}
-      className='relative flex flex-col object-cover p-4 transition-all border border-solid rounded-lg cursor-pointer gap-y-3 border-slate-200 hover:border-primary-default hover:text-primary-default'
+      className='relative flex cursor-pointer flex-col gap-y-3 rounded-lg border border-solid border-slate-200 object-cover p-4 transition-all hover:border-primary-default hover:text-primary-default'
     >
-      <div className='absolute inset-0 bg-black rounded-lg opacity-50' />
+      <div className='absolute inset-0 rounded-lg bg-black opacity-50' />
       <div className='flex items-center justify-between'>
         <Typography.Text className='z-10 font-semibold text-white'>{project.name}</Typography.Text>
         <div className='z-10 flex items-center'>
-          <LockKeyhole className='w-4 h-4 mr-1 text-white' />
+          <LockKeyhole className='mr-1 h-4 w-4 text-white' />
           <Typography.Text className='font-semibold text-white'>Private</Typography.Text>
         </div>
       </div>
@@ -43,7 +43,7 @@ const ProjectItem = ({
               key={member.userId}
               src={`http://localhost:8888/api/image/${member?.profileImagePath}`}
               size='small'
-              className='border border-white border-solid'
+              className='border border-solid border-white'
             />
           ))}
         </Avatar.Group>

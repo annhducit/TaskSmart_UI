@@ -42,7 +42,7 @@ const WorkspaceDetail = () => {
               style={{
                 backgroundColor: colorRadom,
               }}
-              className='flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-xl text-2xl font-bold text-white'
+              className='flex items-center justify-center flex-shrink-0 w-20 h-20 text-2xl font-bold text-white rounded-xl'
             >
               {workspace?.name.charAt(0).toUpperCase()}
             </div>
@@ -55,9 +55,9 @@ const WorkspaceDetail = () => {
                   <div>
                     <Typography.Title level={3}>{workspace?.name}</Typography.Title>
                     <div className='flex items-center gap-x-4'>
-                      <Tag color='gold'>Premium</Tag>
+                      <Tag color='gold'>{workspace?.category?.name}</Tag>
                       <div className='flex items-center'>
-                        <LockKeyhole color='red' className='mr-1 h-4 w-4' />
+                        <LockKeyhole color='red' className='w-4 h-4 mr-1' />
                         <Tag color='red'>{workspace?.type}</Tag>
                       </div>
                     </div>
@@ -68,7 +68,7 @@ const WorkspaceDetail = () => {
             )}
           </div>
           <Button
-            icon={<Share2 className='color-white h-4 w-4' />}
+            icon={<Share2 className='w-4 h-4 color-white' />}
             type='text'
             className='flex items-center text-white'
             style={{
@@ -142,10 +142,10 @@ const WorkspaceDetail = () => {
               <SearchParam.Keyword />
             </div>
           </div>
-          <div className='my-6 grid grid-cols-4 gap-4'>
+          <div className='grid grid-cols-4 gap-4 my-6'>
             <Button
-              className='mx-auto flex h-32 w-full items-center justify-center'
-              icon={<PlusCircle className='h-4 w-4' />}
+              className='flex items-center justify-center w-full h-32 mx-auto'
+              icon={<PlusCircle className='w-4 h-4' />}
               type='dashed'
               onClick={showModal}
             >
@@ -221,7 +221,7 @@ const ModalCreateWorkspace = () => {
               layout='vertical'
               onFinish={handleSubmit}
               name='create-workspace'
-              className='flex w-full flex-col'
+              className='flex flex-col w-full'
             >
               <Form.Item>
                 <Form.Item
@@ -259,7 +259,7 @@ const ModalCreateWorkspace = () => {
               </Button>
             </Form>
           </div>
-          <div className='col-span-1 flex flex-col'>
+          <div className='flex flex-col col-span-1'>
             <img loading='lazy' src={createWps} className='h-[360px] w-[350px]' />
           </div>
         </div>
@@ -290,7 +290,7 @@ export const ModalCreateProject = () => {
           <Typography.Text className='text-base font-semibold'>Create project</Typography.Text>
         </div>
 
-        <div className='flex w-full items-center gap-x-6'>
+        <div className='flex items-center w-full gap-x-6'>
           <ProjectBackground />
         </div>
       </div>
