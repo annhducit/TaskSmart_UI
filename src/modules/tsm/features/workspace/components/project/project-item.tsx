@@ -49,11 +49,7 @@ const ProjectItem = ({
         </Avatar.Group>
       </div>
       <div className='z-10'>
-        {type === 'NORMAL' && (
-          <Typography.Text className='text-xs text-white'>
-            Recently: {dayjs(project?.lastAccessed).format(DATE_TIME_FORMAT)}
-          </Typography.Text>
-        )}
+        {type === 'NORMAL' && <></>}
         {type === 'RECENT' && (
           <Typography.Text className='text-xs text-white'>
             Last viewed: {dayjs(recent).format(DATE_TIME_FORMAT)}
